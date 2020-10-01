@@ -53,6 +53,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('enercare/reports/sales','EnercareController@getReportSales')->name('enercare.getreportsales')->middleware('can:enercare.reportsales');
     Route::get('enercare/reports/sales/download_report/{startDate}||{endDate}||{teamleader}','EnercareController@downloadreportSales')->name('enercare.downloadreportsales')->middleware('can:enercare.reportsales');
 
+    //Report CallTracker
+    Route::get('enercare/reports/calltracker','EnercareController@reportCallTracker')->name('enercare.reportcalltracker')->middleware('can:enercare.reportcalltracker');
+    Route::post('enercare/reports/calltracker','EnercareController@downloadrepoCallTracker')->name('enercare.downloadrepocalltracker')->middleware('can:enercare.reportcalltracker');
         // Download Report Sales
 
 

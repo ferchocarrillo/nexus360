@@ -250,7 +250,12 @@ return [
                             'text' => 'Sales',
                             'url' => 'enercare/reports/sales',
                             'can' => 'enercare.reportsales'
-                        ]
+                        ],
+                        [
+                            'text' => 'Call Tracker',
+                            'url' => 'enercare/reports/calltracker',
+                            'can' => 'enercare.reportcalltracker'
+                        ],
                     ]
                 ],
                 [

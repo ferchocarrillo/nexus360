@@ -8,6 +8,7 @@ use App\EnercareCalltrackerCategory;
 use App\EnercareCalltrackerPitchAndSale;
 use App\EnercareCalltrackerPlan;
 use App\EnercareRoster;
+use App\Exports\EnercareCallTrackerReportExport;
 use App\MasterFile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -207,6 +208,40 @@ class EnercareController extends Controller
         return Excel::download(new EnercareSalesReportExport($query), "ReportSales_$startDate _ $endDate.xlsx");
     }
 
+    public function reportCallTracker(){
+        return view('Enercare.Reports.calltracker');
+    }
+
+    public function downloadrepoCallTracker(Request $request){
+
+        $dates = explode(" - ",$request->daterange);
+
+        $query = DB::table('enercare_calltrackers')
+        ->leftJoin('enercare_calltracker_pitch_and_sales','enercare_calltrackers.id','=','enercare_calltracker_pitch_and_sales.call_id')
+        ->select('enercare_calltrackers.id'
+                ,'enercare_calltrackers.site_id'
+                ,'enercare_calltrackers.username'
+                ,'enercare_calltrackers.category'
+                ,'enercare_calltrackers.subcategory'
+                ,'enercare_calltrackers.reason_not_pitch'
+                ,'enercare_calltrackers.reason_not_sale'
+                ,'enercare_calltrackers.created_at'
+                ,'enercare_calltracker_pitch_and_sales.type'
+                ,'enercare_calltracker_pitch_and_sales.plan'
+                ,'enercare_calltracker_pitch_and_sales.contract_id'
+                ,'enercare_calltracker_pitch_and_sales.upgrade'
+                )
+        ->whereBetween(DB::raw('CONVERT(date,enercare_calltrackers.created_at)') ,$dates)
+        ->get();
+
+
+         if(count($query) == 0){
+            return redirect()->back()->with('info', 'No results found');
+         }
+         
+        return Excel::download(new EnercareCallTrackerReportExport($query), "ReportCallTracker_$dates[0] _ $dates[1].xlsx");
+        
+    }
 
     public function uploadAgentPerformance()
     {
