@@ -1,0 +1,78 @@
+<?php
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/', 'HomeController@index')->name('home');
+
+   
+
+    // --------------- Agent Activity --------------- //
+    Route::get('agentactivity', 'AgentActivityController@index')->name('agentactivity.index')->middleware('can:agentactivity.index');
+    Route::post('agentactivity', 'AgentActivityController@store')->name('agentactivity.store')->middleware('can:agentactivity.index');
+    Route::get('agentactivity/supervisor', 'AgentActivityController@supervisor')->name('agentactivity.supervisor')->middleware('can:agentactivity.supervisor');
+    Route::post('agentactivity/supervisor/logout/', 'AgentActivityController@supervisor_Logout')->name('agentactivity.supervisor-logout')->middleware('can:agentactivity.supervisor');
+    Route::get('agentactivity/supervisor/getActivities', 'AgentActivityController@getActivities')->name('agentactivity.getActivity')->middleware('can:agentactivity.supervisor');
+
+
+    Route::get('agentactivity/report', 'AgentActivityController@report')->name('agentactivity.report')->middleware('can:agentactivity.report');
+    Route::post('agentactivity/report/getData', 'AgentActivityController@reportGetData')->name('agentactivity.reportgetdata')->middleware('can:agentactivity.report');
+    Route::get('agentactivity/report/getData/download_report/{dates}', 'AgentActivityController@reportDownloadReport')->name('agentactivity.reportdownload')->middleware('can:agentactivity.report');
+    // --------------- END Agent Activity --------------- //
+
+    // --------------- CGM --------------- //
+    Route::get('cgm/appointmenttracker', 'CGMController@appointmentTracker')->name('cgm.appointmenttracker')->middleware('can:cgm.appointmenttracker') ;
+    Route::get('cgm/appointmenttracker/{callData}','CGMController@appointmentTrackerGetData')->name('cgm.appointmenttracker.getdata')->middleware('can:cgm.appointmenttracker') ;
+    Route::post('cgm/appointmenttracker', 'CGMController@appointmentTrackersearch')->name('cgm.appointmenttracker.search')->middleware('can:cgm.appointmenttracker');
+    Route::post('cgm/appointmenttracker/store', 'CGMController@appointmentTrackerStore')->name('cgm.appointmenttracker.store')->middleware('can:cgm.appointmenttracker');
+
+    Route::get('cgm/qa','CGMController@qa_Index')->name('cgm.qa.index')->middleware('can:cgm.qa');
+    Route::get('cgm/qa/{callData}','CGMController@qa_rating')->name('cgm.qa.rating')->middleware('can:cgm.qa');
+    Route::post('cgm/qa/store/','CGMController@qa_rating_Store')->name('cgm.qa.ratingStore')->middleware('can:cgm.qa');
+
+    Route::get('cgm/uploadlist', 'CGMController@uploadlist')->name('cgm.uploadlist')->middleware('can:cgm.uploadlist');
+    Route::post('cgm/uploadlist', 'CGMController@uploadlistStore')->name('cgm.uploadlist.store')->middleware('can:cgm.uploadlist');
+    Route::get('cgm/downloadlists', 'CGMController@downliadlists')->name('cgm.downloadlists')->middleware('can:cgm.downloadlists');
+    Route::get('cgm/downloadlists/{nameList}', 'CGMController@downliadlist')->name('cgm.downloadlist')->middleware('can:cgm.downloadlists');
+    Route::get('cgm/reports', 'CGMController@reports')->name('cgm.reports')->middleware('can:cgm.reports');
+    Route::post('cgm/reports/getData', 'CGMController@reportsgetData')->name('cgm.reports.getData')->middleware('can:cgm.reports');
+    Route::get('cgm/reports/getData/download_report/{dates}', 'CGMController@downloadReport')->name('cgm.reports.downloadReport')->middleware('can:cgm.reports');
+
+    Route::get('cgm/reports/pdf/{id}','CGMController@pdf')->name('cgm.reports.pdf')->middleware('can:cgm.reports');
+    Route::get('cgm/reports/pdfView/{id}','CGMController@viewpdf')->name('cgm.reports.viewpdf')->middleware('can:cgm.reports');
+
+ 
+    // --------------- Enercare --------------- //
+
+    //CallTracker
+    Route::get('enercare/calltracker','EnercareController@calltracker')->name('enercare.calltracker')->middleware('can:enercare.calltracker');
+    Route::post('enercare/calltracker','EnercareController@calltrackerStore')->name('enercare.calltrackerStore')->middleware('can:enercare.calltracker');
+    
+    //Report Sales
+    Route::get('enercare/reports/sales','EnercareController@reportSales')->name('enercare.reportsales')->middleware('can:enercare.reportsales');
+    Route::post('enercare/reports/sales','EnercareController@getReportSales')->name('enercare.getreportsales')->middleware('can:enercare.reportsales');
+    Route::get('enercare/reports/sales/download_report/{startDate}||{endDate}||{teamleader}','EnercareController@downloadreportSales')->name('enercare.downloadreportsales')->middleware('can:enercare.reportsales');
+
+        // Download Report Sales
+
+
+    //Uploads
+    Route::get('enercare/uploads/agentperformance','EnercareController@uploadAgentPerformance')->name('enercare.uploadAgentPerformance')->middleware('can:enercare.uploadAgentPerformance');
+    Route::post('enercare/uploads/agentperformance','EnercareController@uploadAgentPerformancePost')->name('enercare.uploadAgentPerformancePost')->middleware('can:enercare.uploadAgentPerformance');
+
+    
+    // --------------- Resources --------------- //
+    Route::get('users/upload','UserController@upload')->name('users.upload');
+    Route::post('users/upload','UserController@uploadStore')->name('users.uploadStore');
+    Route::resource('permissions', 'PermissionController'); //Permissions
+    Route::resource('roles', 'RoleController'); //Roles
+    Route::resource('users', 'UserController'); //Users
+    
+    // --------------- MasterFile --------------- //
+    Route::get('management/uploadmasterfile','ManagementController@uploadMasterfile')->name('management.uploadMasterfile')->middleware('can:masterfile.upload');
+    Route::post('management/uploadmasterfile','ManagementController@uploadMasterfilePost')->name('management.uploadMasterfilePost')->middleware('can:masterfile.upload');
+
+
+});
+
+Auth::routes(['register' => false]);
