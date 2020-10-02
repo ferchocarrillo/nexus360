@@ -231,7 +231,8 @@ class EnercareController extends Controller
                 ,'enercare_calltracker_pitch_and_sales.contract_id'
                 ,'enercare_calltracker_pitch_and_sales.upgrade'
                 )
-        ->whereBetween(DB::raw('CONVERT(date,enercare_calltrackers.created_at)') ,$dates)
+        ->whereDate('enercare_calltrackers.created_at','>=',$dates[0])
+        ->whereDate('enercare_calltrackers.created_at','<=',$dates[1])
         ->get();
 
 
