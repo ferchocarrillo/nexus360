@@ -77,52 +77,6 @@
         endDate = end.format('YYYY-MM-DD');
     });
 
-    $('.btn-search').click(function (e) { 
-
-        //$('#logoLoading').modal('show');
-        e.preventDefault();
-        let startDate = $('input[name="daterange"]').data('daterangepicker').startDate.format('YYYY-MM-DD');
-        let endDate = $('input[name="daterange"]').data('daterangepicker').endDate.format('YYYY-MM-DD');      
-
-        let dataForm = {
-                startDate,
-                endDate,
-            };
-        
-
-        let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-
-
-        
-/*
-        fetch('/enercare/reports/sales',{ 
-            headers: {
-                "Content-Type": "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRF-TOKEN": token
-            },
-            credentials: "same-origin",
-            body: JSON.stringify(dataForm),
-            method: 'POST' 
-        })
-        .then((data)=> {
-        data.text().then(function(text){
-
-            setTimeout(() => {
-                $('#logoLoading').modal('hide');
-            }, 1000);
-            
-            $('#result').html(text);
-        });
-        })
-
-        */
-        
-    });
-
-
-
 });
 
 

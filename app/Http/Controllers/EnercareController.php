@@ -216,6 +216,12 @@ class EnercareController extends Controller
 
         $dates = explode(" - ",$request->daterange);
 
+        $diff_in_days = Carbon::createFromFormat('Y-m-d',$dates[0])->diffInDays(Carbon::createFromFormat('Y-m-d',$dates[1]));
+
+        if($diff_in_days > 31){
+            return redirect()->back()->with('error', 'You cannot consult more than 30 days');
+        }
+
         $query = DB::table('enercare_calltrackers')
         ->leftJoin('enercare_calltracker_pitch_and_sales','enercare_calltrackers.id','=','enercare_calltracker_pitch_and_sales.call_id')
         ->select('enercare_calltrackers.id'
