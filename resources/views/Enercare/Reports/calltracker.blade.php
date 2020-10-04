@@ -27,7 +27,7 @@
             <h3 class="card-title">Select Date</h3>
         </div>
         <div class="card-body">
-            <form action="{{ route('enercare.downloadrepocalltracker') }}" method="POST">
+            <form action="{{ route('enercare.downloadreportcalltracker') }}" method="POST">
                 @csrf
                 <input type="text" class="form-control form-control-lg" name="daterange" value="01/01/2020 - 01/15/2020" />
                 <button class="btn mt-3 btn-primary"><i class="fas fa-download"></i> Download</button>

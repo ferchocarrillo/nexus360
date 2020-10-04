@@ -212,7 +212,7 @@ class EnercareController extends Controller
         return view('Enercare.Reports.calltracker');
     }
 
-    public function downloadrepoCallTracker(Request $request){
+    public function downloadreportCallTracker(Request $request){
 
         $dates = explode(" - ",$request->daterange);
 
@@ -248,6 +248,60 @@ class EnercareController extends Controller
          
         return Excel::download(new EnercareCallTrackerReportExport($query), "ReportCallTracker_$dates[0] _ $dates[1].xlsx");
         
+    }
+
+    public function reportkpis(){
+
+    $waves = DB::table('enercare.dbo.tbrosterenercare2')
+            ->whereNull('EndDate')
+            ->whereNotNull('Wave')
+            ->where('wave','<>','')
+            ->select('Wave')
+            ->groupBy('Wave')
+        ->get();
+        return view('Enercare.Reports.kpis',compact(['waves']));
+    }
+
+    public function reportkpisPOST(Request $request){
+
+
+
+        $calculations = ",sum(num_calls_answered) [Total Calls Answered]
+        ,sum([".($request->checkLOB == "true" ? "num_calls_answered_SALES" : "num_calls_answered_GeneralSales")."]) [Total Calls Answered SALES]
+        ,sum([Transfers]) [Transfers]
+        ,sum([Handling Time]) [Handling Time]
+        ,sum(SalesTracker_TotalUsage) TotalUsage
+        ,sum(SalesTracker_TotalPitch) TotalPitch
+        ,sum(SalesTracker_TotalSales) TotalSales
+        ,case when sum([num_calls_answered]) = 0 then null else cast(round((sum([Handling Time])*1.00/sum([num_calls_answered]) *1.00),0) as int) end AHT
+        ,case when  sum([num_calls_answered]) = 0 then null else cast(cast(((sum([Transfers]) *1.00/sum([num_calls_answered])*1.00) *100)as decimal(18,2)) as varchar(10)) + '%' end [Transfers Rate]
+        ,case when   sum([".($request->checkLOB == "true" ? "num_calls_answered_SALES" : "num_calls_answered_GeneralSales")."]) = 0 then null else cast(cast(((sum(SalesTracker_TotalSales) *1.00/sum([".($request->checkLOB == "true" ? "num_calls_answered_SALES" : "num_calls_answered_GeneralSales")."])*1.00) *100)as decimal(18,2)) as varchar(10)) + '%' end [Sales Conversion]
+        ,case when   sum([num_calls_answered]) = 0 then null else cast(cast(((sum(SalesTracker_TotalUsage) *1.00/sum([num_calls_answered])*1.00) *100)as decimal(18,2)) as varchar(10)) + '%' end [Usage]
+        ,case when   sum([".($request->checkLOB == "true" ? "num_calls_answered_SALES" : "num_calls_answered_GeneralSales")."]) = 0 then null else cast(cast(((sum(SalesTracker_TotalPitch) *1.00/sum(".($request->checkLOB == "true" ? "num_calls_answered_SALES" : "num_calls_answered_GeneralSales").")*1.00) *100)as decimal(18,2)) as varchar(10)) + '%' end [Pitch] ";
+    
+        $columns = "convert(varchar(10),DateCreated,23) DateCreated ";
+        $group = "convert(varchar(10),DateCreated,23) ";
+        $columns .= ($request->checkLOB == "true" ? ",lob as LOB " : "").($request->checkOM == "true" ? ",OM " : "").($request->checkSupervisor == "true" ? ",Teamleader " : "").($request->checkAgent == "true" ? ",username as [Username] " : "");
+        $group .= ($request->checkLOB == "true" ? ",lob " : "").($request->checkOM == "true" ? ",OM " : "").($request->checkSupervisor == "true" ? ",Teamleader " : "").($request->checkAgent == "true" ? ",username " : "");
+
+
+        $date = date('Y-m-d');
+        // $date = date('Y-m-d',strtotime('2020-09-21'));
+
+
+        $query = DB::table('enercare.dbo.TBEnercareKPIsGeneral')
+        ->whereDate('DateCreated','=',$date);
+        
+        if($request->wave){
+            $query = $query->where('Wave',$request->wave);
+        }
+
+
+
+        $query = $query->selectRaw("$columns $calculations")
+                ->groupBy(DB::raw("$group"))->get() ;
+
+        return view('Enercare.Reports.partials.resultkpis',compact(['query']));
     }
 
     public function uploadAgentPerformance()

@@ -256,6 +256,11 @@ return [
                             'url' => 'enercare/reports/calltracker',
                             'can' => 'enercare.reportcalltracker'
                         ],
+                        [
+                            'text' => 'KPIs',
+                            'url' => 'enercare/reports/kpis',
+                            'can' => 'enercare.reportkpis'
+                        ],
                     ]
                 ],
                 [
