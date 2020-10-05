@@ -56,7 +56,7 @@
 
        <select v-model="reasonNotSale" v-if="!checkSale" class="form-control" v-bind:class="{'is-invalid':validation('sales')}">
               <option value="" disabled selected>Select Reason Not Sale</option>
-              <option v-for="reason in reasonNotSaleList" v-bind:value="reason.id">{{reason.text}}</option>
+              <option v-for="reason in reasonNotSaleList" :key="reason.id" v-bind:value="reason.id">{{reason.text}}</option>
         </select>
 
       <div class="col-sm-6 pl-0" v-if="checkSale" v-bind:class="{'is-invalid':validation('sales')}">        
@@ -66,14 +66,16 @@
               <th>Plan</th>
               <th>Contract ID</th>
               <th>Upgrade?</th>
+              <th>RWH?</th>
               <th width="2px"></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="sale in sales">
+            <tr v-for="sale in sales" :key="sale.contract_id">
               <td class="font-weight-bold border-top-0">{{sale.plan}}</td>
               <td class="border-top-0">{{sale.contract_id}}</td>
-              <td class="border-top-0"><i v-if="sale.upgrade" class="fas fa-check"></i></td>
+              <td class="border-top-0 text-center"><i v-if="sale.upgrade" class="fas fa-check"></i></td>
+              <td class="border-top-0 text-center"><i v-if="sale.rwh" class="fas fa-check"></i></td>
               <td class="border-top-0"><button class="btn btn-sm btn-danger" v-on:click="deleteSale(sale)"><i class="fas fa-minus"></i></button></td>
             </tr>
           </tbody>
@@ -82,7 +84,7 @@
                 <td>
                   <select v-model="plan" ref="plan"  class="form-control form-control-sm">
                     <option value="" disabled >Select Plan</option>
-                    <option v-for="plan in plansList" v-bind:value="plan.id">{{plan.text}}</option>
+                    <option v-for="plan in plansList" :key="plan.id" v-bind:value="plan.id">{{plan.text}}</option>
                   </select>
                 </td>
                 <td>
@@ -90,6 +92,9 @@
                 </td>
                 <td class="text-center align-middle">
                     <input type="checkbox" v-model="upgrade">
+                </td>
+                <td class="text-center align-middle">
+                    <input type="checkbox" v-model="rwh">
                 </td>
                 <td><button class="btn btn-sm btn-primary" v-on:click="addSale"><i class="fas fa-plus"></i></button></td>
               </tr>
@@ -126,6 +131,7 @@ export default {
       checkSale: false,
       contract_id: null,
       upgrade:false,
+      rwh:false,
       plan: "",
       sales:[],
       validationErrors:[],
@@ -186,15 +192,17 @@ export default {
       }
     },
     addSale(e){
-      if(this.plan && this.contract_id){
+      if(this.plan && this.contract_id && (this.upgrade == true && this.rwh == true) == false ){
         this.sales.push({
           plan: this.plan,
           contract_id: this.contract_id,
-          upgrade: this.upgrade
+          upgrade: this.upgrade,
+          rwh: this.rwh
         });
         this.plan = "";      
         this.contract_id = null; 
         this.upgrade = false;
+        this.rwh = false;
         this.$refs.plan.focus();
       }
     },

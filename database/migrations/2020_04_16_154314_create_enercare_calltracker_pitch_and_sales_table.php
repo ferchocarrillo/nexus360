@@ -21,6 +21,7 @@ class CreateEnercareCalltrackerPitchAndSalesTable extends Migration
             $table->string('plan',100);
             $table->string('contract_id',20)->nullable();
             $table->boolean('upgrade')->nullable();
+            $table->boolean('rwh')->nullable();
         });
     }
 

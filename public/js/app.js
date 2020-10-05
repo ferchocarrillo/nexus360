@@ -2170,6 +2170,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["allcategories", "categories", "notpitchandsales", "plans"],
   data: function data() {
@@ -2186,6 +2191,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       checkSale: false,
       contract_id: null,
       upgrade: false,
+      rwh: false,
       plan: "",
       sales: [],
       validationErrors: [],
@@ -2254,15 +2260,17 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       }
     },
     addSale: function addSale(e) {
-      if (this.plan && this.contract_id) {
+      if (this.plan && this.contract_id && (this.upgrade == true && this.rwh == true) == false) {
         this.sales.push({
           plan: this.plan,
           contract_id: this.contract_id,
-          upgrade: this.upgrade
+          upgrade: this.upgrade,
+          rwh: this.rwh
         });
         this.plan = "";
         this.contract_id = null;
         this.upgrade = false;
+        this.rwh = false;
         this.$refs.plan.focus();
       }
     },
@@ -72037,9 +72045,11 @@ var render = function() {
                   ),
                   _vm._v(" "),
                   _vm._l(_vm.reasonNotSaleList, function(reason) {
-                    return _c("option", { domProps: { value: reason.id } }, [
-                      _vm._v(_vm._s(reason.text))
-                    ])
+                    return _c(
+                      "option",
+                      { key: reason.id, domProps: { value: reason.id } },
+                      [_vm._v(_vm._s(reason.text))]
+                    )
                   })
                 ],
                 2
@@ -72060,7 +72070,7 @@ var render = function() {
                     _c(
                       "tbody",
                       _vm._l(_vm.sales, function(sale) {
-                        return _c("tr", [
+                        return _c("tr", { key: sale.contract_id }, [
                           _c(
                             "td",
                             { staticClass: "font-weight-bold border-top-0" },
@@ -72071,11 +72081,25 @@ var render = function() {
                             _vm._v(_vm._s(sale.contract_id))
                           ]),
                           _vm._v(" "),
-                          _c("td", { staticClass: "border-top-0" }, [
-                            sale.upgrade
-                              ? _c("i", { staticClass: "fas fa-check" })
-                              : _vm._e()
-                          ]),
+                          _c(
+                            "td",
+                            { staticClass: "border-top-0 text-center" },
+                            [
+                              sale.upgrade
+                                ? _c("i", { staticClass: "fas fa-check" })
+                                : _vm._e()
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "td",
+                            { staticClass: "border-top-0 text-center" },
+                            [
+                              sale.rwh
+                                ? _c("i", { staticClass: "fas fa-check" })
+                                : _vm._e()
+                            ]
+                          ),
                           _vm._v(" "),
                           _c("td", { staticClass: "border-top-0" }, [
                             _c(
@@ -72139,7 +72163,10 @@ var render = function() {
                               _vm._l(_vm.plansList, function(plan) {
                                 return _c(
                                   "option",
-                                  { domProps: { value: plan.id } },
+                                  {
+                                    key: plan.id,
+                                    domProps: { value: plan.id }
+                                  },
                                   [_vm._v(_vm._s(plan.text))]
                                 )
                               })
@@ -72215,6 +72242,46 @@ var render = function() {
                           })
                         ]),
                         _vm._v(" "),
+                        _c("td", { staticClass: "text-center align-middle" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.rwh,
+                                expression: "rwh"
+                              }
+                            ],
+                            attrs: { type: "checkbox" },
+                            domProps: {
+                              checked: Array.isArray(_vm.rwh)
+                                ? _vm._i(_vm.rwh, null) > -1
+                                : _vm.rwh
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.rwh,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 && (_vm.rwh = $$a.concat([$$v]))
+                                  } else {
+                                    $$i > -1 &&
+                                      (_vm.rwh = $$a
+                                        .slice(0, $$i)
+                                        .concat($$a.slice($$i + 1)))
+                                  }
+                                } else {
+                                  _vm.rwh = $$c
+                                }
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
                         _c("td", [
                           _c(
                             "button",
@@ -72271,6 +72338,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Contract ID")]),
         _vm._v(" "),
         _c("th", [_vm._v("Upgrade?")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("RWH?")]),
         _vm._v(" "),
         _c("th", { attrs: { width: "2px" } })
       ])

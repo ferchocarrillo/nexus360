@@ -69,11 +69,11 @@ class EnercareController extends Controller
 
         if ($request->checkPitch) {
             foreach ($request->pitch as $plan) {
-                $data[] = ['call_id' => $id, 'type' => 'Pitch', 'plan' => $plan,  'contract_id' => null,'upgrade'=> null];
+                $data[] = ['call_id' => $id, 'type' => 'Pitch', 'plan' => $plan,  'contract_id' => null,'upgrade'=> null,'rwh'=>null];
             }
             if ($request->checkSale) {
                 foreach ($request->sales as $sale) {
-                    $data[] = ['call_id' => $id, 'type' => 'Sale', 'plan' => $sale['plan'], 'contract_id' => $sale['contract_id'],'upgrade'=> $sale['upgrade']];
+                    $data[] = ['call_id' => $id, 'type' => 'Sale', 'plan' => $sale['plan'], 'contract_id' => $sale['contract_id'],'upgrade'=> $sale['upgrade'],'rwh'=> $sale['rwh']];
                 }
             }
             EnercareCalltrackerPitchAndSale::insert($data);
