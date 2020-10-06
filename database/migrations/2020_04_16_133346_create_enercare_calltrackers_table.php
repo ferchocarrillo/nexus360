@@ -15,7 +15,7 @@ class CreateEnercareCalltrackersTable extends Migration
     {
         Schema::create('enercare_calltrackers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('site_id');
+            $table->string('site_id',30);
             $table->string('username',50);
             $table->string('category');
             $table->string('subcategory');
