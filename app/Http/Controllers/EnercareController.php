@@ -323,7 +323,7 @@ class EnercareController extends Controller
             'AgentPerformance' => 'required'
         ]);
         $fileName = auth()->user()->username . '_' . pathinfo(request()->AgentPerformance->getClientOriginalName(), PATHINFO_FILENAME) . '.' . request()->AgentPerformance->getClientOriginalExtension();
-        request()->AgentPerformance->move('c:\users\dev\documents\temp\importssql\agentperformance', $fileName);
+        request()->AgentPerformance->move(config('app.path_imports_sql').'agentperformance', $fileName);
         $data = DB::connection('sqlsrvenercare')->select("SET NOCOUNT ON EXEC spImportAgentPerformanceEnercare");
         return redirect()->back()->with('data', $data);
     }
