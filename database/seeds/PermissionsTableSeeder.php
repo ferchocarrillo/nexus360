@@ -137,9 +137,29 @@ class PermissionsTableSeeder extends Seeder
             'description'   => 'Enercare Call Tracker',
         ]);
         Permission::firstOrCreate([
+            'name'          => 'Enercare Reports',
+            'slug'          => 'enercare.reports',
+            'description'   => 'Enercare Reports',
+        ]);
+        Permission::firstOrCreate([
             'name'          => 'Enercare Report Sales',
             'slug'          => 'enercare.reportsales',
             'description'   => 'Enercare Report Sales',
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Enercare Report Call Tracker',
+            'slug'          => 'enercare.reportcalltracker',
+            'description'   => 'Enercare Report Call Tracker',
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Enercare Report KPIs',
+            'slug'          => 'enercare.reportkpis',
+            'description'   => 'Enercare Report KPIs',
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Enercare Uploads',
+            'slug'          => 'enercare.uploads',
+            'description'   => 'Enercare Uploads',
         ]);
         Permission::firstOrCreate([
             'name'          => 'Enercare Upload AgentPerformance',
