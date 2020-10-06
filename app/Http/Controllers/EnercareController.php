@@ -236,6 +236,14 @@ class EnercareController extends Controller
                 ,'enercare_calltracker_pitch_and_sales.plan'
                 ,'enercare_calltracker_pitch_and_sales.contract_id'
                 ,'enercare_calltracker_pitch_and_sales.upgrade'
+                ,'enercare_calltracker_pitch_and_sales.rwh'
+                ,DB::raw("CASE 
+                        WHEN enercare_calltracker_pitch_and_sales.[type] = 'Sale' AND enercare_calltracker_pitch_and_sales.upgrade <> 1 AND enercare_calltracker_pitch_and_sales.rwh <> 1 THEN 'NEW'
+                        WHEN enercare_calltracker_pitch_and_sales.[type] = 'Sale' AND enercare_calltracker_pitch_and_sales.rwh = 1 THEN 'RWH'
+                        WHEN enercare_calltracker_pitch_and_sales.[type] = 'Sale' AND enercare_calltracker_pitch_and_sales.upgrade = 1 THEN 'UPGRADE'
+                        ELSE null
+                        END AS [TypeSale]
+                        ")
                 )
         ->whereDate('enercare_calltrackers.created_at','>=',$dates[0])
         ->whereDate('enercare_calltrackers.created_at','<=',$dates[1])
