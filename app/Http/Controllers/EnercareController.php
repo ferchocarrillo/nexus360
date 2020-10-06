@@ -323,9 +323,13 @@ class EnercareController extends Controller
         $request->validate([
             'AgentPerformance' => 'required'
         ]);
+
+        DB::connection('sqlsrvenercare')->select("EXEC spReportKPIS (?,?)",array(date('Y-m-d'),date('Y-m-d')));
+
         $fileName = auth()->user()->username . '_' . pathinfo(request()->AgentPerformance->getClientOriginalName(), PATHINFO_FILENAME) . '.' . request()->AgentPerformance->getClientOriginalExtension();
-        request()->AgentPerformance->move(config('app.path_imports_sql').'agentperformance', $fileName);
+        request()->AgentPerformance->move(config('app.path_imports_sql').'Enercare\AgentPerformance', $fileName);
         $data = DB::connection('sqlsrvenercare')->select("SET NOCOUNT ON EXEC spImportAgentPerformanceEnercare");
+
         return redirect()->back()->with('data', $data);
     }
 }
