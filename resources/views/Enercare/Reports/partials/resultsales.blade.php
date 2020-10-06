@@ -61,8 +61,6 @@
 var chartData = {!! json_encode($chart) !!};
 
 
-
-
 var colors = [
                 '#200406',
                 '#40080c',
@@ -98,17 +96,41 @@ var planChart = new Chart(ctx_plan, {
     },
     options: {
         responsive: true,
-				legend: {
-					position: 'bottom',
-				},
-				title: {
-					display: false,
-					text: 'Sales per Plan'
-				},
-				animation: {
-					animateScale: true,
-					animateRotate: true
-				}
+        legend: {
+            position: 'bottom',
+        },
+        title: {
+            display: false,
+            text: 'Sales per Plan'
+        },
+        animation: {
+            animateScale: true,
+            animateRotate: true
+        },
+
+        tooltips: {
+            callbacks: {
+                title: function(tooltipItem, data) {
+                return data['labels'][tooltipItem[0]['index']];
+                },
+                label: function(tooltipItem, data) {
+                return data['datasets'][0]['data'][tooltipItem['index']];
+                },
+                afterLabel: function(tooltipItem, data) {
+                    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+                    var dataset = data['datasets'][0];
+                    var percent = Math.round((dataset['data'][tooltipItem['index']] / dataset['data'].reduce(reducer)) * 100)
+                    return '(' + percent + '%)';
+                }
+            },
+            backgroundColor: '#FFF',
+            titleFontSize: 16,
+            titleFontColor: '#0066ff',
+            bodyFontColor: '#000',
+            bodyFontSize: 14,
+            displayColors: false
+        }
+
     }
 });
 

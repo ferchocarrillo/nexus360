@@ -15,6 +15,12 @@
 @stop
 
 
+@section('css')
+<link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css') }}" />
+@endsection
+
+
 
 @section('content')
 <div class="container">
@@ -63,6 +69,13 @@
 
 @push('js')
 
+<script type="text/javascript" src="{{ asset('vendor/datatables/js/jquery.dataTables.min.js') }} "></script>
+<script type="text/javascript" src="{{ asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }} "></script>
+
+<script type="text/javascript" src="{{ asset('vendor/datatables-plugins/buttons/js/dataTables.buttons.min.js') }} "></script>
+<script type="text/javascript" src="{{ asset('vendor/datatables-plugins/buttons/js/buttons.bootstrap4.min.js') }} "></script>
+<script type="text/javascript" src="{{ asset('vendor/datatables-plugins/buttons/js/buttons.colVis.min.js') }} "></script>
+
 <script>
     $(document).ready(function () {    
         $('.btn-search').click(function (e) { 
@@ -97,6 +110,20 @@
                 }, 1000);
                 
                 $('#result').html(text);
+
+                $(".tablekpis").DataTable({
+                  dom: "<'d-flex justify-content-between'Bf>r<'table-responsive't>ip",
+                    "order": [],
+                    pageLength: 50,
+                    "bAutoWidth": false,
+                    buttons: [
+                        {
+                            extend: 'colvis',
+                            text: '<i class="fas fa-columns"></i>',
+                            titleAttr: 'Colvis'
+                        }
+                    ]
+                })
             });
             })
 

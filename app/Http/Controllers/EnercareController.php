@@ -181,6 +181,7 @@ class EnercareController extends Controller
 
         array_multisort(array_column($report['supervisor'],'total'),SORT_DESC,$report['supervisor']);
         array_multisort(array_column($report['agent'],'total'),SORT_DESC,$report['agent']);
+        array_multisort(array_column($report['plan'],'total'),SORT_DESC,$report['plan']);
 
         $chart = [
             "plan"=> [
