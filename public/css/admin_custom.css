@@ -2,73 +2,8 @@
 
 .btn-activity{
     cursor: pointer;
-}
-
-.Login {
     color: #fff;
-    background-color: #38c172 !important;
 }
-.Login i::before{
-    content: "\f2f6";
-}
-.Logout {
-    color: #fff;
-    background-color: #343a40 !important;
-}
-.Logout  i::before{
-    content: "\f2f5";
-}
-.Ready {
-    color: #fff;
-    background-color: #28a745 !important;
-}
-.Ready  i::before{
-    content: "\f04b";
-}
-
-.Training {
-    color: #fff;
-    background-color: #17a2b8 !important;    
-}
-.Training  i::before{
-    content: "\f51c";
-}
-.Coaching {
-    color: #fff;
-    background-color: #1a535c !important;    
-}
-.Coaching  i::before{
-    content: "\f0c0";
-}
-.Break {
-    color: #fff;
-    background-color: #f6993f !important;
-}
-.Break  i::before{
-    content: "\f0f4";
-}
-.Lunch {
-    color: #fff;
-    background-color: #ff4438 !important;
-}
-.Lunch  i::before{
-    content: "\f6d7";
-}
-.Support {
-    color: #fff;
-    background-color: #231161 !important;
-}
-.Support  i::before{
-    content: "\f255";
-}
-.Issues {
-    color: #fff;
-    background-color: #6c757d !important;
-}
-.Issues  i::before{
-    content: "\f071";
-}
-
 
 .scrollable-menu{
     height: auto;

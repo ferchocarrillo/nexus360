@@ -12,8 +12,8 @@
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user.id" :id="user.id">
-          <td :class="(user.latestactivity.length ? user.latestactivity[0].name : '' )">
-            <i class="fas"></i>
+          <td :style="(user.latestactivity.length ? 'background-color:'+user.latestactivity[0].color + ';' : '' )" class="text-white">
+             <i :class="user.latestactivity[0].icon"></i>
           </td>
           <td>{{ user.name }}</td>
           <td>{{(user.latestactivity.length ? user.latestactivity[0].name : 'N/A')}}</td>
@@ -27,10 +27,10 @@
           <td
             @click="logoutUser(user.id)"
             v-if="user.latestactivity.length && user.latestactivity[0].name != 'Logout'"
-            class="Logout"
+            class="bg-dark"
           >
           <a href="#" class="text-white">
-            <i class="fas"></i>
+            <i class="fas fa-sign-out-alt"></i>
             </a>
           </td>
         </tr>

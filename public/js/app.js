@@ -71544,11 +71544,16 @@ var render = function() {
       _c(
         "div",
         {
-          class: "jumbotron " + (_vm.useractivity ? _vm.useractivity.name : "")
+          staticClass: "jumbotron text-light",
+          style: _vm.useractivity
+            ? "background-color:" + _vm.useractivity.color + ";"
+            : ""
         },
         [
           _c("div", { staticClass: "row align-items-center" }, [
-            _vm._m(0),
+            _c("div", { staticClass: "col-sm-4 col-md-3 d-none d-sm-block" }, [
+              _c("i", { class: _vm.useractivity.icon + " fa-4x" })
+            ]),
             _vm._v(" "),
             _c("div", { staticClass: "col-sm-8 col-md-6" }, [
               _c("span", [_vm._v("Activity:")]),
@@ -71601,28 +71606,37 @@ var render = function() {
               }
             },
             [
-              _c("div", { class: "card  h-100 py-2 " + activity.name }, [
-                _c("div", { staticClass: "card-body" }, [
-                  _c(
-                    "div",
-                    { staticClass: "row no-gutters align-items-center" },
-                    [
-                      _c("div", { staticClass: "col mr-2" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass:
-                              "h5 mb-0 font-weight-bold title-activity"
-                          },
-                          [_vm._v(_vm._s(activity.name))]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _vm._m(1, true)
-                    ]
-                  )
-                ])
-              ])
+              _c(
+                "div",
+                {
+                  class: "card  h-100 py-2",
+                  style: "background-color:" + activity.color + ";"
+                },
+                [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c(
+                      "div",
+                      { staticClass: "row no-gutters align-items-center" },
+                      [
+                        _c("div", { staticClass: "col mr-2" }, [
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "h5 mb-0 font-weight-bold title-activity"
+                            },
+                            [_vm._v(_vm._s(activity.name))]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-auto" }, [
+                          _c("i", { class: activity.icon + " fa-2x" })
+                        ])
+                      ]
+                    )
+                  ])
+                ]
+              )
             ]
           )
         }),
@@ -71631,24 +71645,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-sm-4 col-md-3 d-none d-sm-block" }, [
-      _c("i", { staticClass: "fas fa-4x" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-auto" }, [
-      _c("i", { staticClass: "fas fa-2x" })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -71681,11 +71678,12 @@ var render = function() {
             _c(
               "td",
               {
-                class: user.latestactivity.length
-                  ? user.latestactivity[0].name
+                staticClass: "text-white",
+                style: user.latestactivity.length
+                  ? "background-color:" + user.latestactivity[0].color + ";"
                   : ""
               },
-              [_c("i", { staticClass: "fas" })]
+              [_c("i", { class: user.latestactivity[0].icon })]
             ),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(user.name))]),
@@ -71720,7 +71718,7 @@ var render = function() {
               ? _c(
                   "td",
                   {
-                    staticClass: "Logout",
+                    staticClass: "bg-dark",
                     on: {
                       click: function($event) {
                         return _vm.logoutUser(user.id)
@@ -71761,7 +71759,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("a", { staticClass: "text-white", attrs: { href: "#" } }, [
-      _c("i", { staticClass: "fas" })
+      _c("i", { staticClass: "fas fa-sign-out-alt" })
     ])
   }
 ]

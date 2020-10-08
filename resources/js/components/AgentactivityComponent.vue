@@ -2,10 +2,10 @@
   <div class="card">
     <div class="card-body">
       <!-- <div class="jumbotron {{ ($userActivity ? $userActivity->name : '')}}"> -->
-      <div :class="'jumbotron ' + (useractivity ? useractivity.name : '')">
+      <div class="jumbotron text-light"   :style="(useractivity ? 'background-color:'+useractivity.color+';' : '')  ">
         <div class="row align-items-center">
           <div class="col-sm-4 col-md-3 d-none d-sm-block">
-            <i class="fas fa-4x"></i>
+            <i :class="useractivity.icon + ' fa-4x'"></i>
           </div>
           <div class="col-sm-8 col-md-6">
             <span>Activity:</span>
@@ -27,14 +27,14 @@
           class="col-xl-3 col-md-6 mb-1 btn-activity"
           @click="changeActivity(activity.id)"
         >
-          <div :class="'card  h-100 py-2 ' +  activity.name ">
+          <div :class="'card  h-100 py-2'" :style="'background-color:'+activity.color+';'">
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
                   <div class="h5 mb-0 font-weight-bold title-activity">{{ activity.name }}</div>
                 </div>
                 <div class="col-auto">
-                  <i class="fas fa-2x"></i>
+                  <i :class="activity.icon + ' fa-2x'"></i>
                 </div>
               </div>
             </div>
