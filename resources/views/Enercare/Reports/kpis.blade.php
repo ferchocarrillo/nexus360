@@ -49,10 +49,10 @@
               <input class="custom-control-input" type="checkbox" id="checkOM" name="checkOM" value="option2">
               <label class="custom-control-label" for="checkOM">OM</label>
             </div>
-            {{-- <div class="custom-control custom-switch">
+            <div class="custom-control custom-switch">
               <input class="custom-control-input" type="checkbox" id="checkLOB" name="checkLOB" value="option2">
               <label class="custom-control-label" for="checkLOB">LOB</label>
-            </div> --}}
+            </div>
           </div>
           <div class="col-sm-2 d-flex justify-content-end">
             <button type="submit" class="btn btn-sm btn-primary btn-search"><i class="fas fa-search" aria-hidden="true"></i> Search</button>
@@ -89,7 +89,7 @@
                 'checkAgent': $('#checkAgent').prop('checked'),
                 'checkSupervisor': $('#checkSupervisor').prop('checked'),
                 'checkOM': $('#checkOM').prop('checked'),
-                'checkLOB': false  //$('#checkLOB').prop('checked')
+                'checkLOB': $('#checkLOB').prop('checked')
             }
 
             fetch('/enercare/reports/kpis',{ 
