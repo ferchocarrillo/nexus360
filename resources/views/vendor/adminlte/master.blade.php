@@ -13,7 +13,7 @@
 
 
 
-  <link rel="stylesheet" href="{{ asset('css/admin_custom.css')}}">
+  <link rel="stylesheet" href="{{ asset('css/admin_custom.css?v=2')}}">
 
     @if(! config('adminlte.enabled_laravel_mix'))
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
