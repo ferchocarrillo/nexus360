@@ -71552,7 +71552,10 @@ var render = function() {
         [
           _c("div", { staticClass: "row align-items-center" }, [
             _c("div", { staticClass: "col-sm-4 col-md-3 d-none d-sm-block" }, [
-              _c("i", { class: _vm.useractivity.icon + " fa-4x" })
+              _c("i", {
+                class:
+                  (_vm.useractivity ? _vm.useractivity.icon : "") + " fa-4x"
+              })
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "col-sm-8 col-md-6" }, [

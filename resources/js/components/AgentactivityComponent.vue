@@ -5,7 +5,7 @@
       <div class="jumbotron text-light"   :style="(useractivity ? 'background-color:'+useractivity.color+';' : '')  ">
         <div class="row align-items-center">
           <div class="col-sm-4 col-md-3 d-none d-sm-block">
-            <i :class="useractivity.icon + ' fa-4x'"></i>
+            <i :class="(useractivity ? useractivity.icon : '') + ' fa-4x'"></i>
           </div>
           <div class="col-sm-8 col-md-6">
             <span>Activity:</span>
