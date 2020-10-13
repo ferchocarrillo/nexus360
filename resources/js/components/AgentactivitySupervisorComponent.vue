@@ -13,7 +13,7 @@
       <tbody>
         <tr v-for="user in users" :key="user.id" :id="user.id">
           <td :style="(user.latestactivity.length ? 'background-color:'+user.latestactivity[0].color + ';' : '' )" class="text-white">
-             <i :class="user.latestactivity[0].icon"></i>
+             <i :class="(user.latestactivity.length ? user.latestactivity[0].icon : '')"></i>
           </td>
           <td>{{ user.name }}</td>
           <td>{{(user.latestactivity.length ? user.latestactivity[0].name : 'N/A')}}</td>

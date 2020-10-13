@@ -71686,7 +71686,13 @@ var render = function() {
                   ? "background-color:" + user.latestactivity[0].color + ";"
                   : ""
               },
-              [_c("i", { class: user.latestactivity[0].icon })]
+              [
+                _c("i", {
+                  class: user.latestactivity.length
+                    ? user.latestactivity[0].icon
+                    : ""
+                })
+              ]
             ),
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(user.name))]),
