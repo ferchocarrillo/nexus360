@@ -43,7 +43,7 @@ class UsersImport implements ToModel, WithValidation, WithHeadingRow
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:50','regex:/^[a-z ñ]{2,20}\.[a-zñ0-9]{2,20}$/i','unique:users' ],
             'national_id' => ['required','string','unique:users'],
-            'email' => ['required', 'string', 'email', 'max:255','regex:/(\W|^)[\w.\-]{2,25}@(ncri|contactpoint360)\.com(\W|$)/' , 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255','regex:/(\W|^)[\w.\-]{2,25}@(ncri|contactpoint360|cp-360)\.com(\W|$)/' , 'unique:users'],
             'roles' => ['nullable','numeric'],
             'password' => ['required', 'min:8'],
         ];

@@ -49,7 +49,7 @@ class UserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'national_id' => ['required','string',Rule::unique((new User)->getTable())->ignore($this->route()->user->id ?? null) ],
             'username' => ['required', 'string', 'max:50','regex:/^[a-z ñ]{2,20}\.[a-z0-9]{2,20}$/i', Rule::unique((new User)->getTable())->ignore($this->route()->user->id ?? null) ],
-            'email' => ['required', 'string', 'email', 'max:255','regex:/(\W|^)[\w.\-]{2,25}@(ncri|contactpoint360)\.com(\W|$)/' , Rule::unique((new User)->getTable())->ignore($this->route()->user->id ?? null)],
+            'email' => ['required', 'string', 'email', 'max:255','regex:/(\W|^)[\w.\-]{2,25}@(ncri|contactpoint360|cp-360)\.com(\W|$)/' , Rule::unique((new User)->getTable())->ignore($this->route()->user->id ?? null)],
             'password' => [ $this->route()->user ? 'required_with:password_confirmation' : 'required', 'nullable', 'min:8', 'confirmed'],
 
         ];
