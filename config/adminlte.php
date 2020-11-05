@@ -277,7 +277,19 @@ return [
                 ]
             ]
         ],
-        
+        [
+            'text' => 'Service Experts',
+            'icon' => 'fa fa-cubes',
+            'can' => 'serviceexperts',
+            'submenu' => [
+                [
+                    'text' => 'Files',
+                    'url' => 'serviceexperts',
+                    'active' => ['serviceexperts', 'serviceexperts/*'],
+                    'can' => 'serviceexperts.files'
+                ],
+            ]
+        ],     
         [
             'text' => 'Reports',
             'icon' => 'fas fa-chart-line',

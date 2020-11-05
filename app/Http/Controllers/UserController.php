@@ -35,8 +35,6 @@ class UserController extends Controller
     public function uploadStore(Request $request){
         Excel::import(new UsersImport, request()->file('uploadUsers'));
 
-
-        
         return redirect()->route('users.upload')
         ->with('info', 'Users upload successfully');
     }

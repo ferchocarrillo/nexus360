@@ -166,6 +166,29 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => 'enercare.uploadagentperformance',
             'description'   => 'Enercare Upload AgentPerformance',
         ]);
+        
+        // SERVICE EXPERTS
+        
+        Permission::firstOrCreate([
+            'name'          => 'Service Experts',
+            'slug'          => 'serviceexperts',
+            'description'   => 'Service Experts Campaign'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Service Experts Files',
+            'slug'          => 'serviceexperts.files',
+            'description'   => 'Service Experts View Files'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Service Experts Upload Files',
+            'slug'          => 'serviceexperts.filesupload',
+            'description'   => 'Service Experts Upload Files'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Service Experts Delete Files',
+            'slug'          => 'serviceexperts.filesdelete',
+            'description'   => 'Service Experts Delete Files'
+        ]);
 
     }
 }
