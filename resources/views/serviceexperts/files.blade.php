@@ -7,7 +7,7 @@
 <div class="d-flex justify-content-between align-items-center">
     <img height="60px" src=" {{ asset('img/serviceexperts_logo.png') }}" title="CGM">
 
-    @can('serviceexperts.files')
+    @can('serviceexperts.filesupload')
         <a href="{{ route('serviceexperts.filesupload') }}" class="btn btn-primary"><i class="fa fa-upload"></i> Upload Files</a>
     @endcan
     {{-- <h1 class="mx-4 text-center">Service Experts</h1> --}}
