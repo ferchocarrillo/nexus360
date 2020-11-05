@@ -21,7 +21,7 @@ class CheckMasterFile
 
         //dd($user);
         if($user){
-            if(Auth::user()->hasRole('admin')){
+            if(Auth::user()->hasRole('admin') || Auth::user()->hasPermissionTo('login.withoutmf')){
                 return $next($request);
             }
             if(empty($user->masterfile())){

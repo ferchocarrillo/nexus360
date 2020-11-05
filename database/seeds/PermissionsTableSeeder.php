@@ -14,6 +14,11 @@ class PermissionsTableSeeder extends Seeder
     {
         // Permission::truncate();
 
+        Permission::firstOrCreate([
+            'name'          => 'Login Without Masterfile',
+            'slug'          => 'login.withoutmf',
+            'description'   => 'Login Without Masterfile',
+        ]);
 
         
         // Users
