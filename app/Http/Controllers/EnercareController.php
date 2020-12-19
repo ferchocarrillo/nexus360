@@ -247,8 +247,12 @@ class EnercareController extends Controller
                         ")
                 )
         ->whereDate('enercare_calltrackers.created_at','>=',$dates[0])
-        ->whereDate('enercare_calltrackers.created_at','<=',$dates[1])
-        ->get();
+        ->whereDate('enercare_calltrackers.created_at','<=',$dates[1]);
+
+        if(auth()->user()->hasRole('enercare-agent')){
+            $query->where('enercare_calltrackers.username',auth()->user()->username);
+        }
+        $query = $query->get();
 
 
          if(count($query) == 0){
