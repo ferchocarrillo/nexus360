@@ -69,11 +69,11 @@ class EnercareController extends Controller
 
         if ($request->checkPitch) {
             foreach ($request->pitch as $plan) {
-                $data[] = ['call_id' => $id, 'type' => 'Pitch', 'plan' => $plan,  'contract_id' => null,'upgrade'=> null,'rwh'=>null];
+                $data[] = ['call_id' => $id, 'type' => 'Pitch', 'plan' => $plan,  'contract_id' => null,'upgrade'=> null,'rwh'=>null,'bogo'=>null,'repairplan'=>null];
             }
             if ($request->checkSale) {
                 foreach ($request->sales as $sale) {
-                    $data[] = ['call_id' => $id, 'type' => 'Sale', 'plan' => $sale['plan'], 'contract_id' => $sale['contract_id'],'upgrade'=> $sale['upgrade'],'rwh'=> $sale['rwh']];
+                    $data[] = ['call_id' => $id, 'type' => 'Sale', 'plan' => $sale['plan'], 'contract_id' => $sale['contract_id'],'upgrade'=> $sale['upgrade'],'rwh'=> $sale['rwh'],'bogo'=> $sale['bogo'],'repairplan'=> $sale['repairplan']];
                 }
             }
             EnercareCalltrackerPitchAndSale::insert($data);
@@ -244,10 +244,19 @@ class EnercareController extends Controller
                 ,'enercare_calltracker_pitch_and_sales.contract_id'
                 ,'enercare_calltracker_pitch_and_sales.upgrade'
                 ,'enercare_calltracker_pitch_and_sales.rwh'
+                ,'enercare_calltracker_pitch_and_sales.bogo'
+                ,'enercare_calltracker_pitch_and_sales.repairplan'
                 ,DB::raw("CASE 
-                        WHEN enercare_calltracker_pitch_and_sales.[type] = 'Sale' AND enercare_calltracker_pitch_and_sales.upgrade <> 1 AND enercare_calltracker_pitch_and_sales.rwh <> 1 THEN 'NEW'
+                        WHEN enercare_calltracker_pitch_and_sales.[type] = 'Sale' 
+                            AND enercare_calltracker_pitch_and_sales.upgrade <> 1 
+                            AND enercare_calltracker_pitch_and_sales.rwh <> 1 
+                            AND enercare_calltracker_pitch_and_sales.bogo <> 1 
+                            AND enercare_calltracker_pitch_and_sales.repairplan <> 1                             
+                            THEN 'NEW'
                         WHEN enercare_calltracker_pitch_and_sales.[type] = 'Sale' AND enercare_calltracker_pitch_and_sales.rwh = 1 THEN 'RWH'
                         WHEN enercare_calltracker_pitch_and_sales.[type] = 'Sale' AND enercare_calltracker_pitch_and_sales.upgrade = 1 THEN 'UPGRADE'
+                        WHEN enercare_calltracker_pitch_and_sales.[type] = 'Sale' AND enercare_calltracker_pitch_and_sales.bogo = 1 THEN 'BOGO'
+                        WHEN enercare_calltracker_pitch_and_sales.[type] = 'Sale' AND enercare_calltracker_pitch_and_sales.repairplan = 1 THEN 'REPAIR PLAN'
                         ELSE null
                         END AS [TypeSale]
                         ")

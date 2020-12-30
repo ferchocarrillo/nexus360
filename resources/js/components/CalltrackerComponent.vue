@@ -59,14 +59,16 @@
               <option v-for="reason in reasonNotSaleList" :key="reason.id" v-bind:value="reason.id">{{reason.text}}</option>
         </select>
 
-      <div class="col-sm-6 pl-0" v-if="checkSale" v-bind:class="{'is-invalid':validation('sales')}">        
+      <div class="col-sm-12 pl-0" v-if="checkSale" v-bind:class="{'is-invalid':validation('sales')}">        
         <table class="table table-sm ">
           <thead class="bg-gray">
             <tr>
               <th>Plan</th>
               <th>Contract ID</th>
-              <th>Upgrade?</th>
-              <th>RWH?</th>
+              <th>Upgrade</th>
+              <th>RWH</th>
+              <th>BOGO</th>
+              <th>Repair Plan</th>
               <th width="2px"></th>
             </tr>
           </thead>
@@ -76,6 +78,8 @@
               <td class="border-top-0">{{sale.contract_id}}</td>
               <td class="border-top-0 text-center"><i v-if="sale.upgrade" class="fas fa-check"></i></td>
               <td class="border-top-0 text-center"><i v-if="sale.rwh" class="fas fa-check"></i></td>
+              <td class="border-top-0 text-center"><i v-if="sale.bogo" class="fas fa-check"></i></td>
+              <td class="border-top-0 text-center"><i v-if="sale.repairplan" class="fas fa-check"></i></td>
               <td class="border-top-0"><button class="btn btn-sm btn-danger" v-on:click="deleteSale(sale)"><i class="fas fa-minus"></i></button></td>
             </tr>
           </tbody>
@@ -95,6 +99,12 @@
                 </td>
                 <td class="text-center align-middle">
                     <input type="checkbox" v-model="rwh">
+                </td>
+                <td class="text-center align-middle">
+                    <input type="checkbox" v-model="bogo">
+                </td>
+                <td class="text-center align-middle">
+                    <input type="checkbox" v-model="repairplan">
                 </td>
                 <td><button class="btn btn-sm btn-primary" v-on:click="addSale"><i class="fas fa-plus"></i></button></td>
               </tr>
@@ -132,6 +142,8 @@ export default {
       contract_id: null,
       upgrade:false,
       rwh:false,
+      bogo:false,
+      repairplan:false,
       plan: "",
       sales:[],
       validationErrors:[],
@@ -197,12 +209,16 @@ export default {
           plan: this.plan,
           contract_id: this.contract_id,
           upgrade: this.upgrade,
-          rwh: this.rwh
+          rwh: this.rwh,
+          bogo: this.bogo,
+          repairplan: this.repairplan,
         });
         this.plan = "";      
         this.contract_id = null; 
         this.upgrade = false;
         this.rwh = false;
+        this.bogo = false;
+        this.repairplan = false;
         this.$refs.plan.focus();
       }
     },
