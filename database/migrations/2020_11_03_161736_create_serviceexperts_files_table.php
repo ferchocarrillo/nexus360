@@ -17,6 +17,8 @@ class CreateServiceexpertsFilesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name',255);
             $table->string('path',255);
+            $table->string('directory',255);
+            $table->boolean('folder')->default(0) ;
             $table->timestamps();
         });
     }

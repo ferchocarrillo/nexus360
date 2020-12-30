@@ -71,13 +71,17 @@ Route::middleware(['auth'])->group(function () {
     // --------------- Service Experts --------------- //
 
     Route::get('serviceexperts','ServiceExpertsController@files')->name('serviceexperts.files')->middleware('can:serviceexperts.files');
+
+    Route::get('serviceexperts/getdirectory','ServiceExpertsController@getDirectory')->name('serviceexperts.getdirectory')->middleware('can:serviceexperts.files');
+
     Route::get('serviceexperts/uploadFiles','ServiceExpertsController@filesUpload')->name('serviceexperts.filesupload')->middleware('can:serviceexperts.filesupload');
     Route::post('serviceexperts/uploadFiles','ServiceExpertsController@filesUploadStore')->name('serviceexperts.filesuploadstore')->middleware('can:serviceexperts.filesupload');
     Route::get('serviceexperts/files/{file}','ServiceExpertsController@filesDownload')->name('serviceexperts.filesdownload')->middleware('can:serviceexperts.files');
     
-    Route::get('serviceexperts/files/delete/{file}','ServiceExpertsController@filesDelete')->name('serviceexperts.filesdelete')->middleware('can:serviceexperts.filesdelete');
+    Route::post('serviceexperts/files/delete','ServiceExpertsController@filesDelete')->name('serviceexperts.filesdelete')->middleware('can:serviceexperts.filesdelete');
     //Route::get('serviceexperts/files/{filename}','ServiceExpertsController@filesDownload')->name('serviceexperts.filesdownload')->middleware('can:serviceexperts.files');
     
+    Route::post('serviceexperts/createdirectory','ServiceExpertsController@createDirectory')->name('serviceexperts.filescreatedirectory')->middleware('can:serviceexperts.filescreatedirectory');
 
     // --------------- Resources --------------- //
     Route::get('users/upload','UserController@upload')->name('users.upload');
