@@ -67,13 +67,14 @@ return [
     |
     */
 
-    'classes_body' => '',
+    'classes_body' => 'sidebar-collapse',
     'classes_brand' => 'navbar-primary',
     'classes_brand_text' => '',
     'classes_content_header' => 'container-fluid px-4',
     'classes_content' => 'container-fluid px-4',
     'classes_sidebar' => 'sidebar-dark-red bg-primary elevation-2',
-    'classes_sidebar_nav' => 'nav-child-indent  nav-legacy',
+    // 'classes_sidebar_nav' => 'nav-child-indent  nav-legacy',
+    'classes_sidebar_nav' => 'nav-child-indent',
     'classes_topnav' => 'navbar-light navbar-white border-bottom-0',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
@@ -181,44 +182,44 @@ return [
         [
             'text' => 'Agent Activity',
             'url' => 'agentactivity',
-            'icon' => 'fas fa-business-time',
+            'icon' => 'nav-icon fas fa-business-time',
             'can' => 'agentactivity.index'
         ],
         [
             'text' => 'Activity Supervisor',
             'url' => 'agentactivity/supervisor',
-            'icon' => 'fas fa-binoculars',
+            'icon' => 'nav-icon fas fa-binoculars',
             'can' => 'agentactivity.supervisor'
         ],
         
         [
             'text' => 'CGM',
-            'icon' => 'fa fa-cubes',
+            'icon' => 'nav-icon fa fa-cubes',
             'can' => 'cgm.appointmenttracker',
             'submenu' => [
                 [
                     'text' => 'Appointment Tracker',
                     'url' => 'cgm/appointmenttracker',
                     'active' => ['cgm/appointmenttracker','cgm/appointmenttracker/*'],
-                    'icon' => 'fa fa-calendar-check',
+                    'icon' => 'nav-icon fa fa-calendar-check',
                     'can' => 'cgm.appointmenttracker'
                 ],
                 [
                     'text' => 'Upload List',
                     'url' => 'cgm/uploadlist',
-                    'icon' => 'fa fa-upload',
+                    'icon' => 'nav-icon fa fa-upload',
                     'can' => 'cgm.uploadlist'
                 ],
                 [
                     'text' => 'Download List',
                     'url' => 'cgm/downloadlists',
-                    'icon' => 'fas fa-download',
+                    'icon' => 'nav-icon fas fa-download',
                     'can' => 'cgm.downloadlists'
                 ],
                 [
                     'text' => 'QA',
                     'url' => 'cgm/qa',
-                    'icon' => 'fas fa-tasks',
+                    'icon' => 'nav-icon fas fa-tasks',
                     'can' => 'cgm.qa'
                 ],
                 [
@@ -232,18 +233,18 @@ return [
         
         [
             'text' => 'Enercare',
-            'icon' => 'icon-enercare',
+            'icon' => 'nav-icon icon-enercare',
             'can' => 'enercare',
             'submenu' => [
                 [
                     'text' => 'Call Tracker',
-                    'icon' => 'fas fa-list-ul',
+                    'icon' => 'nav-icon fas fa-list-ul',
                     'url' => 'enercare/calltracker',
                     'can' => 'enercare.calltracker'
                 ],
                 [
                     'text' => 'Reports',
-                    'icon' => 'fas fa-chart-line',
+                    'icon' => 'nav-icon fas fa-chart-line',
                     'can' => 'enercare.reports',
                     'submenu' => [
                         [
@@ -265,7 +266,7 @@ return [
                 ],
                 [
                     'text' => 'Uploads',
-                    'icon' => 'fa fa-upload',
+                    'icon' => 'nav-icon fa fa-upload',
                     'can' => 'enercare.uploads',
                     'submenu' => [
                         [
@@ -279,7 +280,7 @@ return [
         ],
         [
             'text' => 'Service Experts',
-            'icon' => 'fa fa-cubes',
+            'icon' => 'nav-icon fa fa-cubes',
             'can' => 'serviceexperts',
             'submenu' => [
                 [
@@ -292,7 +293,7 @@ return [
         ],     
         [
             'text' => 'Reports',
-            'icon' => 'fas fa-chart-line',
+            'icon' => 'nav-icon fas fa-chart-line',
             'can' => 'agentactivity.report',
             'submenu' => [
                 [
@@ -306,26 +307,26 @@ return [
         [
             'text' => 'MANAGEMENT',
             'can'   => 'users.index',
-            'icon' => 'fa fa-cog',
+            'icon' => 'nav-icon fa fa-cog',
             'submenu' => [
                 [
                     'text' => 'Users',
                     'url'  => 'users',
                     'active' => ['users', 'users/*'],
-                    'icon' => 'fas fa-users',
+                    'icon' => 'nav-icon fas fa-users',
                     'can'  => 'users.index',
                 ],
                 [
                     'text' => 'Roles',
                     'url'  => 'roles',
                     'active' => ['roles', 'roles/*'],
-                    'icon' => 'fas fa-tags',
+                    'icon' => 'nav-icon fas fa-tags',
                     'can'  => 'roles.index',
                 ],
                 [
                     'text' => 'Upload MasterFile',
                     'url'  => 'management/uploadmasterfile',
-                    'icon' => 'fa fa-upload',
+                    'icon' => 'nav-icon fa fa-upload',
                     'can'  => 'masterfile.upload',
                 ],
             ]

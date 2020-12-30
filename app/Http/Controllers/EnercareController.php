@@ -225,9 +225,15 @@ class EnercareController extends Controller
 
         $query = DB::table('enercare_calltrackers')
         ->leftJoin('enercare_calltracker_pitch_and_sales','enercare_calltrackers.id','=','enercare_calltracker_pitch_and_sales.call_id')
+        ->leftJoin('enercare.dbo.tbrosterenercare2 as b',function($join){
+            $join->on('enercare_calltrackers.username','=','b.UserWeb');
+            $join->on(DB::raw('CONVERT(date,enercare_calltrackers.created_at,103)'),'>=','b.startdate');
+            $join->on(DB::raw('CONVERT(date,enercare_calltrackers.created_at,103)'),'<=',DB::raw('isnull(b.enddate,getdate())'));
+        })
         ->select('enercare_calltrackers.id'
                 ,'enercare_calltrackers.site_id'
                 ,'enercare_calltrackers.username'
+                ,'b.teamleader AS supervisor'
                 ,'enercare_calltrackers.category'
                 ,'enercare_calltrackers.subcategory'
                 ,'enercare_calltrackers.reason_not_pitch'
