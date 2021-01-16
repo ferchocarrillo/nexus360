@@ -12,30 +12,41 @@ class EnercareCallTrackerNotPitchAndSalesTableSeeder extends Seeder
      */
     public function run()
     {
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Repeat caller, meaning the customer called within the last 30 days for the same reason','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Customer is upset','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Not Decision Maker (e.g. tenant, service contact, son, daughter, etc)','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Customer already has all plans possible with Enercare','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Commercial customers','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Unresolved escalations','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Media, legal threat','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Emergency Calls types','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Loyalty customer (wants to cancel)','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Call not completed','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Unsure how to make pitch cannot relate original call to a sales pitch','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Customer does not have time and ends call before agent makes pitch','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Poor experience with Enercare - field complaint','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Poor experience with Enercare - escalation/process complaint','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Not eligible for coverage (ex moving to condo, retierment home, out of country, ect)','type'=>'NotPitch','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Collections charges','type'=>'NotSaleBilling','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Cannot move the plans','type'=>'NotSaleBilling','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Tenant calling','type'=>'NotSaleBilling','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Repeat escalation','type'=>'NotSaleBilling','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Supervisor immediately','type'=>'NotSaleBilling','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Have every single plan the can be offered','type'=>'NotSaleBilling','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Have all the coverage','type'=>'NotSaleService','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Buyout','type'=>'NotSaleService','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Repeat calls highly escalated','type'=>'NotSaleService','active'=> 1]);
-        EnercareCalltrackerReasonsNotPitchAndSales::create(['name'=> 'Emergency calls','type'=>'NotSaleService','active'=> 1]);
+        EnercareCalltrackerReasonsNotPitchAndSales::truncate();
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Pitch", "name" => "Repeat Caller", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Pitch", "name" => "Upset Customer", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Pitch", "name" => "Not decission Maker", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Pitch", "name" => "Customer already has all plans with Enercare", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Pitch", "name" => "Misroute", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Pitch", "name" => "Emergency Call", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Pitch", "name" => "Loyalty Customer (Wants to cancel)", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Pitch", "name" => "Call not completed", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Pitch", "name" => "Not eligible for coverage (Moving to condo or out of the country)", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Unresolved Escalations", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Customer is not interested", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Customer has services with competitor", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Customer cannot afford it", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Customer hung up", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Field complaint", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Poor experience with Enercare", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "No show", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Early show", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Unsuitable appointment", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Past priority", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Service", "type" => "Sale", "name" => "Part install", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Pitch", "name" => "Repeat Caller", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Pitch", "name" => "Upset Customer", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Pitch", "name" => "Not decission Maker", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Pitch", "name" => "Customer already has all plans with Enercare", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Pitch", "name" => "Misroute", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Pitch", "name" => "Loyalty Customer (Wants to cancel)", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Pitch", "name" => "Call not completed", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Pitch", "name" => "Not eligible for coverage (Moving to condo or out of the country)", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Pitch", "name" => "Commercial Customers", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Sale", "name" => "Unresolved Escalations", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Sale", "name" => "Media Legal Threat", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Sale", "name" => "Customer hungs up", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Sale", "name" => "Service Complaint", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::create(["lob" => "Billing", "type" => "Sale", "name" => "Poor experience with Enercare", "active" => 1 ]);
     }
 }

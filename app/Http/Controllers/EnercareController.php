@@ -34,24 +34,22 @@ class EnercareController extends Controller
         ,sum(case when datepart(month,DATEADD(month,-1,getdate())) = datepart(month,enercare_calltrackers.created_at) then 1 else 0 end) [LastMonth]')
             ->first();
 
-        $notpitchandsales = EnercareCalltrackerReasonsNotPitchAndSales::where('active', 1)->select('name', 'type')->get();
-        $plans = EnercareCalltrackerPlan::select('name')->get();
-        $categories = EnercareCalltrackerCategory::select('category as text')->distinct()->get()->toArray();
-
-        foreach ($categories as $key => $category) {
-            $categories[$key]['id'] =  $categories[$key]['text'];
-        }
-
-
-        // $categories = EnercareCalltrackerCategory::where('active', 1)->distinct()->pluck('category', 'category')->toArray();
-        $allcategories = EnercareCalltrackerCategory::pluck('category', 'subcategory');
-        return view('Enercare.calltracker', compact(['categories', 'allcategories', 'notpitchandsales', 'plans', 'sales']));
+        $notpitchandsales = EnercareCalltrackerReasonsNotPitchAndSales::where('active', 1)->get();
+        $plans = EnercareCalltrackerPlan::pluck('name');
+        $allcategories = EnercareCalltrackerCategory::where('active',1)
+        ->orderBy('lob')
+        ->orderBy('category')
+        ->orderBy('subcategory')
+        ->get();
+        return view('Enercare.calltracker', compact(['allcategories', 'notpitchandsales', 'plans', 'sales']));
     }
 
     public function calltrackerStore(Request $request)
     {
         $request->validate([
             'site_id' => ['required'],
+            'lob' => ['required'],
+            'service_call' => ['required'],
             'category' => ['required'],
             'subcategory' => ['required'],
             'pitch' => ['required'],
@@ -63,7 +61,7 @@ class EnercareController extends Controller
                 'username' => auth()->user()->username,
                 'reason_not_pitch' => ($request->checkPitch ? null : $request->pitch),
                 'reason_not_sale' => ($request->checkSale ? null : $request->sales)
-            ])->only(['site_id', 'username', 'category', 'subcategory', 'reason_not_pitch', 'reason_not_sale'])
+            ])->only(['site_id','lob','service_call','username', 'category', 'subcategory', 'reason_not_pitch', 'reason_not_sale'])
         )->id;
 
 
@@ -234,6 +232,8 @@ class EnercareController extends Controller
                 ,'enercare_calltrackers.site_id'
                 ,'enercare_calltrackers.username'
                 ,'b.teamleader AS supervisor'
+                ,'enercare_calltrackers.lob'
+                ,'enercare_calltrackers.service_call'
                 ,'enercare_calltrackers.category'
                 ,'enercare_calltrackers.subcategory'
                 ,'enercare_calltrackers.reason_not_pitch'

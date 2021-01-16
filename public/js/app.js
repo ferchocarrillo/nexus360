@@ -2185,20 +2185,62 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["allcategories", "categories", "notpitchandsales", "plans"],
+  props: ["allcategories", "notpitchandsales", "plans"],
   data: function data() {
     return {
       site_id: null,
+      lob: null,
       category: null,
       subcategory: null,
+      categories: [],
       subcategories: [],
+      lobs: [],
+      objLob: {
+        "Service": {
+          "categories": {},
+          "reasonsNot": {
+            "Pitch": [],
+            "Sale": []
+          }
+        },
+        "Billing": {
+          "categories": {},
+          "reasonsNot": {
+            "Pitch": [],
+            "Sale": []
+          }
+        }
+      },
       pitch: null,
       checkPitch: false,
       pitchMultiple: false,
       pitchList: [],
-      plansList: [],
+      reasonsNotPitch: [],
+      checkServiceCall: false,
       checkSale: false,
+      reasonNotSale: "",
+      reasonsNotSale: [],
       contract_id: null,
       upgrade: false,
       rwh: false,
@@ -2207,50 +2249,46 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       plan: "",
       sales: [],
       validationErrors: [],
-      otherError: null,
-      notpitch: Array(),
-      notSaleBilling: [],
-      notSaleService: [],
-      reasonNotSale: "",
-      reasonNotSaleList: []
+      otherError: null
     };
   },
   methods: {
-    getCategory: function getCategory(e) {
-      if (e !== null && e !== "") {
-        this.category = e;
-        this.loadSubcategories();
-
-        if (this.category == 'Billing') {
-          this.reasonNotSaleList = this.notSaleBilling;
-        } else {
-          this.reasonNotSaleList = this.notSaleService;
-        }
-
-        this.reasonNotSale = "";
+    changeLob: function changeLob() {
+      if (this.lob) {
+        this.checkServiceCall = false;
+        this.loadCategories();
+        this.reasonsNotSale = this.objLob[this.lob].reasonsNot.Sale;
+        this.reasonsNotPitch = this.objLob[this.lob].reasonsNot.Pitch;
+        this.loadPitch();
       }
     },
-    loadSubcategories: function loadSubcategories() {
+    loadCategories: function loadCategories() {
       var _this = this;
+
+      this.category = null;
+      this.categories = [];
+      this.categories = Object.keys(this.objLob[this.lob].categories).filter(function (category) {
+        return _this.objLob[_this.lob].categories[category].subcategories.filter(function (subcategory) {
+          return subcategory.service_call && _this.checkServiceCall || !subcategory.service_call && !_this.checkServiceCall;
+        }).length > 0;
+      });
+    },
+    changeCategory: function changeCategory() {
+      var _this2 = this;
 
       this.subcategory = null;
       this.subcategories = [];
-      Object.entries(this.allcategories).forEach(function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-            key = _ref2[0],
-            value = _ref2[1];
 
-        if (_this.category == value) {
-          _this.subcategories.push({
-            id: key,
-            text: key
-          });
-        }
-      });
-    },
-    getSubcategory: function getSubcategory(e) {
-      if (e !== null && e !== "") {
-        this.subcategory = e;
+      if (this.lob && this.category) {
+        Object.entries(this.objLob[this.lob].categories[this.category].subcategories).forEach(function (_ref) {
+          var _ref2 = _slicedToArray(_ref, 2),
+              key = _ref2[0],
+              subcategory = _ref2[1];
+
+          if (subcategory.service_call && _this2.checkServiceCall || !subcategory.service_call && !_this2.checkServiceCall) {
+            _this2.subcategories.push(subcategory.subcategory);
+          }
+        });
       }
     },
     loadPitch: function loadPitch() {
@@ -2259,11 +2297,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
       if (!this.checkPitch) {
         this.pitchMultiple = false;
-        this.pitchList = this.notpitch;
+        this.pitchList = this.reasonsNotPitch;
       } else {
         this.reasonNotSale = "";
         this.pitchMultiple = true;
-        this.pitchList = this.plansList;
+        this.pitchList = this.plans;
       }
     },
     getPitch: function getPitch(e) {
@@ -2294,13 +2332,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       this.sales.splice(this.sales.indexOf(sale), 1);
     },
     submitData: function submitData() {
-      var _this2 = this;
+      var _this3 = this;
 
       $('#logoLoading').modal('toggle');
       this.validationErrors = [];
       this.otherError = null;
       var data = {
         site_id: this.site_id,
+        lob: this.lob,
+        service_call: this.checkServiceCall,
         category: this.category,
         subcategory: this.subcategory,
         checkPitch: this.checkPitch,
@@ -2320,9 +2360,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         }, 1000);
 
         if (error.response.status == 422) {
-          _this2.validationErrors = error.response.data.errors;
+          _this3.validationErrors = error.response.data.errors;
         } else {
-          _this2.otherError = "Error ".concat(error.response.status, ": ").concat(error.response.statusText, " <br> <b>Please report it to your supervisor </b>");
+          _this3.otherError = "Error ".concat(error.response.status, ": ").concat(error.response.statusText, " <br> <b>Please report it to your supervisor </b>");
         }
       });
     },
@@ -2330,46 +2370,61 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       return name in this.validationErrors;
     }
   },
+  watch: {
+    checkServiceCall: function checkServiceCall() {
+      this.loadCategories();
+    }
+  },
   created: function created() {
-    var _this3 = this;
+    var _this4 = this;
 
-    this.notpitchandsales.forEach(function (element) {
-      switch (element.type) {
-        case 'NotPitch':
-          _this3.notpitch.push({
-            id: element.name,
-            text: element.name
-          });
-
-          break;
-
-        case 'NotSaleBilling':
-          _this3.notSaleBilling.push({
-            id: element.name,
-            text: element.name
-          });
-
-          break;
-
-        case 'NotSaleService':
-          _this3.notSaleService.push({
-            id: element.name,
-            text: element.name
-          });
-
-          break;
-
-        default:
-          break;
+    this.allcategories.forEach(function (category) {
+      if (!_this4.objLob[category.lob].categories[category.category]) {
+        _this4.objLob[category.lob].categories[category.category] = {
+          service_call: 0,
+          subcategories: []
+        };
       }
-    });
-    this.loadPitch();
-    this.plans.forEach(function (element) {
-      _this3.plansList.push({
-        id: element.name,
-        text: element.name
+
+      if (_this4.objLob[category.lob].categories[category.category].service_call === 0 && category.service_call === "1") {
+        _this4.objLob[category.lob].categories[category.category].service_call = 1;
+      }
+
+      if (category.service_call === null) _this4.objLob[category.lob].categories[category.category].service_call = 0;
+
+      _this4.objLob[category.lob].categories[category.category].subcategories.push({
+        subcategory: category.subcategory,
+        service_call: category.service_call == null ? null : parseInt(category.service_call)
       });
     });
+    this.notpitchandsales.forEach(function (reason) {
+      _this4.objLob[reason.lob].reasonsNot[reason.type].push({
+        id: reason.name,
+        text: reason.name
+      });
+    });
+    this.lobs = Object.keys(this.objLob); // this.notpitchandsales.forEach(element => {
+    //   switch (element.type) {
+    //     case 'NotPitch':
+    //       this.notpitch.push({id: element.name,text: element.name})
+    //       break;
+    //     case 'NotSaleBilling':
+    //       this.notSaleBilling.push({id: element.name,text: element.name})
+    //       break;
+    //     case 'NotSaleService':
+    //       this.notSaleService.push({id: element.name,text: element.name})
+    //       break;      
+    //     default:
+    //       break;
+    //   }
+    // });
+    // this.loadPitch();
+    // this.plans.forEach(element => {
+    //   .push({
+    //     id: element.name,
+    //     text: element.name
+    //   });    
+    // })
   }
 });
 
@@ -72095,6 +72150,95 @@ var render = function() {
       "div",
       { staticClass: "form-group" },
       [
+        _c("label", { attrs: { for: "lob" } }, [_vm._v("Lob")]),
+        _vm._v(" "),
+        _c("select2-component", {
+          staticClass: "form-control",
+          attrs: {
+            name: "lob",
+            id: "lob",
+            validation: _vm.validation("lob"),
+            options: _vm.lobs
+          },
+          on: { input: _vm.changeLob },
+          model: {
+            value: _vm.lob,
+            callback: function($$v) {
+              _vm.lob = $$v
+            },
+            expression: "lob"
+          }
+        }),
+        _vm._v(" "),
+        _vm.validation("lob")
+          ? _c(
+              "span",
+              { staticClass: "invalid-feedback", attrs: { role: "alert" } },
+              [_vm._v(_vm._s(_vm.validationErrors.lob[0]))]
+            )
+          : _vm._e()
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _vm.lob == "Service"
+      ? _c("div", { staticClass: "form-group" }, [
+          _c("div", { staticClass: "form-check mb-3" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.checkServiceCall,
+                  expression: "checkServiceCall"
+                }
+              ],
+              staticClass: "form-check-input",
+              attrs: { type: "checkbox", id: "checkServiceCall" },
+              domProps: {
+                checked: Array.isArray(_vm.checkServiceCall)
+                  ? _vm._i(_vm.checkServiceCall, null) > -1
+                  : _vm.checkServiceCall
+              },
+              on: {
+                change: function($event) {
+                  var $$a = _vm.checkServiceCall,
+                    $$el = $event.target,
+                    $$c = $$el.checked ? true : false
+                  if (Array.isArray($$a)) {
+                    var $$v = null,
+                      $$i = _vm._i($$a, $$v)
+                    if ($$el.checked) {
+                      $$i < 0 && (_vm.checkServiceCall = $$a.concat([$$v]))
+                    } else {
+                      $$i > -1 &&
+                        (_vm.checkServiceCall = $$a
+                          .slice(0, $$i)
+                          .concat($$a.slice($$i + 1)))
+                    }
+                  } else {
+                    _vm.checkServiceCall = $$c
+                  }
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c(
+              "label",
+              {
+                staticClass: "form-check-label",
+                attrs: { for: "checkServiceCall" }
+              },
+              [_vm._v("Is service call?")]
+            )
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "form-group" },
+      [
         _c("label", { attrs: { for: "category" } }, [_vm._v("Category")]),
         _vm._v(" "),
         _c("select2-component", {
@@ -72105,7 +72249,14 @@ var render = function() {
             validation: _vm.validation("category"),
             options: _vm.categories
           },
-          on: { input: _vm.getCategory }
+          on: { input: _vm.changeCategory },
+          model: {
+            value: _vm.category,
+            callback: function($$v) {
+              _vm.category = $$v
+            },
+            expression: "category"
+          }
         }),
         _vm._v(" "),
         _vm.validation("category")
@@ -72133,7 +72284,13 @@ var render = function() {
             validation: _vm.validation("subcategory"),
             options: _vm.subcategories
           },
-          on: { input: _vm.getSubcategory }
+          model: {
+            value: _vm.subcategory,
+            callback: function($$v) {
+              _vm.subcategory = $$v
+            },
+            expression: "subcategory"
+          }
         }),
         _vm._v(" "),
         _vm.validation("subcategory")
@@ -72313,7 +72470,7 @@ var render = function() {
                     [_vm._v("Select Reason Not Sale")]
                   ),
                   _vm._v(" "),
-                  _vm._l(_vm.reasonNotSaleList, function(reason) {
+                  _vm._l(_vm.reasonsNotSale, function(reason) {
                     return _c(
                       "option",
                       { key: reason.id, domProps: { value: reason.id } },
@@ -72449,14 +72606,11 @@ var render = function() {
                                 [_vm._v("Select Plan")]
                               ),
                               _vm._v(" "),
-                              _vm._l(_vm.plansList, function(plan) {
+                              _vm._l(_vm.plans, function(plan) {
                                 return _c(
                                   "option",
-                                  {
-                                    key: plan.id,
-                                    domProps: { value: plan.id }
-                                  },
-                                  [_vm._v(_vm._s(plan.text))]
+                                  { key: plan, domProps: { value: plan } },
+                                  [_vm._v(_vm._s(plan))]
                                 )
                               })
                             ],

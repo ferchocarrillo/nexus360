@@ -27,8 +27,7 @@
 <calltracker-component 
     :plans="{{$plans}}" 
     :notpitchandsales="{{$notpitchandsales}}"
-    :categories="{{json_encode($categories)}}" 
-    :allcategories="{{$allcategories}}"
+    :allcategories="{{$allcategories}}" 
 >
 </calltracker-component>
 {{-- 

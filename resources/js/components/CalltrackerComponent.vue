@@ -7,6 +7,25 @@
     </div>
 
     <div class="form-group">
+      <label for="lob">Lob</label>
+      <select2-component
+        name="lob"
+        id="lob"
+        class="form-control"
+        :validation="validation('lob')"
+        :options="lobs"
+        v-model="lob"
+        @input="changeLob"
+      ></select2-component>
+      <span class="invalid-feedback" v-if="validation('lob')" role="alert">{{ validationErrors.lob[0] }}</span>
+    </div>
+    <div class="form-group" v-if="lob =='Service'">
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="checkServiceCall" v-model="checkServiceCall" />
+        <label class="form-check-label" for="checkServiceCall">Is service call?</label>
+      </div>
+    </div>
+    <div class="form-group">
       <label for="category">Category</label>
       <select2-component
         name="category"
@@ -14,7 +33,8 @@
         class="form-control"
         :validation="validation('category')"
         :options="categories"
-        @input="getCategory"
+        @input="changeCategory"
+        v-model="category"
       ></select2-component>
       <span class="invalid-feedback" v-if="validation('category')" role="alert">{{ validationErrors.category[0] }}</span>
     </div>
@@ -26,7 +46,7 @@
         class="form-control"
         :validation="validation('subcategory')"
         :options="subcategories"
-        @input="getSubcategory"
+        v-model="subcategory"
       ></select2-component>
       <span class="invalid-feedback" v-if="validation('subcategory')" role="alert">{{ validationErrors.subcategory[0] }}</span>
     </div>
@@ -56,7 +76,7 @@
 
        <select v-model="reasonNotSale" v-if="!checkSale" class="form-control" v-bind:class="{'is-invalid':validation('sales')}">
               <option value="" disabled selected>Select Reason Not Sale</option>
-              <option v-for="reason in reasonNotSaleList" :key="reason.id" v-bind:value="reason.id">{{reason.text}}</option>
+              <option v-for="reason in reasonsNotSale" :key="reason.id" v-bind:value="reason.id">{{reason.text}}</option>
         </select>
 
       <div class="col-sm-12 pl-0" v-if="checkSale" v-bind:class="{'is-invalid':validation('sales')}">        
@@ -88,7 +108,7 @@
                 <td>
                   <select v-model="plan" ref="plan"  class="form-control form-control-sm">
                     <option value="" disabled >Select Plan</option>
-                    <option v-for="plan in plansList" :key="plan.id" v-bind:value="plan.id">{{plan.text}}</option>
+                    <option v-for="plan in plans" :key="plan" v-bind:value="plan">{{plan}}</option>
                   </select>
                 </td>
                 <td>
@@ -125,20 +145,42 @@
 
 <script>
 export default {
-  props: ["allcategories", "categories", "notpitchandsales", "plans"],
+  props: ["allcategories", "notpitchandsales", "plans"],
 
   data() {
     return {
       site_id: null,
+      lob:null,
       category: null,
       subcategory: null,
+      categories:[],
       subcategories: [],
+      lobs:[],
+      objLob:{
+        "Service":{
+          "categories":{},
+          "reasonsNot":{
+            "Pitch":[],
+            "Sale":[],
+          }
+        },
+        "Billing":{
+          "categories":{},
+          "reasonsNot":{
+            "Pitch":[],
+            "Sale":[],
+          }
+        },
+      },
       pitch: null,
       checkPitch: false,
       pitchMultiple: false,
       pitchList: [],
-      plansList:[],
+      reasonsNotPitch:[],
+      checkServiceCall: false,
       checkSale: false,
+      reasonNotSale: "",
+      reasonsNotSale:[],
       contract_id: null,
       upgrade:false,
       rwh:false,
@@ -148,42 +190,35 @@ export default {
       sales:[],
       validationErrors:[],
       otherError: null,
-      notpitch: Array(),
-      notSaleBilling: [],
-      notSaleService: [],
-      reasonNotSale: "",
-      reasonNotSaleList:[]
     };
   },
   methods: {
-    getCategory(e) {
-      if (e !== null && e !== "") {
-        this.category = e;
-        this.loadSubcategories();
-        if(this.category == 'Billing'){
-          this.reasonNotSaleList = this.notSaleBilling
-        }else{
-          this.reasonNotSaleList = this.notSaleService
-        }
-        this.reasonNotSale = "";
+    changeLob() {
+      if(this.lob){
+        this.checkServiceCall = false;
+        this.loadCategories();
+
+        this.reasonsNotSale = this.objLob[this.lob].reasonsNot.Sale;
+        this.reasonsNotPitch = this.objLob[this.lob].reasonsNot.Pitch;
+        this.loadPitch();
       }
     },
-    loadSubcategories() {
-      this.subcategory = null;
-      this.subcategories = [];
-
-      Object.entries(this.allcategories).forEach(([key, value]) => {
-        if (this.category == value) {
-          this.subcategories.push({
-            id: key,
-            text: key
-          });
-        }
+    loadCategories(){
+      this.category = null;
+      this.categories = [];
+      this.categories =Object.keys(this.objLob[this.lob].categories).filter(category=>{
+        return this.objLob[this.lob].categories[category].subcategories.filter(subcategory => { return (subcategory.service_call && this.checkServiceCall) || (!subcategory.service_call && !this.checkServiceCall) }).length > 0;
       });
     },
-    getSubcategory(e) {
-      if (e !== null && e !== "") {
-        this.subcategory = e;
+    changeCategory() {
+      this.subcategory = null;
+      this.subcategories = [];
+      if(this.lob && this.category){
+        Object.entries(this.objLob[this.lob].categories[this.category].subcategories).forEach(([key,subcategory])=>{
+          if((subcategory.service_call && this.checkServiceCall) || (!subcategory.service_call && !this.checkServiceCall)){
+              this.subcategories.push(subcategory.subcategory);
+          }
+        });
       }
     },
     loadPitch() {
@@ -191,11 +226,11 @@ export default {
       this.pitchList = [];
       if (!this.checkPitch) {
         this.pitchMultiple = false;
-        this.pitchList = this.notpitch; 
+        this.pitchList = this.reasonsNotPitch; 
       } else {
         this.reasonNotSale = "";
         this.pitchMultiple = true;
-        this.pitchList = this.plansList;
+        this.pitchList = this.plans;
       }
     },
     getPitch(e) {
@@ -231,6 +266,8 @@ export default {
       this.otherError = null
       var data = {
           site_id: this.site_id,
+          lob: this.lob,
+          service_call: this.checkServiceCall,
           category: this.category,
           subcategory: this.subcategory,
           checkPitch:this.checkPitch,
@@ -264,29 +301,61 @@ export default {
     }
 
   },
+
+  watch:{
+    checkServiceCall: function(){
+      this.loadCategories();
+    }
+  },
   created() {
-    this.notpitchandsales.forEach(element => {
-      switch (element.type) {
-        case 'NotPitch':
-          this.notpitch.push({id: element.name,text: element.name})
-          break;
-        case 'NotSaleBilling':
-          this.notSaleBilling.push({id: element.name,text: element.name})
-          break;
-        case 'NotSaleService':
-          this.notSaleService.push({id: element.name,text: element.name})
-          break;      
-        default:
-          break;
+
+    this.allcategories.forEach(category=>{
+      if(!this.objLob[category.lob].categories[category.category]){
+        this.objLob[category.lob].categories[category.category]  = {service_call:0,subcategories:[]};
       }
-    });
-    this.loadPitch();
-    this.plans.forEach(element => {
-      this.plansList.push({
-        id: element.name,
-        text: element.name
-      });    
+      if(this.objLob[category.lob].categories[category.category].service_call ===0 && (category.service_call ==="1" )){
+        this.objLob[category.lob].categories[category.category].service_call = 1;
+      }
+      if(category.service_call === null)this.objLob[category.lob].categories[category.category].service_call = 0;
+
+      this.objLob[category.lob].categories[category.category].subcategories.push({
+          subcategory: category.subcategory,
+          service_call: (category.service_call == null ? null : parseInt(category.service_call)),
+      });
     })
+    this.notpitchandsales.forEach(reason=>{
+      this.objLob[reason.lob].reasonsNot[reason.type].push({
+        id:reason.name,
+        text:reason.name,
+      });
+    });
+
+    this.lobs =Object.keys(this.objLob);
+
+
+
+    // this.notpitchandsales.forEach(element => {
+    //   switch (element.type) {
+    //     case 'NotPitch':
+    //       this.notpitch.push({id: element.name,text: element.name})
+    //       break;
+    //     case 'NotSaleBilling':
+    //       this.notSaleBilling.push({id: element.name,text: element.name})
+    //       break;
+    //     case 'NotSaleService':
+    //       this.notSaleService.push({id: element.name,text: element.name})
+    //       break;      
+    //     default:
+    //       break;
+    //   }
+    // });
+    // this.loadPitch();
+    // this.plans.forEach(element => {
+    //   .push({
+    //     id: element.name,
+    //     text: element.name
+    //   });    
+    // })
   
   }
 };
