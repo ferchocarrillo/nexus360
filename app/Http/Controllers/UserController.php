@@ -27,15 +27,10 @@ class UserController extends Controller
         $this->middleware('can:users.upload')->only(['upload','uploadStore']);
     }
 
-
-    public function upload(){
-        return view('users.upload');
-    }
-
     public function uploadStore(Request $request){
         Excel::import(new UsersImport, request()->file('uploadUsers'));
 
-        return redirect()->route('users.upload')
+        return redirect()->route('users')
         ->with('info', 'Users upload successfully');
     }
 
@@ -45,13 +40,16 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::get();
-
-        // dd(User::get()->toArray());
-
-        return view('users.index', compact('users'));
+        if($request->ajax()){
+            $arr = [];
+            $arr["data"] = User::with(['roles','masterfile2'=>function($query){
+                $query->orderBy('joining_date','DESC');
+            }])->get();
+            return $arr;
+        }
+        return view('users.index');
     }
 
     /**
