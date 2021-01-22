@@ -90,6 +90,10 @@
                     <td>${(row.masterfile2.length ? row.masterfile2[0].supervisor : '')}</td>
                 </tr>
                 <tr>
+                    <td>Position:</td>
+                    <td>${(row.masterfile2.length ? row.masterfile2[0].position : '')}</td>
+                </tr>
+                <tr>
                     <td>Campaign:</td>
                     <td>${(row.masterfile2.length ? row.masterfile2[0].campaign : '')}</td>
                 </tr>
