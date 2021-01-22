@@ -122,6 +122,15 @@ class EnercareCalltrackerCategoriesTableSeeder extends Seeder
         EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Warning Tags", "subcategory" => "Copy of warning tag", "service_call" => 0, "active" => 1 ]);
         EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Warning Tags", "subcategory" => "Tag on equipment other than heat exchanger", "service_call" => 1, "active" => 1 ]);
         EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Warning Tags", "subcategory" => "Tag on heat exchanger", "service_call" => 1, "active" => 1 ]);
+        
+        EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Water Heater", "subcategory" => "No Hot Water", "service_call" => 1, "active" => 1 ]);
+        EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Water Heater", "subcategory" => "Insufficient Hot Water", "service_call" => 1, "active" => 1 ]);
+        EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Water Heater", "subcategory" => "Noisy", "service_call" => 1, "active" => 1 ]);
+        EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Water Heater", "subcategory" => "Dirty Water", "service_call" => 1, "active" => 1 ]);
+        EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Water Heater", "subcategory" => "Pilot Out", "service_call" => 1, "active" => 1 ]);
+        EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Water Heater", "subcategory" => "Water Odour", "service_call" => 1, "active" => 1 ]);
+        EnercareCalltrackerCategory::create(["lob" => "Service", "category" => "Water Heater", "subcategory" => "Other", "service_call" => 1, "active" => 1 ]);
+        
         EnercareCalltrackerCategory::create(["lob" => "Billing", "category" => "Protection Plan Billing", "subcategory" => "Contracts Corrections and Billing Frequency Changes", "service_call" => null, "active" => 1 ]);
         EnercareCalltrackerCategory::create(["lob" => "Billing", "category" => "Protection Plan Billing", "subcategory" => "Multiple charges for the same product/duplicate coverage", "service_call" => null, "active" => 1 ]);
         EnercareCalltrackerCategory::create(["lob" => "Billing", "category" => "Protection Plan Billing", "subcategory" => "Account Settlement Charges and Back Billing", "service_call" => null, "active" => 1 ]);
