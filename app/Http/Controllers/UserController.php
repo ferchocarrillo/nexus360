@@ -28,6 +28,18 @@ class UserController extends Controller
     }
 
     public function uploadStore(Request $request){
+        $users = Excel::toArray(new UsersImport,request()->file('uploadUsers'));
+
+
+
+
+        dd($users);
+
+        return redirect()->route('users')
+        ->with('info', 'Users upload successfully');
+    }
+
+    public function upload(Request $request){
         Excel::import(new UsersImport, request()->file('uploadUsers'));
 
         return redirect()->route('users')
