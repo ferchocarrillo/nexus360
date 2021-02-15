@@ -24,7 +24,7 @@
 @can('users.upload')
 <div class="card bg-transparent shadow-none">
     <div class="card-body">
-        <form action="{{ route('users.uploadStore') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('users.upload') }}" method="post" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group row mb-0">
                 <div class="custom-file col-sm-10">
@@ -37,12 +37,21 @@
                 </div>
             </div>
         </form>
-        @if ($errors->any())
-        <hr>
+        @if(session('validation'))
+            <hr>
             <ul class="list-group list-group-flush">
-                @foreach ($errors->all() as $error)
-                    <li class="list-group-item bg-danger">{!! $error !!}</li>
-                @endforeach
+            @foreach(session('validation') as $validation)
+                <li class="list-group-item list-group-item-danger">
+                    <div class="row">
+                    <div class="col-1"><strong>{{$validation['national_id']}}</strong></div>
+                    <div class="col">
+                        @foreach($validation['validation'] as $error)
+                            <span class="badge badge-danger">{{$error}}</span>
+                        @endforeach
+                    </div>
+                </div>
+                </li>
+            @endforeach
             </ul>
         @endif
     </div>

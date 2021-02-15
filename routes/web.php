@@ -84,8 +84,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('serviceexperts/createdirectory','ServiceExpertsController@createDirectory')->name('serviceexperts.filescreatedirectory')->middleware('can:serviceexperts.filescreatedirectory');
 
     // --------------- Resources --------------- //
-    // Route::get('users/upload','UserController@upload')->name('users.upload');
-    Route::post('users/upload','UserController@uploadStore')->name('users.uploadStore');
+    Route::post('users/upload','UserController@upload')->name('users.upload');
+    Route::post('users/uploadstore','UserController@uploadStore')->name('users.uploadStore');
+    Route::get('users/upload/downloadusers','UserController@downloadUsersCreated')->name('users.downloadUsersCreated');
     Route::resource('roles', 'RoleController'); //Roles
     Route::resource('users', 'UserController'); //Users
     

@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersCreateExport;
 use App\User;
 use Caffeinated\Shinobi\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Imports\UsersImport;
-
+use App\MasterFile;
 use Maatwebsite\Excel\Facades\Excel;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Validators\Failure;
 
 class UserController extends Controller
 {
@@ -24,26 +28,98 @@ class UserController extends Controller
         $this->middleware('can:users.edit')->only(['update','edit']);
         $this->middleware('can:users.show')->only('show');
         $this->middleware('can:users.destroy')->only('destroy');
-        $this->middleware('can:users.upload')->only(['upload','uploadStore']);
-    }
-
-    public function uploadStore(Request $request){
-        $users = Excel::toArray(new UsersImport,request()->file('uploadUsers'));
-
-
-
-
-        dd($users);
-
-        return redirect()->route('users')
-        ->with('info', 'Users upload successfully');
+        $this->middleware('can:users.upload')->only(['upload','uploadStore','downloadUsersCreated']);
     }
 
     public function upload(Request $request){
-        Excel::import(new UsersImport, request()->file('uploadUsers'));
+               
+        try {
+            $import = new UsersImport();
+            $temp = Excel::import($import,request()->file('uploadUsers'));            
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+        
+        $users = $import->array;
 
-        return redirect()->route('users')
-        ->with('info', 'Users upload successfully');
+        $rules = [
+            'national_id' => ['required','unique:users','exists:master_files,national_id'],
+            'email' => ['required', 'string', 'email', 'max:255','regex:/(\W|^)[\w.\-]{2,25}@(ncri|contactpoint360|cp-360)\.com(\W|$)/' , 'unique:users'],
+            'username' => ['required', 'string', 'max:50','regex:/^[a-z ñ]{2,20}\.[a-zñ0-9]{2,20}$/i','unique:users'],
+        ];
+
+        $customMessages=[
+            'email.unique'=>'The email ":input" has already been taken.',
+            'email.regex'=>'The email ":input" format is invalid.',
+            'email.email'=>'The email ":input" must be a valid email address.',
+            'username.unique'=>'The username ":input" has already been taken.',
+            'username.regex'=>'The username ":input" format is invalid.',
+        ];
+
+        $data = [];
+        $validations = [];
+        foreach($users as $user){
+            $user['national_id'] = strval($user['national_id']);
+            $user['email'] = strtolower($user['email']);
+            $user['username'] = (isset($user['username']) && $user['username'] != null ? $user['username'] : substr($user['email'],0,strpos($user['email'],"@")));
+            $user['role'] = (isset($user['role']) && $user['role'] != null ? intval($user['role']) : null);
+            $validation = Validator::make($user,$rules,$customMessages)->errors()->all();
+
+
+            $masterfile = MasterFile::where('national_id',$user['national_id'])
+            ->select('full_name','campaign','position','status')
+            ->orderBy('joining_date','DESC')
+            ->get();
+
+            $masterfile = ($masterfile->isEmpty() ? null : $masterfile->first());
+
+            $user['masterfile'] = $masterfile;
+            if($masterfile && $masterfile->status == 'Inactive'){
+                array_push($validation,'Employee is not active.');
+            }
+            if(count($validation)>0){
+                $validations[] = [
+                    'national_id'=>$user['national_id'],
+                    'validation'=>$validation
+                ];
+            }
+            $data[]=$user;
+        }
+
+        if($validations){return back()->with('validation', $validations);}
+
+        $roles = Role::where('slug','!=','admin')->select('id','name')->get();
+
+        return view('users.update',compact('data','roles'));
+    }
+
+    public function uploadStore(Request $request){
+        $usersExport = [];
+        foreach($request->all() as $user){
+            $user = new Request($user);
+            $user->merge([
+                'name' => $user->fullname,
+                'password' => Hash::make($user->username.'**'),
+                ]);
+            $usersExport[] = [
+                'national_id'=>$user->national_id,
+                'name'=>$user->name,
+                'email'=>$user->email,
+                'username'=>$user->username,
+                'password'=>$user->username.'**',
+            ];
+                
+            $userCreate = User::create($user->only(['username','name','national_id','email','password']));
+            $userCreate->roles()->sync([$user->role]);
+        }
+
+        Excel::store(new UsersCreateExport($usersExport), 'storage/users/userscreated.xlsx');
+
+        return 'OK';
+    }
+
+    public function downloadUsersCreated(){
+        return Storage::download('/storage/users/userscreated.xlsx');
     }
 
 
