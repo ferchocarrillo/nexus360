@@ -45,7 +45,7 @@ class UserController extends Controller
         $rules = [
             'national_id' => ['required','unique:users','exists:master_files,national_id'],
             'email' => ['required', 'string', 'email', 'max:255','regex:/(\W|^)[\w.\-]{2,25}@(ncri|contactpoint360|cp-360)\.com(\W|$)/' , 'unique:users'],
-            'username' => ['required', 'string', 'max:50','regex:/^[a-z ñ]{2,20}\.[a-zñ0-9]{2,20}$/i','unique:users'],
+            'username' => ['required', 'string', 'max:50','regex:/^[a-z ñ]{2,20}\.[a-zñ0-9\-]{2,20}$/i','unique:users'],
         ];
 
         $customMessages=[
