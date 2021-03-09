@@ -1,0 +1,40 @@
+{
+	// Place your Nexus360 workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+
+	"EnercareCategories":{
+		"scope": "php",
+		"prefix": "ecate",
+		"body":[
+			"EnercareCalltrackerCategory::firstOrCreate([\"lob\" => \"$1\", \"category\" => \"$2\", \"subcategory\" => \"$3\", \"service_call\" => ${4:null}, \"active\" => ${5:1} ]);\n",
+		]
+	},
+	"Enercare Reasons Not Pitch":{
+		"scope": "php",
+		"prefix": "ernotPitch",
+		"body": [
+			"EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate([\"lob\" => \"OBA\", \"type\" => \"Pitch\", \"name\" => \"$CLIPBOARD\", \"active\" => 1 ]);\n"
+		]
+	},
+	"Enercare Reasons Not Sale":{
+		"scope": "php",
+		"prefix": "ernotSale",
+		"body": [
+			"EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate([\"lob\" => \"OBA\", \"type\" => \"Sale\", \"name\" => \"$CLIPBOARD\", \"active\" => 1 ]);\n"
+		]
+	}
+}

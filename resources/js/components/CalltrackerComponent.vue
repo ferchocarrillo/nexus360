@@ -157,20 +157,27 @@ export default {
       subcategories: [],
       lobs:[],
       objLob:{
-        "Service":{
-          "categories":{},
-          "reasonsNot":{
-            "Pitch":[],
-            "Sale":[],
-          }
-        },
-        "Billing":{
-          "categories":{},
-          "reasonsNot":{
-            "Pitch":[],
-            "Sale":[],
-          }
-        },
+        // "Service":{
+        //   "categories":{},
+        //   "reasonsNot":{
+        //     "Pitch":[],
+        //     "Sale":[],
+        //   }
+        // },
+        // "Billing":{
+        //   "categories":{},
+        //   "reasonsNot":{
+        //     "Pitch":[],
+        //     "Sale":[],
+        //   }
+        // },
+        // "OBA":{
+        //   "categories":{},
+        //   "reasonsNot":{
+        //     "Pitch":[],
+        //     "Sale":[],
+        //   }
+        // },
       },
       pitch: null,
       checkPitch: false,
@@ -310,6 +317,15 @@ export default {
   created() {
 
     this.allcategories.forEach(category=>{
+      if(!(category.lob in this.objLob)){
+        this.objLob[category.lob] = {
+            "categories":{},
+            "reasonsNot":{
+              "Pitch":[],
+              "Sale":[],
+            }
+        }
+      }
       if(!this.objLob[category.lob].categories[category.category]){
         this.objLob[category.lob].categories[category.category]  = {service_call:0,subcategories:[]};
       }

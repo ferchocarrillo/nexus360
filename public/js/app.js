@@ -2216,21 +2216,27 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       categories: [],
       subcategories: [],
       lobs: [],
-      objLob: {
-        "Service": {
-          "categories": {},
-          "reasonsNot": {
-            "Pitch": [],
-            "Sale": []
-          }
-        },
-        "Billing": {
-          "categories": {},
-          "reasonsNot": {
-            "Pitch": [],
-            "Sale": []
-          }
-        }
+      objLob: {// "Service":{
+        //   "categories":{},
+        //   "reasonsNot":{
+        //     "Pitch":[],
+        //     "Sale":[],
+        //   }
+        // },
+        // "Billing":{
+        //   "categories":{},
+        //   "reasonsNot":{
+        //     "Pitch":[],
+        //     "Sale":[],
+        //   }
+        // },
+        // "OBA":{
+        //   "categories":{},
+        //   "reasonsNot":{
+        //     "Pitch":[],
+        //     "Sale":[],
+        //   }
+        // },
       },
       pitch: null,
       checkPitch: false,
@@ -2379,6 +2385,16 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     var _this4 = this;
 
     this.allcategories.forEach(function (category) {
+      if (!(category.lob in _this4.objLob)) {
+        _this4.objLob[category.lob] = {
+          "categories": {},
+          "reasonsNot": {
+            "Pitch": [],
+            "Sale": []
+          }
+        };
+      }
+
       if (!_this4.objLob[category.lob].categories[category.category]) {
         _this4.objLob[category.lob].categories[category.category] = {
           service_call: 0,
