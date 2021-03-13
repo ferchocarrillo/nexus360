@@ -189,6 +189,22 @@ class EnercareCalltrackerCategoriesTableSeeder extends Seeder
         EnercareCalltrackerCategory::firstOrCreate(["lob" => "OBA", "category" => "Wrong transfer", "subcategory" => "NO OBA dispute case in the account", "service_call" => null, "active" => 1 ]);
         EnercareCalltrackerCategory::firstOrCreate(["lob" => "OBA", "category" => "Wrong transfer", "subcategory" => "OBA dispute closed", "service_call" => null, "active" => 1 ]);
         
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Billing Adjustment", "subcategory" => "Sharing Adj Status", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Billing Adjustment", "subcategory" => "Update of Case Status", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Callback", "subcategory" => "Confirmation Of rental Owner", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Move", "subcategory" => "Move incentive credit", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Move", "subcategory" => "Rebuttal of Plans Cancellation", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Move", "subcategory" => "CX to CX Move", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Move", "subcategory" => "LL/TT Move", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "HVAC Downgrade", "subcategory" => "Plan Downgrade", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "HVAC Downgrade", "subcategory" => "Purchase of New Equipement", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "HVAC Rental", "subcategory" => "Customer Rented New Equipement", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Contact Us Promo", "subcategory" => "Bundle Offer", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Contact Us Promo", "subcategory" => "Upgrade Offer", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Request Inquiry", "subcategory" => "Bundle Offer", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Request Inquiry", "subcategory" => "Upgrade Offer", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "Cx Care Misreps", "subcategory" => "Update of Case Status", "service_call" => null, "active" => 1 ]);
+        EnercareCalltrackerCategory::firstOrCreate(["lob" => "Offline", "category" => "TGS Appliances", "subcategory" => "Update of Case Status", "service_call" => null, "active" => 1 ]);
 
     }
 }

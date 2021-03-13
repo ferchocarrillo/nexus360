@@ -59,5 +59,23 @@ class EnercareCallTrackerNotPitchAndSalesTableSeeder extends Seeder
         EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "OBA", "type" => "Sale", "name" => "Poor experience with Enercare", "active" => 1 ]);
         EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "OBA", "type" => "Sale", "name" => "Customer hungs up", "active" => 1 ]);
         
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Upset Customer", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Not Decision Maker", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Misroute", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Customer Wants to Cancel", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Not eligible for coverage (moving to condo or out of the country)", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Commercial Customer", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Customer rejected offer", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Poor experience with Enercare", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Customer Hungs Up", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Customer not Interested", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Pitch", "name" => "Lack Of Trust", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Sale", "name" => "Customer is not interested", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Sale", "name" => "Poor experience with Enercare", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Sale", "name" => "Unresolved Escalations", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Sale", "name" => "Customer rejected offer", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Sale", "name" => "Lack Of Trust", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Sale", "name" => "Customer cannot afford it", "active" => 1 ]);
+        EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate(["lob" => "Offline", "type" => "Sale", "name" => "Customer hung up", "active" => 1 ]);
     }
 }

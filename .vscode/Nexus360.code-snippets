@@ -27,14 +27,14 @@
 		"scope": "php",
 		"prefix": "ernotPitch",
 		"body": [
-			"EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate([\"lob\" => \"OBA\", \"type\" => \"Pitch\", \"name\" => \"$CLIPBOARD\", \"active\" => 1 ]);\n"
+			"EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate([\"lob\" => \"Offline\", \"type\" => \"Pitch\", \"name\" => \"$CLIPBOARD\", \"active\" => 1 ]);\n"
 		]
 	},
 	"Enercare Reasons Not Sale":{
 		"scope": "php",
 		"prefix": "ernotSale",
 		"body": [
-			"EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate([\"lob\" => \"OBA\", \"type\" => \"Sale\", \"name\" => \"$CLIPBOARD\", \"active\" => 1 ]);\n"
+			"EnercareCalltrackerReasonsNotPitchAndSales::firstOrCreate([\"lob\" => \"Offline\", \"type\" => \"Sale\", \"name\" => \"$CLIPBOARD\", \"active\" => 1 ]);\n"
 		]
 	}
 }
