@@ -79,8 +79,36 @@ class User extends Authenticatable
         $nationalids = array_merge($nationalids, array_column($employess,'national_id5'));
         array_push($nationalids,$this->national_id);
         
+
+        $campaigns = DB::table('master_files')
+            ->select('campaign')
+            ->whereNull('termination_date')
+            ->whereNotIn('campaign',['Administrative','Aprendiz Sena'])
+            ->groupBy('campaign')
+            ->get()
+            ->pluck('campaign') ;
+        
+        $permissionCampaign = [];
+        foreach ($campaigns as $key => $campaign) {
+            $permission = 'agentactivity.campaign.'.mb_strtolower(str_replace(' ','_',$campaign),'UTF-8');
+            if($this->hasPermissionTo($permission)){
+                $permissionCampaign[]=$campaign;
+            }            
+        }
+
+        $national_ids = DB::table('master_files')->select('national_id')
+        ->whereIn('campaign',$permissionCampaign)
+        ->whereNull('termination_date')
+        ->get()
+        ->toArray();
+
+
+
+        $nationalids = array_merge($nationalids,array_column($national_ids,'national_id'));
         $nationalids = array_unique($nationalids);
         $nationalids = array_filter($nationalids);
+
+        
 
         $users = User::whereIn('national_id',$nationalids);
 
