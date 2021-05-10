@@ -49,8 +49,8 @@ class KaizenController extends Controller
         Mail::raw(json_encode($mail),function($message) use($mail){
             $message->to("reporting.bogota@cp-360.com")
             ->subject("Kaizen Email");
-            if($mail->cc) $message->cc($mail->cc);
-            if($mail->bcc) $message->bcc($this->getKaizenBCC());
+            if(isset($mail->cc)) $message->cc($mail->cc);
+            if(isset($mail->bcc)) $message->bcc($this->getKaizenBCC());
         });
     }
 
