@@ -32,7 +32,7 @@ class KaizenController extends Controller
         $this->middleware('can:kaizen')->only('show','comment','downloadfile');
         $this->middleware('can:kaizen.admin')->only('destroy');
 
-        dd( $this->getKaizenBCC());
+        // dd( $this->getKaizenBCC());
     }
 
     private function defineVars(){
