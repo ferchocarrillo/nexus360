@@ -46,11 +46,10 @@ class KaizenController extends Controller
     }
 
     private function sendMail($mail){
+        $mail->bcc = $this->getKaizenBCC();
         Mail::raw(json_encode($mail),function($message) use($mail){
             $message->to("reporting.bogota@cp-360.com")
             ->subject("Kaizen Email");
-            if(isset($mail->cc)) $message->cc($mail->cc);
-            if(isset($mail->bcc)) $message->bcc($this->getKaizenBCC());
         });
     }
 
@@ -169,7 +168,7 @@ class KaizenController extends Controller
 
             if($msj != null){
                 $comment = $kaizen->comments()->create([
-                    'comment'=>str_replace("\n","<br>",$msj),
+                    'comment'=>$msj,
                     'status'=>$kaizen->status,
                     'created_by'=>Auth::user()->id,
                 ]);
@@ -179,6 +178,7 @@ class KaizenController extends Controller
                 $mail->body = view('kaizen.mails.comment',compact(['kaizen','comment']))->render();
                 $mail->subject=($comment->status == 'Closed'?"Kaizen Resolved":"Kaizen New comment")." - [#".$kaizen->id."] ".$kaizen->title;        
                 $mail->to=$kaizen->required->email;
+                if($kaizen->assigned_to) $mail->cc = $kaizen->assigned->email;
                 $this->sendMail($mail);
             }
 
@@ -248,6 +248,7 @@ class KaizenController extends Controller
         $mail->body = view('kaizen.mails.comment',compact(['kaizen','comment']))->render();
         $mail->subject=($comment->status == 'Closed'?"Kaizen Resolved":"Kaizen New comment")." - [#".$kaizen->id."] ".$kaizen->title;        
         $mail->to=$kaizen->required->email;
+        if($kaizen->assigned_to) $mail->cc = $kaizen->assigned->email;
         $this->sendMail($mail);
         
         return $comment;
