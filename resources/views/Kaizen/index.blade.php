@@ -48,7 +48,7 @@
                 <td data-title="{{$kaizen->title}}" data-id="{{$kaizen->id}}">{{$kaizen->title}}</td>
                 <td data-status="{{$kaizen->status}}">{{$kaizen->status}}</td>
                 <td data-created_by="{{$kaizen->created_by}}">{{$kaizen->required['name']}}</td>
-                <td data-assigned_to="{{$kaizen->assigned_to}}">{{$kaizen->assigned['name']}}</td>
+                <td data-assigned_to="{{$kaizen->assigned_to}}">{{(isset($kaizen->assigned['name'])?$kaizen->assigned['name']:'')}}</td>
                 <td data-deadline="{{$kaizen->deadline}}">{{$kaizen->deadline}}</td>
                 {{-- <td></td> --}}
                 <td>
