@@ -195,5 +195,30 @@ class PermissionsTableSeeder extends Seeder
             'description'   => 'Service Experts Delete Files'
         ]);
 
+        Permission::firstOrCreate([
+            'name'          => 'Kaizen',
+            'slug'          => 'kaizen',
+            'description'   => 'Kaizen'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Kaizen Admin',
+            'slug'          => 'kaizen.admin',
+            'description'   => 'Kaizen Admin'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Kaizen Team',
+            'slug'          => 'kaizen.team',
+            'description'   => 'Kaizen Team'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Kaizen Email',
+            'slug'          => 'kaizen.email',
+            'description'   => 'Kaizen Team'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Kaizen Operations',
+            'slug'          => 'kaizen.operations',
+            'description'   => 'Kaizen Operations'
+        ]);
     }
 }

@@ -95,6 +95,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('management/uploadmasterfile','ManagementController@uploadMasterfilePost')->name('management.uploadMasterfilePost')->middleware('can:masterfile.upload');
 
 
+    Route::post('kaizen/assign','KaizenController@assign')->name('kaizen.assign');
+    Route::post('kaizen/comment','KaizenController@comment')->name('kaizen.comment');
+    Route::get('kaizen/{id}/downloadfile','KaizenController@downloadfile')->name('kaizen.downloadfile');
+    Route::resource('kaizen','KaizenController');
+
+
+
 });
 
 Auth::routes(['register' => false]);

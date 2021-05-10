@@ -303,6 +303,13 @@ return [
                 ]
             ]
         ],
+        [
+            'text'=>'Kaizen',
+            'icon'=>'nav-icon fab fa-kaggle',
+            'url'=>'kaizen',
+            'can'=>'kaizen'
+
+        ],
         
         [
             'text' => 'MANAGEMENT',

@@ -1,0 +1,7 @@
+.kaizen{
+    font-family: 'Ma Shan Zheng', cursive;
+    /* font-size:  2.5rem !important; */
+}
+.content>.container-fluid>hr{
+    display: none;
+}
