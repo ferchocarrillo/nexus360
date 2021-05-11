@@ -77,19 +77,29 @@ class KaizenController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {        
-        
-
-        if(Auth::user()->hasPermissionTo('kaizen.admin')){
-            $kaizens = Kaizen::with('assigned','required')->get();
-        }else{
-            $kaizens = Kaizen::with('assigned','required')->where('assigned_to',Auth::user()->id)
-            ->orWhere('required_by',Auth::user()->id)
-            ->get();
+    public function index(Request $request)
+    {     
+        if($request->ajax()){
+            $arr = [];
+            if(Auth::user()->hasPermissionTo('kaizen.admin')){
+                $kaizens = Kaizen::with('assigned','required');
+            }else{
+                $kaizens = Kaizen::with('assigned','required')->where('assigned_to',Auth::user()->id)
+                ->orWhere('required_by',Auth::user()->id);
+            } 
+            if($request->status){
+                if($request->status=='Open'){
+                    $kaizens = $kaizens->where('status','<>','Closed');
+                }else{
+                    $kaizens = $kaizens->where('status','Closed');
+                }
+                
+            }
+            $arr["data"] = $kaizens->get();
+            return $arr;
         }
-
-        return view('Kaizen.index',compact(['kaizens']));
+        
+        return view('Kaizen.index');
     }
 
     /**
