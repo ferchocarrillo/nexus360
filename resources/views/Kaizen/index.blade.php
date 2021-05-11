@@ -46,24 +46,6 @@
                     <th width="35px"></th>
                 </tr>
             </thead>
-            {{-- <tbody>
-                @foreach ($kaizens as $kaizen)
-                    <tr>
-                        <td><b>#{{$kaizen->id}}</b>  {{$kaizen->title}}</td>
-                        <td>{{$kaizen->status}}</td>
-                        <td>{{$kaizen->required['name']}}</td>
-                        <td>{{(isset($kaizen->assigned['name'])?$kaizen->assigned['name']:'')}}</td>
-                        <td>{{$kaizen->deadline}}</td>
-                        <td>
-                            <div class="btn-group">
-                                <a href="/kaizen/{{$kaizen->id}}" class="btn btn-sm btn-secondary"><i class="far fa-eye"></i></a>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-        
-            </tbody> --}}
-            
         </table>
     </div>
 </div>
@@ -82,7 +64,8 @@
                 {"data":"title",
                     "render":(data, type, row)=>{
                         return `<b>#${row.id}</b>   ${data}`
-                    }
+                    },
+                    "orderData":6
                 },
                 {"data":"status"},
                 {"data":"required.name"},
@@ -99,8 +82,8 @@
                     "render":(data, type, row)=>{    
                         return `<a href="/kaizen/${row.id}" class="btn btn-sm btn-secondary"><i class="far fa-eye"></i></a>`
                     }
-                }
-
+                },
+                {"data":"id", visible:false},
             ],
             "dom": '<"top float-right"f>rt<"bottom"i>',
             "paging": false,
