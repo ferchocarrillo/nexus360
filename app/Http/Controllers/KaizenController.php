@@ -172,7 +172,7 @@ class KaizenController extends Controller
             if($assigned_to != $request->assigned_to){
                 $msj .= 'Kaizen assigned to '.$kaizen->assigned->name."\n";
             }
-            if($deadline != '' && $deadline!=$request->deadline){
+            if($deadline!=$request->deadline){
                 $msj .= 'Deadline changed to '.$kaizen->deadline."\n";
             }
 
@@ -249,11 +249,12 @@ class KaizenController extends Controller
         $kaizen->save();
 
         $comment = $kaizen->comments()->create([
-            'comment'=>str_replace("\n","<br>",$request->comment),
+            'comment'=>$request->comment,
             'status'=>$request->status,
             'created_by'=>Auth::user()->id,
         ]);
 
+        $comment->comment = str_replace("\n","<br>",$comment->comment);
         $mail= new stdClass;
         $mail->body = view('kaizen.mails.comment',compact(['kaizen','comment']))->render();
         $mail->subject=($comment->status == 'Closed'?"Kaizen Resolved":"Kaizen New comment")." - [#".$kaizen->id."] ".$kaizen->title;        
