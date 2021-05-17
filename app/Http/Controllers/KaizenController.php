@@ -183,7 +183,7 @@ class KaizenController extends Controller
                     'created_by'=>Auth::user()->id,
                 ]);
 
-
+                $comment->comment = str_replace("\n","<br>",$comment->comment);
                 $mail= new stdClass;
                 $mail->body = view('kaizen.mails.comment',compact(['kaizen','comment']))->render();
                 $mail->subject=($comment->status == 'Closed'?"Kaizen Resolved":"Kaizen New comment")." - [#".$kaizen->id."] ".$kaizen->title;        
