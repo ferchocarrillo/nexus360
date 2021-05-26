@@ -339,6 +339,7 @@ class EnercareController extends Controller
 
     public function uploadAgentPerformancePost(Request $request)
     {
+        set_time_limit(300);
         $request->validate([
             'AgentPerformance' => 'required'
         ]);
