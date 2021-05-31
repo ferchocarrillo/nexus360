@@ -63,6 +63,7 @@
 @if(Auth::user())
 <script>
 var my_userID = "{{ Auth::user()->id }}";
+window.userId = "{{ Auth::user()->id }}";
 
 $('.alertinfo').delay(3000).slideUp(300);
 </script>
