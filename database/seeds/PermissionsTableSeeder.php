@@ -220,5 +220,11 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => 'kaizen.operations',
             'description'   => 'Kaizen Operations'
         ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Reminders',
+            'slug'          => 'reminders',
+            'description'   => 'Create Reminders'
+        ]);
     }
 }
