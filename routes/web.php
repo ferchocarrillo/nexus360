@@ -100,7 +100,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('kaizen/{id}/downloadfile','KaizenController@downloadfile')->name('kaizen.downloadfile');
     Route::resource('kaizen','KaizenController');
 
-
+    Route::get('reminders','ReminderController@index')->name('reminder.index');
+    Route::get('reminders/popup','ReminderController@popup')->name('reminder.popup');
 
 });
 

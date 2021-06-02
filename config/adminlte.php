@@ -304,6 +304,13 @@ return [
             ]
         ],
         [
+            'text'=>'Reminders',
+            'icon'=>'nav-icon fas fa-bell',
+            'url'=>'reminders',
+            'can'=>'reminders'
+
+        ],
+        [
             'text'=>'Kaizen',
             'icon'=>'nav-icon fab fa-kaggle',
             'url'=>'kaizen',

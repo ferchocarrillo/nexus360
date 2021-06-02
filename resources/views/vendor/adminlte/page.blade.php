@@ -223,7 +223,7 @@
                     </div>
 
 
-
+                    <iframe style="display: none;" src="{{'http://'. request()->getHost().':3000/popups'}}" frameborder="0" id="ifm_reminder"></iframe>
                     @yield('content')
                 </div>
             </div>
@@ -252,4 +252,59 @@
 @section('adminlte_js')
     @stack('js')
     @yield('js')
+    <script>
+        const popupCenter = ({url, w, h}) => {
+            const dualScreenLeft = window.screenLeft !==  undefined ? window.screenLeft : window.screenX;
+            const dualScreenTop = window.screenTop !==  undefined   ? window.screenTop  : window.screenY;
+            const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+            const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+            const systemZoom = width / window.screen.availWidth;
+            const left = (width - w) / 2 / systemZoom + dualScreenLeft
+            const top = (height - h) / 2 / systemZoom + dualScreenTop
+            const newWindow = window.open(url, '', 
+            `
+            postwindow,
+            scrollbars=yes,
+            width=${w / systemZoom}, 
+            height=${h / systemZoom}, 
+            top=${top}, 
+            left=${left}
+            `
+            )
+            if (window.focus) newWindow.focus();
+            return newWindow
+        }
+
+        function PopupBlocked() {
+            var PUtest = window.open(null,"","width=100,height=100");
+            try {PUtest.close();localStorage.setItem("pop-up",new Date());return false;}
+            catch(e) {alert('Pop-ups blocked.\n\n¡¡Please Enable It!!'); return true; }
+        }
+
+        if(localStorage.getItem("pop-up")){
+            var datePopup = new Date(localStorage.getItem("pop-up"));
+            var dateToday = new Date();
+            var Difference_In_Time  = dateToday.getTime() - datePopup.getTime();
+            var Difference_In_Days = Math.trunc(Difference_In_Time / (1000 * 3600 * 24));
+            if (Difference_In_Days>0) {
+                localStorage.removeItem("pop-up");
+                PopupBlocked();
+            }
+        }else{
+            PopupBlocked();
+        }
+
+        window.addEventListener("message", receiveReminder, false);
+        function receiveReminder(event){
+            let data = event.data;
+            if(data.reminder && data.users){
+                if(data.users.includes(window.userId)){
+                    var popWindow = popupCenter({url: '/reminders/popup',  w: 900, h: 500}); 
+                    popWindow.onload = function() {
+                        popWindow.postMessage({msg:data.reminder});
+                    };
+                }
+            }
+        }
+    </script>
 @stop
