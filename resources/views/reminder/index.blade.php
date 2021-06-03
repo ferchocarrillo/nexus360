@@ -47,7 +47,7 @@ $(document).ready(()=>{
             return false;
         }
 
-        $.get('/reminders',{campaign: campaign.value})
+        $.get('/reminders',{campaign: campaign.value,reminder: inputReminder.value})
         .then(users=>{
             let data = {reminder:inputReminder.value,users:users}
             ifm_reminder.contentWindow.postMessage(JSON.stringify(data),'*')    
