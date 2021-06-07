@@ -35,7 +35,7 @@ class ReminderController extends Controller
 
             return $arr;
         }
-        $campaigns=['Next Era Energy'];
+        $campaigns=['Next Era Energy','Enercare','Medical Guardian','Service Experts'];
         return view('reminder.index',compact(['campaigns']));
     }
     public function popup(){
