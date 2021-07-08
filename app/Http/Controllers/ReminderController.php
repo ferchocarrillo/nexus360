@@ -13,7 +13,7 @@ class ReminderController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:kaizen')->only('index');
+        $this->middleware('can:reminders')->only('index');
     }
 
     public function index(Request $request){
