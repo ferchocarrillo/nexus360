@@ -132,9 +132,7 @@ class UserController extends Controller
     {
         if($request->ajax()){
             $arr = [];
-            $arr["data"] = User::with(['roles','masterfile2'=>function($query){
-                $query->orderBy('joining_date','DESC');
-            }])->get();
+            $arr["data"] = User::with(['roles','masterfile2'])->get();
             return $arr;
         }
         return view('users.index');
