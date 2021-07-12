@@ -46,7 +46,7 @@ class User extends Authenticatable
     }
 
     public function masterfile2(){
-        return $this->hasMany(MasterFile::class,'national_id','national_id');
+        return $this->hasMany(MasterFile::class,'national_id','national_id')->orderBy('joining_date','DESC') ;
     }
 
     public function employessAllHierarchy(){
