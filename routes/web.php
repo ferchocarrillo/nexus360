@@ -103,6 +103,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reminders','ReminderController@index')->name('reminder.index');
     Route::get('reminders/popup','ReminderController@popup')->name('reminder.popup');
 
+    // Pandora's Box
+    Route::get('pandorasbox','PandorasBoxController@index')->name('pandorasbox.index');
+    Route::post('pandorasbox','PandorasBoxController@store')->name('pandorasbox.store');
 });
 
 Auth::routes(['register' => false]);

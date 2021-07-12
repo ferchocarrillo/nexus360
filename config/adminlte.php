@@ -317,7 +317,15 @@ return [
             'can'=>'kaizen'
 
         ],
-        
+        [
+            'text'=>"Pandora's Box",
+            'icon'=>'nav-icon fas fa-inbox',
+            'url'=>'pandorasbox',
+            'can'=>'pandorasbox',
+            'icon_color'=>'warning',
+            'label'=>'New',
+            'label_color'=>'info'
+        ],
         [
             'text' => 'MANAGEMENT',
             'can'   => 'users.index',

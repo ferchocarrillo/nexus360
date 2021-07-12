@@ -226,5 +226,11 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => 'reminders',
             'description'   => 'Create Reminders'
         ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Pandora's Box",
+            'slug'          => "pandorasbox",
+            'description'   => "Pandora's Box"
+        ]);
     }
 }
