@@ -232,5 +232,11 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "pandorasbox",
             'description'   => "Pandora's Box"
         ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Admin Logs",
+            'slug'          => "adminlogs",
+            'description'   => "Admin Logs"
+        ]);
     }
 }

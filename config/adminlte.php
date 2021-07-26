@@ -351,6 +351,13 @@ return [
                     'icon' => 'nav-icon fa fa-upload',
                     'can'  => 'masterfile.upload',
                 ],
+                [
+                    'text' => 'Logs',
+                    'url'  => 'logs',
+                    'active' => ['logs','logs/*'],
+                    'icon' => 'nav-icon fas fa-history',
+                    'can'  => 'adminlogs'
+                ]
             ]
         ],
 

@@ -106,6 +106,8 @@ Route::middleware(['auth'])->group(function () {
     // Pandora's Box
     Route::get('pandorasbox','PandorasBoxController@index')->name('pandorasbox.index');
     Route::post('pandorasbox','PandorasBoxController@store')->name('pandorasbox.store');
+
+    Route::get('logs/{configDate?}','LogController@index')->name('logs.index');
 });
 
 Auth::routes(['register' => false]);
