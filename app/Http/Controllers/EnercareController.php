@@ -85,10 +85,10 @@ class EnercareController extends Controller
         SELECT b.full_name teamleader, c.username userteamleader
         FROM (
         SELECT supervisor FROM master_files 
-        WHERE [status] = 'Active' AND campaign = 'Enercare' AND position = 'Agent'
+        WHERE [status] = 'Active' AND campaign like 'Enercare%' AND position = 'Agent'
         GROUP BY supervisor) a
         LEFT JOIN (SELECT * FROM master_files 
-                    WHERE [status] = 'Active' AND campaign = 'Enercare' )b ON b.full_name = a.supervisor
+                    WHERE [status] = 'Active' AND campaign like 'Enercare%' )b ON b.full_name = a.supervisor
         LEFT JOIN users c ON b.national_id = c.national_id
         where B.national_id is not null AND c.username is not null");
         
