@@ -9,7 +9,7 @@
 @stop
 
 @section('content_header')
-<h1 class="d-inline">Kaizen <span class="kaizen">改善</span></h1>
+<h1 class="d-inline">#{{$kaizen->id}}  {{$kaizen->title}}</h1>
 <div class="float-right">
     <a href="/kaizen" class="btn btn-outline-primary" type="button" >View All</a>
 </div>
@@ -25,6 +25,7 @@
         :employess='@json($employess)'
         :objkaizen='@json($kaizen)'
         :status='@json($status)'
+        :approved='@json($approved)'
         :permission='@json($permission)'
         :members='@json($members)'
     ></kaizen-component>

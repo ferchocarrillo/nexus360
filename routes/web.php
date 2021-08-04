@@ -97,7 +97,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('kaizen/assign','KaizenController@assign')->name('kaizen.assign');
     Route::post('kaizen/comment','KaizenController@comment')->name('kaizen.comment');
-    Route::get('kaizen/{id}/downloadfile','KaizenController@downloadfile')->name('kaizen.downloadfile');
+    Route::get('kaizen/{id}/downloadfile/{comment_id?}','KaizenController@downloadfile')->name('kaizen.downloadfile');
     Route::resource('kaizen','KaizenController');
 
     Route::get('reminders','ReminderController@index')->name('reminder.index');

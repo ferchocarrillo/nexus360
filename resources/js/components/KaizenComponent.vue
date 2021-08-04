@@ -119,6 +119,12 @@ p {
                 }"
               >{{comment.status}}</span>
             </p>
+              <a :href="'/kaizen/'+kaizen.id+'/downloadfile/'+comment.id" v-if="comment.file_path">
+                <span class="badge badge-secondary">
+                  <i class="far fa-file align-middle mr-1"></i>
+                  <span>{{JSON.parse(comment.file_path).name_file}}</span>
+                </span>
+              </a>
           </div>
         </article>
         <article class="comment">
@@ -131,9 +137,18 @@ p {
                   v-model="comment"
                 ></textarea>
               </div>
-              <div class="input-group mt-2">   
+              <div class="form-group mb-1 mt-2">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="customFileComment" ref="fileComment" @change="uploadFileComment"/>
+                  <label class="custom-file-label" for="customFileComment">{{ filenameComment }}</label>
+                </div>
+              </div>
+              <div class="input-group">
                 <select class="custom-select custom-select-sm" v-model="kaizen.status" v-if="permission!='kaizen.operations'">
                   <option :value="stat" v-for="stat in status" :key="stat">{{stat}}</option>
+                </select>
+                <select class="custom-select custom-select-sm" v-model="kaizen.approved" v-if="permission!='kaizen.operations' && kaizen.group == 'Schedules' && kaizen.status == 'Closed'">
+                  <option :value="appd" v-for="appd in approved" :key="appd">{{appd}}</option>
                 </select>
                 <div :class="{'input-group-append':permission!='kaizen.operations'}">
                   <button class="btn btn-sm btn-outline-primary" @click="addComment"><i class="fas fa-plus"></i></button>
@@ -428,6 +443,7 @@ export default {
     "employess",
     "objkaizen",
     "status",
+    "approved",
     "permission",
     "members",
   ],
@@ -445,6 +461,7 @@ export default {
         },
         description: "",
       },
+      fileComment: null,
       sc: {
         date: "",
         in: "",
@@ -509,6 +526,9 @@ export default {
     uploadFile() {
       this.kaizen.file = this.$refs.file.files[0];
     },
+    uploadFileComment() {
+      this.fileComment = this.$refs.fileComment.files[0];
+    },
     submitKaizen(e) {
       e.preventDefault();
       if (this.isSchedule && this.kaizen.schedules.sc.length < 1) {
@@ -543,12 +563,34 @@ export default {
         });
     },
     addComment(){
-      if(this.comment !=''){
+      if(this.comment == ''){
+        alert('The comment is required'); 
+        return;
+      }else if(this.permission!='kaizen.operations' && this.kaizen.group == 'Schedules' && this.kaizen.status == 'Closed' && !this.kaizen.approved){
+        alert('Approved By is required'); 
+        return;
+      }else{
+        let formData = new FormData();
+        formData.append("kaizen_id",this.kaizen.id);
+        formData.append("comment",this.comment);
+        formData.append("status",this.kaizen.status);
+        formData.append("approved",this.kaizen.approved);
+        if (this.fileComment) {
+          formData.append("fileComment", this.fileComment);
+        }
+
         $("#logoLoading").modal("toggle");
         axios
-          .post("/kaizen/comment",{kaizen_id:this.kaizen.id ,comment:this.comment, status:this.kaizen.status})
+          .post("/kaizen/comment", formData,{
+            headers: { "Content-Type": "multipart/form-data" }
+           })
           .then((res)=>{
-            location.reload()
+            if (res.data.result == "success") {
+              location.reload()
+            } else {
+              console.log(res.data);
+            }
+            
           })
       }
     },
@@ -573,7 +615,13 @@ export default {
       if (this.kaizen.type == "Schedule change") return true;
       return false;
     },
-
+    filenameComment() {
+      if (this.fileComment) {
+        return this.fileComment.name;
+      } else {
+        return "Choose file";
+      }
+    },
     filename() {
       if (this.kaizen.file) {
         return this.kaizen.file.name;

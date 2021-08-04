@@ -5,3 +5,6 @@
 .content>.container-fluid>hr{
     display: none;
 }
+#tableKaizens thead {
+    display:none;
+}

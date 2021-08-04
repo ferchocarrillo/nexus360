@@ -23,6 +23,7 @@ class KaizenController extends Controller
     public $schedules;
     public $status;
     public $agents;
+    public $approved;
 
     public function __construct()
     {
@@ -43,6 +44,7 @@ class KaizenController extends Controller
         $this->status=['Pending','In Progress','Pending Review','On Hold','Closed'];
         $national_ids = MasterFile::whereNull('termination_date')->where('position','Agent')->select('national_id')->groupBy('national_id')->pluck('national_id');
         $this->agents =User::whereIn('national_id',$national_ids)->get();
+        $this->approved=['Approved','Not Approved','Approved by Ops'];
     }
 
     private function sendMail($mail){
@@ -95,6 +97,14 @@ class KaizenController extends Controller
                 }
                 
             }
+            $kaizens = $kaizens->select(DB::raw("*,IIF(
+                    [status] = 'Closed',
+                    DATEDIFF(DAY,convert(date,created_at),convert(date,created_at)), 
+                    DATEDIFF(DAY,convert(date,created_at),convert(date,GETDATE()))
+                ) as daysopen
+                ,CASE WHEN deadline is null or status = 'Closed' THEN ''
+                ELSE DATEDIFF(DAY,convert(date,GETDATE()),convert(date,deadline))
+                END as daysleft"));
             $arr["data"] = $kaizens->get();
             return $arr;
         }
@@ -230,9 +240,10 @@ class KaizenController extends Controller
         $schedules= $this->schedules;
         $employess = $this->agents;
         $status = $this->status;
+        $approved = $this->approved;
         // $permission='kaizen.operations';
         $permission=$this->permission();
-        return view('Kaizen.show',compact(['groups','campaigns','types','schedules','employess','status','permission','kaizen','members']));
+        return view('Kaizen.show',compact(['groups','campaigns','types','schedules','employess','status','approved','permission','kaizen','members']));
     }
 
     public function comment(Request $request){
@@ -246,12 +257,25 @@ class KaizenController extends Controller
         }
 
         $kaizen->status = $request->status;
+        $kaizen->approved = ($request->approved == "null" ? null : $request->approved);
         $kaizen->save();
 
+        $arrFile = null;
+        if($request->fileComment){
+            $name_file = $request->file('fileComment')->getClientOriginalName();
+            $path_file = $request->fileComment->store('storage/kaizen');
+            $arrFile = [
+                'name_file'=>$name_file,
+                'path_file'=>$path_file
+            ];
+            $arrFile = json_encode($arrFile);
+        }
+
         $comment = $kaizen->comments()->create([
-            'comment'=>$request->comment,
+            'comment'=>$request->comment . (($request->status == "Closed" && $request->approved !="null") ? "\n\n" . $request->approved : ""),
             'status'=>$request->status,
             'created_by'=>Auth::user()->id,
+            'file_path'=>$arrFile
         ]);
 
         $comment->comment = str_replace("\n","<br>",$comment->comment);
@@ -261,19 +285,24 @@ class KaizenController extends Controller
         $mail->to=$kaizen->required->email;
         if($kaizen->assigned_to) $mail->cc = $kaizen->assigned->email;
         $this->sendMail($mail);
-        
-        return $comment;
+        return ['result'=>'success'];
     }
 
-    public function downloadfile($id){
+    public function downloadfile($id,$comment_id=null){
         $kaizen = Kaizen::findOrFail($id);
         if(!Auth::user()->hasPermissionTo('kaizen.admin') 
         && $kaizen->assigned_to !=Auth::user()->id
         && $kaizen->required_by !=Auth::user()->id){
         abort(404);
         }
-        if(!$kaizen->file_path)abort(404);
-        $file_path = json_decode($kaizen->file_path);
+        if($comment_id){
+            $comment = $kaizen->comments()->findOrFail($comment_id);
+            if(!$comment->file_path)abort(404);
+            $file_path = json_decode($comment->file_path);
+        }else{
+            if(!$kaizen->file_path)abort(404);
+            $file_path = json_decode($kaizen->file_path);
+        }
         return  Storage::download($file_path->path_file,$file_path->name_file);    
     }
 

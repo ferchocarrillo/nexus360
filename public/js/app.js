@@ -2908,8 +2908,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["groups", "campaigns", "types", "schedules", "employess", "objkaizen", "status", "permission", "members"],
+  props: ["groups", "campaigns", "types", "schedules", "employess", "objkaizen", "status", "approved", "permission", "members"],
   data: function data() {
     return {
       kaizen: {
@@ -2924,6 +2939,7 @@ __webpack_require__.r(__webpack_exports__);
         },
         description: ""
       },
+      fileComment: null,
       sc: {
         date: "",
         "in": "",
@@ -2986,6 +3002,9 @@ __webpack_require__.r(__webpack_exports__);
     uploadFile: function uploadFile() {
       this.kaizen.file = this.$refs.file.files[0];
     },
+    uploadFileComment: function uploadFileComment() {
+      this.fileComment = this.$refs.fileComment.files[0];
+    },
     submitKaizen: function submitKaizen(e) {
       e.preventDefault();
 
@@ -3020,14 +3039,34 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     addComment: function addComment() {
-      if (this.comment != '') {
+      if (this.comment == '') {
+        alert('The comment is required');
+        return;
+      } else if (this.permission != 'kaizen.operations' && this.kaizen.group == 'Schedules' && this.kaizen.status == 'Closed' && !this.kaizen.approved) {
+        alert('Approved By is required');
+        return;
+      } else {
+        var formData = new FormData();
+        formData.append("kaizen_id", this.kaizen.id);
+        formData.append("comment", this.comment);
+        formData.append("status", this.kaizen.status);
+        formData.append("approved", this.kaizen.approved);
+
+        if (this.fileComment) {
+          formData.append("fileComment", this.fileComment);
+        }
+
         $("#logoLoading").modal("toggle");
-        axios.post("/kaizen/comment", {
-          kaizen_id: this.kaizen.id,
-          comment: this.comment,
-          status: this.kaizen.status
+        axios.post("/kaizen/comment", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
         }).then(function (res) {
-          location.reload();
+          if (res.data.result == "success") {
+            location.reload();
+          } else {
+            console.log(res.data);
+          }
         });
       }
     },
@@ -3052,6 +3091,13 @@ __webpack_require__.r(__webpack_exports__);
     isScheduleChange: function isScheduleChange() {
       if (this.kaizen.type == "Schedule change") return true;
       return false;
+    },
+    filenameComment: function filenameComment() {
+      if (this.fileComment) {
+        return this.fileComment.name;
+      } else {
+        return "Choose file";
+      }
     },
     filename: function filename() {
       if (this.kaizen.file) {
@@ -74332,7 +74378,41 @@ var render = function() {
                           },
                           [_vm._v(_vm._s(comment.status))]
                         )
-                      ])
+                      ]),
+                      _vm._v(" "),
+                      comment.file_path
+                        ? _c(
+                            "a",
+                            {
+                              attrs: {
+                                href:
+                                  "/kaizen/" +
+                                  _vm.kaizen.id +
+                                  "/downloadfile/" +
+                                  comment.id
+                              }
+                            },
+                            [
+                              _c(
+                                "span",
+                                { staticClass: "badge badge-secondary" },
+                                [
+                                  _c("i", {
+                                    staticClass: "far fa-file align-middle mr-1"
+                                  }),
+                                  _vm._v(" "),
+                                  _c("span", [
+                                    _vm._v(
+                                      _vm._s(
+                                        JSON.parse(comment.file_path).name_file
+                                      )
+                                    )
+                                  ])
+                                ]
+                              )
+                            ]
+                          )
+                        : _vm._e()
                     ])
                   ]
                 )
@@ -74364,7 +74444,27 @@ var render = function() {
                     })
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "input-group mt-2" }, [
+                  _c("div", { staticClass: "form-group mb-1 mt-2" }, [
+                    _c("div", { staticClass: "custom-file" }, [
+                      _c("input", {
+                        ref: "fileComment",
+                        staticClass: "custom-file-input",
+                        attrs: { type: "file", id: "customFileComment" },
+                        on: { change: _vm.uploadFileComment }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "label",
+                        {
+                          staticClass: "custom-file-label",
+                          attrs: { for: "customFileComment" }
+                        },
+                        [_vm._v(_vm._s(_vm.filenameComment))]
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group" }, [
                     _vm.permission != "kaizen.operations"
                       ? _c(
                           "select",
@@ -74403,6 +74503,52 @@ var render = function() {
                               "option",
                               { key: stat, domProps: { value: stat } },
                               [_vm._v(_vm._s(stat))]
+                            )
+                          }),
+                          0
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.permission != "kaizen.operations" &&
+                    _vm.kaizen.group == "Schedules" &&
+                    _vm.kaizen.status == "Closed"
+                      ? _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.kaizen.approved,
+                                expression: "kaizen.approved"
+                              }
+                            ],
+                            staticClass: "custom-select custom-select-sm",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.kaizen,
+                                  "approved",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          _vm._l(_vm.approved, function(appd) {
+                            return _c(
+                              "option",
+                              { key: appd, domProps: { value: appd } },
+                              [_vm._v(_vm._s(appd))]
                             )
                           }),
                           0
