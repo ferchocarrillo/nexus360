@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\KaizenSendMailJob;
 use App\Kaizen;
 use App\MasterFile;
 use App\User;
@@ -10,9 +11,7 @@ use Caffeinated\Shinobi\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use stdClass;
 
 class KaizenController extends Controller
 {
@@ -45,27 +44,6 @@ class KaizenController extends Controller
         $national_ids = MasterFile::whereNull('termination_date')->where('position','Agent')->select('national_id')->groupBy('national_id')->pluck('national_id');
         $this->agents =User::whereIn('national_id',$national_ids)->get();
         $this->approved=['Approved','Not Approved','Approved by Ops'];
-    }
-
-    private function sendMail($mail){
-        $mail->bcc = $this->getKaizenBCC();
-        Mail::raw(json_encode($mail),function($message) use($mail){
-            $message->to("reporting.bogota@cp-360.com")
-            ->subject("Kaizen Email");
-        });
-    }
-
-    private function getKaizenBCC(){
-        $members = DB::table('users')
-        ->leftJoin('role_user','users.id','=','role_user.user_id')
-        ->leftJoin('roles','role_user.role_id', '=', 'roles.id')
-        ->leftJoin('permission_role','roles.id', '=', 'permission_role.role_id')
-        ->leftJoin('permissions','permission_role.permission_id','=','permissions.id')
-        ->where('permissions.slug','kaizen.email')
-        ->select('users.email')
-        ->groupBy('users.email')
-        ->get()->pluck('email')->toArray();
-        return join(';',$members);
     }
 
     private function permission(){
@@ -154,13 +132,7 @@ class KaizenController extends Controller
             ])->except(['_token','file'])
         );
 
-        
-        $kaizen->description = str_replace("\n","<br>",$kaizen->description);
-        $mail= new stdClass;
-        $mail->body = view('kaizen.mails.create',compact('kaizen'))->render();
-        $mail->to=$kaizen->required->email;
-        $mail->subject="Kaizen Received - [#".$kaizen->id."] ".$kaizen->title;
-        $this->sendMail($mail);
+        KaizenSendMailJob::dispatch($kaizen);
 
         return ['result'=>'success'];
     }
@@ -193,13 +165,8 @@ class KaizenController extends Controller
                     'created_by'=>Auth::user()->id,
                 ]);
 
-                $comment->comment = str_replace("\n","<br>",$comment->comment);
-                $mail= new stdClass;
-                $mail->body = view('kaizen.mails.comment',compact(['kaizen','comment']))->render();
-                $mail->subject=($comment->status == 'Closed'?"Kaizen Resolved":"Kaizen New comment")." - [#".$kaizen->id."] ".$kaizen->title;        
-                $mail->to=$kaizen->required->email;
-                if($kaizen->assigned_to) $mail->cc = $kaizen->assigned->email;
-                $this->sendMail($mail);
+                KaizenSendMailJob::dispatch($kaizen,$comment);
+
             }
 
             
@@ -278,13 +245,8 @@ class KaizenController extends Controller
             'file_path'=>$arrFile
         ]);
 
-        $comment->comment = str_replace("\n","<br>",$comment->comment);
-        $mail= new stdClass;
-        $mail->body = view('kaizen.mails.comment',compact(['kaizen','comment']))->render();
-        $mail->subject=($comment->status == 'Closed'?"Kaizen Resolved":"Kaizen New comment")." - [#".$kaizen->id."] ".$kaizen->title;        
-        $mail->to=$kaizen->required->email;
-        if($kaizen->assigned_to) $mail->cc = $kaizen->assigned->email;
-        $this->sendMail($mail);
+        KaizenSendMailJob::dispatch($kaizen,$comment);
+
         return ['result'=>'success'];
     }
 
