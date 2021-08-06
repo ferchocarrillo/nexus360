@@ -1,10 +1,11 @@
 <template>
-  <div>
-    <table class="table table-sm">
+  <div >
+    <table class="table table-sm" id="table-users" style="width:100%">
       <thead>
         <tr class="bg-primary">
-          <th width="30"></th>
+          <th width="30px"></th>
           <th>Agent Name</th>
+          <th>Campaign</th>
           <th>Status</th>
           <th>Time</th>
           <th width="20px"></th>
@@ -12,26 +13,24 @@
       </thead>
       <tbody>
         <tr v-for="user in users" :key="user.id" :id="user.id">
-          <td :style="(user.latestactivity.length ? 'background-color:'+user.latestactivity[0].color + ';' : '' )" class="text-white">
-             <i :class="(user.latestactivity.length ? user.latestactivity[0].icon : '')"></i>
+          <td class="align-middle">
+              <span  v-if="user.latestactivity.length" class="btn btn-sm text-white" :style="'background-color:'+user.latestactivity[0].color + ';'">
+                <i :class="(user.latestactivity.length ? user.latestactivity[0].icon : '')"></i>
+              </span>
           </td>
-          <td>{{ user.name }}</td>
-          <td>{{(user.latestactivity.length ? user.latestactivity[0].name : 'N/A')}}</td>
-          <td>
+          <td class="align-middle">{{ user.name }}</td>
+          <td class="align-middle">{{ user.masterfile2[0].campaign }}</td>
+          <td class="align-middle">{{(user.latestactivity.length ? user.latestactivity[0].name : '')}}</td>
+          <td class="align-middle">
             <timer-component
               v-if="user.latestactivity.length && user.latestactivity[0].id != 2"
               :useractivity="user.latestactivity[0]"
               :timeserver="timeserver"
             ></timer-component>
           </td>
-          <td
-            @click="logoutUser(user.id)"
-            v-if="user.latestactivity.length && user.latestactivity[0].name != 'Logout'"
-            class="bg-dark"
-          >
-          <a href="#" class="text-white">
-            <i class="fas fa-sign-out-alt"></i>
-            </a>
+          <td class="align-middle">
+            <a href="#" class="btn btn-sm btn-dark" @click="logoutUser(user.id)" v-if="user.latestactivity.length && user.latestactivity[0].name != 'Logout'">
+              <i class="fas fa-sign-out-alt"></i></a>
           </td>
         </tr>
       </tbody>
@@ -39,6 +38,9 @@
   </div>
 </template>
 <script>
+
+import datatables from 'datatables'
+
 export default {
   props: {
     pusers: {
@@ -55,6 +57,18 @@ export default {
     };
   },
   methods: {
+    loadTable(){
+      $(function(){
+        $('#table-users').DataTable({
+          columnDefs: [
+            {targets: [0,5], orderable: false, searchable:false}
+          ],
+          order: [[3,"desc"],[4, "desc"]],
+          pageLength: 50
+        });
+      });
+    },
+
     logoutUser(id) {
       axios
         .post("/agentactivity/supervisor/logout", {
@@ -85,6 +99,9 @@ export default {
   },
   mounted() {
     window.addEventListener("message", this.receiveMessage, false);
+  },
+  created(){
+    this.loadTable();
   }
 };
 </script>

@@ -55,7 +55,7 @@ class AgentActivityController extends Controller
 
     public function supervisor(){
         
-        $users = Auth::user()->employessAllHierarchy()->with('latestactivity')->get();
+        $users = Auth::user()->employessAllHierarchy()->with('latestactivity','masterfile2')->get();
 
         /*
         if(Auth::user()->hasRole('admin')){
@@ -72,7 +72,7 @@ class AgentActivityController extends Controller
 
     public function getActivities(){
 
-        $users = Auth::user()->employessAllHierarchy()->with('latestactivity')->get();
+        $users = Auth::user()->employessAllHierarchy()->with('latestactivity','masterfile2')->get();
         /*
         if(Auth::user()->hasRole('admin')){
             $users = User::where('id','<>', Auth::user()->id)->with('latestactivity')->get()   ;

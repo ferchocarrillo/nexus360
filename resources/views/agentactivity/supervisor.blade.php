@@ -6,6 +6,8 @@
 
 @section('css')
 {{-- <link rel="stylesheet" href="{{ asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }} "> --}}
+<link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css') }}" />
 @stop
 
 @section('content_header')
@@ -21,3 +23,7 @@
 
 <iframe style="display: none;" src="{{'http://'. request()->getHost().':3000'}}" frameborder="0" id="ifm_activity"></iframe>
 @stop
+
+@push('js')
+    <script type="text/javascript" src="{{ asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }} "></script>
+@endpush
