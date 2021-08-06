@@ -60,6 +60,8 @@ export default {
     loadTable(){
       $(function(){
         $('#table-users').DataTable({
+          'destroy'     : true,
+          stateSave: true,
           columnDefs: [
             {targets: [0,5], orderable: false, searchable:false}
           ],
@@ -91,6 +93,8 @@ export default {
             .get(`/agentactivity/supervisor/getActivities`)
             .then(response => {
               this.users = response.data;
+              $('#table-users').DataTable().destroy();
+              this.loadTable();
               return;
             });
         }
