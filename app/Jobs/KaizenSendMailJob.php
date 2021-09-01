@@ -38,6 +38,6 @@ class KaizenSendMailJob implements ShouldQueue
     public function handle()
     {
         $email = new KaizenMail($this->kaizen,$this->comment);
-        Mail::to('reporting.bogota@cp-360.com')->send($email);
+        Mail::send($email);
     }
 }

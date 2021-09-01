@@ -36,7 +36,7 @@ class KaizenMail extends Mailable
         $this->mail->subject.= " - #".$kaizen->id." ".$kaizen->title;
         $this->mail->to=$kaizen->required->email;
         $this->mail->bcc = $this->getKaizenBCC();
-        if($kaizen->assigned_to) $this->mail->cc = $kaizen->assigned->email;
+        $this->mail->cc = ($kaizen->assigned_to ? $kaizen->assigned->email : []);
     }
 
     private function getKaizenBCC(){
@@ -49,7 +49,7 @@ class KaizenMail extends Mailable
         ->select('users.email')
         ->groupBy('users.email')
         ->get()->pluck('email')->toArray();
-        return join(';',$members);
+        return $members;
     }
 
     /**
@@ -59,6 +59,10 @@ class KaizenMail extends Mailable
      */
     public function build()
     {
-        return $this->view('Kaizen.mails.create')->with(['message'=>$this])->subject(json_encode($this->mail));
+        return $this->view('Kaizen.mails.create')->with(['message'=>$this])
+        ->to($this->mail->to)
+        ->bcc($this->mail->bcc)
+        ->cc($this->mail->cc)
+        ->subject($this->mail->subject);
     }
 }
