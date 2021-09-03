@@ -57,6 +57,7 @@
 
     $(document).ready(function(){
         var i = 1;
+        var lState = true;
         var filters={
             status:{
                 open:false,
@@ -83,6 +84,40 @@
             "dom": 'B<"top float-right"f>irt<"bottom"p>',
             // "dom": 'B<"top float-right"f>rt<"bottom"i>',
             responsive: true,
+            stateSave: true,
+            drawCallback: function() {
+                if(lState){
+                    lState = false;
+                    var stateSave = this.api().state();
+                    var nodes = $(this.api().buttons().nodes());
+
+                    if(stateSave.columns[2].search.search.includes("Pending|In Progress|Pending Review|On Hold")){
+                        $(nodes[2]).toggleClass('active')
+                        filters.status.open = true;
+                    }
+                    if(stateSave.columns[2].search.search.includes("Closed")){
+                        $(nodes[3]).toggleClass('active')
+                        filters.status.closed = true;
+                    }
+                    if(stateSave.columns[3].search.search.includes("^$")){
+                        $(nodes[4]).toggleClass('active')
+                        filters.unassigned = true;
+                    }
+
+                    for (let o = 1; o <= 6; o++) {
+                        var index = stateSave.order.findIndex((col)=>{return col[0] == o});
+                        if (index > -1) {
+                            sortCols.push(stateSave.order[index]);
+                            if (stateSave.order[index][1] == 'asc') {
+                                $(nodes[4+o]).append('    <i class="fas fa-sort-down"></i>');
+                            }else{
+                                $(nodes[4+o]).append('    <i class="fas fa-sort-up"></i>');
+                            }
+                        }
+                    }
+                }
+
+            },
             ajax:location.href,
             buttons: [
                 {
@@ -278,10 +313,6 @@
             columns:[
                 {"data":"title",
                     "render":(data, type, row)=>{
-                        if(i==1 && row.status == 'Pending'){
-                            console.log(row)
-                            i++
-                        }
                         return `
                             <div class="card border-0 mb-0">
                                 <div class="card-body p-2 row align-items-center">
