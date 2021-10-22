@@ -238,5 +238,43 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "adminlogs",
             'description'   => "Admin Logs"
         ]);
+
+        // Payroll Novelties
+
+        Permission::firstOrCreate([
+            'name'          => "Payroll Novelty",
+            'slug'          => "payrollnovelty",
+            'description'   => "Payroll Novelty",
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Payroll Novelty Admin",
+            'slug'          => "payrollnovelty.admin",
+            'description'   => "Payroll Novelty Admin",
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Payroll Novelty Reports",
+            'slug'          => "payrollnovelty.reports",
+            'description'   => "Payroll Novelty Reports",
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Payroll Novelty Reports Novelties",
+            'slug'          => "payrollnovelty.reports.novelties",
+            'description'   => "Payroll Novelty Reports Novelties",
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Payroll Novelty Reports General",
+            'slug'          => "payrollnovelty.reports.general",
+            'description'   => "Payroll Novelty Reports General",
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Payroll Novelty Flat File",
+            'slug'          => "payrollnovelty.flatfile",
+            'description'   => "Payroll Novelty Flat File",
+        ]);
     }
 }

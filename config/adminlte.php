@@ -318,6 +318,45 @@ return [
 
         ],
         [
+            'text'=>'Payroll Novelties',
+            'icon'=>'nav-icon fas fa-receipt',
+            'can'=>'payrollnovelty',
+            'submenu'=>[
+                [
+                    'text'=>'Novelties',
+                    'icon'=>'nav-icon fas fa-file-export',
+                    'active' => ['payrollnovelty', 'payrollnovelty/create'],
+                    'url'=>'payrollnovelty',
+                    'can'=>'payrollnovelty',
+                ],
+                [
+                    'text'=>'Admin',
+                    'icon' => 'nav-icon fa fa-cog',
+                    'can'=>'payrollnovelty.admin',
+                    'url'=>'payrollnovelty/admin',
+                    'can'=>'payrollnovelty.admin'
+                ],
+                [
+                    'text'=>'Reports',
+                    'icon'=>'nav-icon fas fa-chart-line',
+                    'active'=> ['payrollnovelty/reports/*'],
+                    'can'=>'payrollnovelty.reports',
+                    'submenu'=>[
+                        [
+                            'text'=>'Novelties',
+                            'url'=>'/payrollnovelty/reports/novelties',
+                            'can'=>'payrollnovelty.reports.novelties'
+                        ],
+                        [
+                            'text'=>'General',
+                            'url'=>'/payrollnovelty/reports/general',
+                            'can'=>'payrollnovelty.reports.general'
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        [
             'text'=>"Pandora's Box",
             'icon'=>'nav-icon fas fa-inbox',
             'url'=>'pandorasbox',

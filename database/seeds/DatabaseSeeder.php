@@ -18,7 +18,9 @@ class DatabaseSeeder extends Seeder
             CgmAppointmentDispositionTableSeeder::class,
             EnercareCalltrackerCategoriesTableSeeder::class,
             EnercareCalltrackerPlansTableSeeder::class,
-            EnercareCallTrackerNotPitchAndSalesTableSeeder::class
+            EnercareCallTrackerNotPitchAndSalesTableSeeder::class,
+            PayrollNoveltyCie10sTableSeeder::class,
+            PayrollNoveltyListsTableSeeder::class
             // EnercareCalltrackerReasonsNotPitchAndSalesTableSeeder::class,
             // EnercareCallTrackerNotPitchSalesTableSeeder::class
         ]);

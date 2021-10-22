@@ -108,6 +108,28 @@ Route::middleware(['auth'])->group(function () {
     Route::post('pandorasbox','PandorasBoxController@store')->name('pandorasbox.store');
 
     Route::get('logs/{configDate?}','LogController@index')->name('logs.index');
+
+
+    // Payroll Novelty
+    Route::resource('payrollnovelty', 'PayrollNoveltyController',[
+        'only'=>['index','create','store','update']
+    ]);
+    Route::post('payrollnovelty/cie10s','PayrollNoveltyController@cie10s')->name('payrollnovelty.cie10s');
+    Route::post('payrollnovelty/findemployee','PayrollNoveltyController@findemployee')->name('payrollnovelty.findemployee');
+    Route::get('payrollnovelty/downloadflatfile','PayrollNoveltyController@downloadFlatFile')->name('payrollnovelty.downloadFlatFile');
+    Route::post('payrollnoveelty/updateTags','PayrollNoveltyController@updateTags')->name('payrollnovelty.updateTags');
+
+    //Payroll Novelty Admin
+    Route::get('payrollnovelty/admin','PayrollNoveltyAdminController@index')->name('payrollnovelty.admin.index');
+    Route::post('payrollnovelty/admin/smlv','PayrollNoveltyAdminController@smlvSave')->name('payrollnovelty.admin.smlvSave');
+    
+    //Payroll Novelty Reports
+    Route::get('payrollnovelty/reports/novelties','PayrollNoveltyReportsController@novelties')->name('payrollnovelty.reports.novelties');
+    Route::post('payrollnovelty/reports/novelties','PayrollNoveltyReportsController@noveltiesDownload')->name('payrollnovelty.reports.noveltiesDownload');
+    
+    Route::get('payrollnovelty/reports/general','PayrollNoveltyReportsController@general')->name('payrollnovelty.reports.general');
+    Route::post('payrollnovelty/reports/general','PayrollNoveltyReportsController@generalDownload')->name('payrollnovelty.reports.generalDownload');
+
 });
 
 Auth::routes(['register' => false]);

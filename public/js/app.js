@@ -3160,6 +3160,543 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['contingencies', 'statuses', 'tags', 'employess', 'smlvs'],
+  data: function data() {
+    return {
+      saving: false,
+      employee_id: "",
+      employee_data: {},
+      novelties: [],
+      novelty: {},
+      cie10: "",
+      cie10s: [],
+      ajx: {
+        type: 'POST',
+        url: function url(params) {
+          return '/payrollnovelty/cie10s';
+        },
+        data: function data(params) {
+          return {
+            term: params.term,
+            page: params.page
+          };
+        }
+      },
+      hideFieldsArr: ["AT", "EG", "LM", "LP"],
+      contingencies_extension: ["AT", "EG"]
+    };
+  },
+  methods: {
+    findId: function findId() {
+      var _this = this;
+
+      $('#logoLoading').modal('toggle');
+      axios.post("findemployee", {
+        id: this.employee_id
+      }).then(function (res) {
+        _this.employee_data = res.data.employee_data;
+        _this.novelties = res.data.novelties;
+        setTimeout(function () {
+          $('#logoLoading').modal('toggle');
+        }, 1000);
+      });
+    },
+    formatMoney: function formatMoney(value) {
+      if (!value) return value;
+      return value.toLocaleString('pt-br', {
+        style: 'currency',
+        currency: 'COP'
+      });
+    },
+    addNovelty: function addNovelty() {
+      $('#modalNovelty').modal({
+        keyboard: false
+      });
+    },
+    addExtension: function addExtension(i) {
+      var novelty_id = this.novelties[i].id;
+      var contingency = this.novelties[i].contingency;
+      this.novelty.extension_id = novelty_id;
+      this.novelty.extension = 1;
+      this.novelty.contingency = contingency;
+      $('#modalNovelty').modal({
+        keyboard: false
+      });
+    },
+    editNovelty: function editNovelty(i) {
+      this.novelty = Object.assign({}, this.novelties[i]);
+      $('#modalNovelty').modal({
+        keyboard: false
+      });
+    },
+    listCie10s: function listCie10s(cie10s) {
+      this.cie10s = cie10s;
+    },
+    getCie10: function getCie10(cie10) {
+      var _this2 = this;
+
+      this.cie10s.forEach(function (i) {
+        if (cie10 == i.id) {
+          _this2.novelty.cie10 = i.id;
+          _this2.novelty.cie10_description = i.text;
+        }
+      });
+    },
+    changeContingency: function changeContingency() {
+      if (this.novelty.contingency != 'EG') {
+        this.novelty.plansaludmas = false;
+      }
+
+      if (this.contingencies_extension.includes(this.novelty.contingency)) {
+        this.novelty.extension = 0;
+      } else {
+        this.novelty.extension = "";
+      }
+    },
+    clearNovelty: function clearNovelty() {
+      this.novelty = {
+        plansaludmas: false,
+        tag: "PENDIENTE POR GRABAR",
+        contingency: "",
+        cie10: "",
+        cie10_description: "",
+        start_date: "",
+        end_date: "",
+        days_hours: "",
+        extension: "",
+        extension_id: "",
+        status: "NO APLICA",
+        payroll_date: "",
+        days_to_recover: "",
+        date_of_filing: "",
+        recognized_value: "",
+        date_of_deposit: "",
+        observation: ""
+      };
+    },
+    saveNovelty: function saveNovelty() {
+      var _this3 = this;
+
+      if (!Object.values(this.checkField).every(Boolean)) {
+        alert('Se deben llenar todos los campos obligatorios');
+        return;
+      } else {
+        var checkDates = this.checkDates();
+
+        if (checkDates.result == true) {
+          this.saving = true;
+
+          if (this.novelty.id) {
+            axios.put('/payrollnovelty/' + this.novelty.id, {
+              novelty: this.novelty,
+              employee: this.employee_data
+            }).then(function (res) {
+              _this3.saving = false;
+              $('#modalNovelty').modal('hide');
+
+              _this3.clearNovelty();
+
+              _this3.findId();
+            });
+          } else {
+            axios.post('/payrollnovelty', {
+              novelty: this.novelty,
+              employee: this.employee_data
+            }).then(function (res) {
+              _this3.saving = false;
+              $('#modalNovelty').modal('hide');
+
+              _this3.clearNovelty();
+
+              _this3.findId();
+            });
+          }
+        } else {
+          alert(checkDates.message);
+        }
+        /*
+        
+        */
+
+      }
+    },
+    checkDates: function checkDates() {
+      var startDate = new Date(this.novelty.start_date);
+      var endDate = new Date(this.novelty.end_date);
+      var nId = this.novelty.id;
+
+      if (endDate < startDate) {
+        return {
+          result: false,
+          message: 'Fecha Inicio no debe ser mayor a Fecha Fin'
+        };
+      }
+
+      var filterNovelties = this.novelties.filter(function (n) {
+        var n_startDate = new Date(n.start_date);
+        var n_endDate = new Date(n.end_date);
+        if (nId == n.id) return false;
+        return startDate >= n_startDate && startDate <= n_endDate || endDate >= n_startDate && endDate <= n_endDate || n_startDate >= startDate && n_startDate <= endDate || n_endDate >= startDate && n_endDate <= endDate;
+      });
+
+      if (filterNovelties.length) {
+        return {
+          result: false,
+          message: 'Ya existen novedades en ese rango de fechas'
+        };
+      } else {
+        return {
+          result: true,
+          message: 'Fechas correctas'
+        };
+      }
+    },
+    calcDias: function calcDias() {
+      if (this.novelty.start_date && this.novelty.end_date) {
+        this.novelty.days_hours = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.novelty.end_date).diff(moment__WEBPACK_IMPORTED_MODULE_0___default()(this.novelty.start_date), 'days') + 1;
+      }
+    },
+    daysRecover: function daysRecover() {
+      if (this.novelty.days_to_recover && this.novelty.start_date) {
+        var date_of_hire = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.employee_data.date_of_hire);
+        var start_date = moment__WEBPACK_IMPORTED_MODULE_0___default()(this.novelty.start_date);
+        var date_of_hire_NEXT_ENDOF_MONTH = date_of_hire.clone().add(1, 'M').endOf('month').format("YYYY-MM-DD");
+        var date_of_hire_ENDOF_MONTH = date_of_hire.clone().endOf('month').format("YYYY-MM-DD");
+        var start_date_ENDOF_MONTH = start_date.clone().endOf('month').format("YYYY-MM-DD");
+
+        if ((date_of_hire_NEXT_ENDOF_MONTH != start_date_ENDOF_MONTH || date_of_hire_NEXT_ENDOF_MONTH == start_date_ENDOF_MONTH && date_of_hire.date() == 1) && date_of_hire_ENDOF_MONTH != start_date_ENDOF_MONTH) {
+          this.novelty.status = "PTE. RECO";
+        } else {
+          this.novelty.status = "NEGADA PERIODO COTIZACION";
+        }
+      }
+    }
+  },
+  computed: {
+    datacie10: function datacie10() {
+      return {
+        value: this.novelty.cie10,
+        text: this.novelty.cie10 ? this.novelty.cie10 + ' - ' + this.novelty.cie10_description : ''
+      };
+    },
+    hideFields: function hideFields() {
+      return this.hideFieldsArr.includes(this.novelty.contingency);
+    },
+    checkField: function checkField() {
+      var validation = {
+        tag: this.novelty.tag ? true : false,
+        contingency: this.novelty.contingency ? true : false,
+        cie10: this.novelty.cie10 || !this.hideFields ? true : false,
+        cie10_description: this.novelty.cie10_description || !this.hideFields ? true : false,
+        start_date: this.novelty.start_date ? true : false,
+        end_date: this.novelty.end_date ? true : false,
+        days_hours: this.novelty.days_hours ? true : false,
+        extension: true,
+        //((this.novelty.extension !=='' || !this.hideFields) ? true : false),
+        extension_id: true,
+        //((this.novelty.extension_id || !this.hideFields || this.novelty.extension != 'SI') ? true : false),
+        status: this.novelty.status ? true : false,
+        payroll_date: true,
+        //(this.novelty.payroll_date ? true : true),
+        days_to_recover: true,
+        //((this.novelty.days_to_recover || !this.hideFields) ? true : false),
+        date_of_filing: true,
+        //((this.novelty.date_of_filing || !this.hideFields) ? true : false),
+        recognized_value: true,
+        //((this.novelty.recognized_value || !this.hideFields) ? true : false),
+        date_of_deposit: true //((this.novelty.date_of_deposit || !this.hideFields) ? true : false),
+
+      };
+      return validation;
+    }
+  },
+  mounted: function mounted() {
+    this.clearNovelty();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Select2Component.vue?vue&type=script&lang=js&":
 /*!***************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Select2Component.vue?vue&type=script&lang=js& ***!
@@ -3179,7 +3716,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['options', 'value', 'name', 'multiple', 'group', 'validation'],
+  props: ['options', 'value', 'name', 'multiple', 'group', 'validation', 'minimumInput', 'ajax', 'data'],
   data: function data() {
     return {};
   },
@@ -3188,27 +3725,58 @@ __webpack_require__.r(__webpack_exports__);
     $.fn.select2.defaults.set("width", "auto");
     $.fn.select2.defaults.set("dropdownAutoWidth", true);
     var vm = this;
-    $(this.$el).select2({
-      // theme: 'bootstrap4',
-      // width:'resolve',
-      data: this.options,
-      multiple: this.multiple
-    }).val(this.value).trigger('change').on('change', function () {
-      // vm.$emit('input',this.value);
-      vm.$emit('input', $(this).val());
-    });
+
+    if (vm.ajax) {
+      var newOption = new Option(this.data.text, this.data.value, false, false);
+      $(this.$el).select2({
+        minimumInputLength: this.minimumInput ? this.minimumInput : 0,
+        ajax: {
+          type: vm.ajax.type,
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          url: vm.ajax.url,
+          data: vm.ajax.data,
+          processResults: function processResults(data) {
+            vm.$emit('searchData', data);
+            return {
+              results: $.map(data, function (item) {
+                return {
+                  id: item.id,
+                  text: item.id + ' - ' + item.text
+                };
+              })
+            };
+          }
+        }
+      }).val(this.value).append(newOption).trigger('change').on('change', function () {
+        vm.$emit('input', $(this).val());
+      });
+    } else {
+      $(this.$el).select2({
+        // theme: 'bootstrap4',
+        // width:'resolve',
+        minimumInputLength: this.minimumInput ? this.minimumInput : 0,
+        data: this.options,
+        multiple: this.multiple
+      }).val(this.value).trigger('change').on('change', function () {
+        // vm.$emit('input',this.value);
+        vm.$emit('input', $(this).val());
+      });
+    }
   },
   watch: {
     validation: function validation(value) {
       $(this.$el).removeClass('is-valid is-invalid').addClass(value ? 'is-invalid' : '');
     },
     value: function value(_value) {
-      $(this.$el).val(_value).trigger('change');
+      $(this.$el).val(_value); // .trigger('change');
     },
     options: function options(_options) {
       $(this.$el).empty().select2({
         // theme: 'bootstrap4',
         // width:'resolve',
+        minimumInputLength: this.minimumInput ? this.minimumInput : 0,
         data: _options,
         multiple: this.multiple
       }).val('').trigger('change');
@@ -8148,6 +8716,25 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, "\np {\r\n  margin: 0 0 1em;\n}\n.comment {\r\n  overflow: hidden;\r\n  padding: 0 2em 1em;\r\n  border-bottom: 1px solid #ddd;\r\n  margin: 0 0 1em;\r\n  *zoom: 1;\n}\n.comment-body {\r\n  overflow: hidden;\n}\n.comment .text {\r\n  padding: 10px;\r\n  border: 1px solid #e5e5e5;\r\n  border-radius: 5px;\r\n  background: #fff;\n}\n.comment .text p:last-child {\r\n  margin: 0;\r\n  white-space: pre-wrap;\n}\n.comment .attribution {\r\n  margin: 0.5em 0 0;\r\n  font-size: 12px;\r\n  color: #666;\n}\r\n\r\n/* Decoration */\n.comments,\r\n.comment {\r\n  position: relative;\n}\n.comments:before,\r\n.comment:before,\r\n.comment .text:before {\r\n  content: \"\";\r\n  position: absolute;\r\n  top: 0;\r\n  left: 10px;\n}\n.comments:before {\r\n  width: 3px;\r\n  top: -20px;\r\n  bottom: -20px;\r\n  background: rgba(0, 0, 0, 0.1);\n}\n.comment:before {\r\n  width: 9px;\r\n  height: 9px;\r\n  border: 3px solid #fff;\r\n  border-radius: 100px;\r\n  margin: 16px 0 0 -3px;\r\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(0, 0, 0, 0.1);\r\n  background: #ccc;\n}\n.comment:hover:before {\r\n  background: orange;\n}\n.comment .text:before {\r\n  top: 18px;\r\n  left: 25px;\r\n  width: 9px;\r\n  height: 9px;\r\n  border-width: 0 0 1px 1px;\r\n  border-style: solid;\r\n  border-color: #dae0e5;\r\n  background: #fff;\r\n  -webkit-transform: rotate(45deg);\r\n  -moz-transform: rotate(45deg);\r\n  -ms-transform: rotate(45deg);\r\n  -o-transform: rotate(45deg);\n}\n.comment:last-child .text,\r\n.comment:last-child .text:before {\r\n  border-color: #17a2b8;\n}\n.description{\r\n  white-space: pre-wrap;\n}\r\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--5-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--5-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.modal-backdrop.show {\n    opacity: 0.8 !important;\n    background-color: #231161 !important;\n}\n.animateButtons button:hover{\n    transition: .5s;\n    transform: scale(1.5);\n}\n", ""]);
 
 // exports
 
@@ -84951,6 +85538,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--5-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--5-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--5-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--5-2!../../../node_modules/vue-loader/lib??vue-loader-options!./PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -90999,6 +91616,1164 @@ var render = function() {
   ])
 }
 var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=template&id=0598c334&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=template&id=0598c334& ***!
+  \**************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "row" },
+    [
+      _c("div", { staticClass: "col-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c(
+              "div",
+              { staticClass: "row" },
+              [
+                _c("div", { staticClass: "col-md-4" }, [
+                  _c(
+                    "div",
+                    { staticClass: "form-group" },
+                    [
+                      _c("label", [_vm._v("Employee")]),
+                      _vm._v(" "),
+                      _c("select2-component", {
+                        staticClass: "form-control",
+                        attrs: { options: _vm.employess, minimumInput: 4 },
+                        on: { input: _vm.findId },
+                        model: {
+                          value: _vm.employee_id,
+                          callback: function($$v) {
+                            _vm.employee_id = $$v
+                          },
+                          expression: "employee_id"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _vm.employee_id
+                  ? [
+                      _c("div", { staticClass: "col-md-3" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [_vm._v("PEP")]),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "form-control" }, [
+                            _vm._v(" " + _vm._s(_vm.employee_data.pep) + " ")
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Fec Ingreso")
+                          ]),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "form-control" }, [
+                            _vm._v(
+                              " " + _vm._s(_vm.employee_data.date_of_hire) + " "
+                            )
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-3" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Campaña")
+                          ]),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "form-control" }, [
+                            _vm._v(
+                              " " + _vm._s(_vm.employee_data.campaign) + " "
+                            )
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Entidad")
+                          ]),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "form-control" }, [
+                            _vm._v(" " + _vm._s(_vm.employee_data.eps) + " ")
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Supervisor")
+                          ]),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "form-control" }, [
+                            _vm._v(
+                              " " + _vm._s(_vm.employee_data.supervisor) + " "
+                            )
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Basico")
+                          ]),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "form-control" }, [
+                            _vm._v(
+                              " " +
+                                _vm._s(
+                                  _vm.employee_data.basic_salary_cop
+                                    ? parseInt(
+                                        _vm.employee_data.basic_salary_cop
+                                      ).toLocaleString("es-CO")
+                                    : ""
+                                ) +
+                                " "
+                            )
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-12" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-sm btn-primary float-right",
+                            on: { click: _vm.addNovelty }
+                          },
+                          [_vm._v("Agregar Novedad")]
+                        )
+                      ])
+                    ]
+                  : _vm._e()
+              ],
+              2
+            )
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.employee_id
+        ? [
+            _c(
+              "div",
+              {
+                staticClass: "modal fade",
+                attrs: {
+                  id: "modalNovelty",
+                  tabindex: "-1",
+                  role: "dialog",
+                  "aria-labelledby": "modalNoveltyLabel",
+                  "aria-hidden": "true",
+                  "data-backdrop": "static"
+                }
+              },
+              [
+                _c(
+                  "div",
+                  { staticClass: "modal-dialog", attrs: { role: "document" } },
+                  [
+                    _c("div", { staticClass: "modal-content shadow " }, [
+                      _c("div", { staticClass: "modal-header" }, [
+                        _vm.novelty.id
+                          ? _c(
+                              "h5",
+                              {
+                                staticClass: "modal-title",
+                                attrs: { id: "modalNoveltyLabel" }
+                              },
+                              [
+                                _vm._v(
+                                  "Editar Novedad " + _vm._s(_vm.novelty.id)
+                                )
+                              ]
+                            )
+                          : _vm.novelty.extension_id
+                          ? _c(
+                              "h5",
+                              {
+                                staticClass: "modal-title",
+                                attrs: { id: "modalNoveltyLabel" }
+                              },
+                              [
+                                _vm._v("Crear "),
+                                _c(
+                                  "span",
+                                  { staticClass: "badge badge-danger" },
+                                  [_vm._v("Prorroga")]
+                                )
+                              ]
+                            )
+                          : _c(
+                              "h5",
+                              {
+                                staticClass: "modal-title",
+                                attrs: { id: "modalNoveltyLabel" }
+                              },
+                              [_vm._v("Crear Novedad")]
+                            )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "modal-body" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Etiqueta")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.novelty.tag,
+                                  expression: "novelty.tag"
+                                }
+                              ],
+                              class:
+                                "custom-select " +
+                                (_vm.novelty.tag ? "" : "is-invalid"),
+                              on: {
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.$set(
+                                    _vm.novelty,
+                                    "tag",
+                                    $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  )
+                                }
+                              }
+                            },
+                            _vm._l(_vm.tags, function(tag) {
+                              return _c(
+                                "option",
+                                {
+                                  key: tag.text,
+                                  domProps: { value: tag.text }
+                                },
+                                [_vm._v(_vm._s(tag.text))]
+                              )
+                            }),
+                            0
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Contingencia")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.novelty.contingency,
+                                  expression: "novelty.contingency"
+                                }
+                              ],
+                              class:
+                                "custom-select " +
+                                (_vm.novelty.contingency ? "" : "is-invalid"),
+                              on: {
+                                change: [
+                                  function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.$set(
+                                      _vm.novelty,
+                                      "contingency",
+                                      $event.target.multiple
+                                        ? $$selectedVal
+                                        : $$selectedVal[0]
+                                    )
+                                  },
+                                  _vm.changeContingency
+                                ]
+                              }
+                            },
+                            [
+                              _vm._l(_vm.contingencies, function(contingency) {
+                                return [
+                                  (_vm.novelty.extension_id &&
+                                    _vm.novelty.contingency ==
+                                      contingency.cod) ||
+                                  !_vm.novelty.extension_id
+                                    ? _c(
+                                        "option",
+                                        {
+                                          key: contingency.cod,
+                                          domProps: { value: contingency.cod }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                    " +
+                                              _vm._s(contingency.cod) +
+                                              " - " +
+                                              _vm._s(contingency.name) +
+                                              "\n                                "
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e()
+                                ]
+                              })
+                            ],
+                            2
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _vm.novelty.contingency == "EG"
+                          ? _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "custom-control custom-checkbox"
+                                },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.novelty.plansaludmas,
+                                        expression: "novelty.plansaludmas"
+                                      }
+                                    ],
+                                    staticClass: "custom-control-input",
+                                    attrs: {
+                                      type: "checkbox",
+                                      id: "plansaludmas"
+                                    },
+                                    domProps: {
+                                      checked: Array.isArray(
+                                        _vm.novelty.plansaludmas
+                                      )
+                                        ? _vm._i(
+                                            _vm.novelty.plansaludmas,
+                                            null
+                                          ) > -1
+                                        : _vm.novelty.plansaludmas
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        var $$a = _vm.novelty.plansaludmas,
+                                          $$el = $event.target,
+                                          $$c = $$el.checked ? true : false
+                                        if (Array.isArray($$a)) {
+                                          var $$v = null,
+                                            $$i = _vm._i($$a, $$v)
+                                          if ($$el.checked) {
+                                            $$i < 0 &&
+                                              _vm.$set(
+                                                _vm.novelty,
+                                                "plansaludmas",
+                                                $$a.concat([$$v])
+                                              )
+                                          } else {
+                                            $$i > -1 &&
+                                              _vm.$set(
+                                                _vm.novelty,
+                                                "plansaludmas",
+                                                $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1))
+                                              )
+                                          }
+                                        } else {
+                                          _vm.$set(
+                                            _vm.novelty,
+                                            "plansaludmas",
+                                            $$c
+                                          )
+                                        }
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass: "custom-control-label",
+                                      attrs: { for: "plansaludmas" }
+                                    },
+                                    [_vm._v("Plan Salud Mas")]
+                                  )
+                                ]
+                              )
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.hideFields
+                          ? _c(
+                              "div",
+                              { staticClass: "form-group" },
+                              [
+                                _c("label", { attrs: { for: "" } }, [
+                                  _vm._v("Cie10")
+                                ]),
+                                _vm._v(" "),
+                                _c("select-2-component", {
+                                  staticClass:
+                                    "custom-select select2-hidden-accessible",
+                                  class: { "is-invalid": !_vm.novelty.cie10 },
+                                  attrs: {
+                                    minimumInput: 3,
+                                    ajax: _vm.ajx,
+                                    data: _vm.datacie10
+                                  },
+                                  on: {
+                                    input: _vm.getCie10,
+                                    searchData: _vm.listCie10s
+                                  },
+                                  model: {
+                                    value: _vm.novelty.cie10,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.novelty, "cie10", $$v)
+                                    },
+                                    expression: "novelty.cie10"
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.novelty.cie10 == "SDX" && _vm.hideFields
+                          ? _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "" } }, [
+                                _vm._v("SDX")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.novelty.cie10_description,
+                                    expression: "novelty.cie10_description"
+                                  }
+                                ],
+                                class:
+                                  "form-control " +
+                                  (_vm.novelty.cie10_description
+                                    ? ""
+                                    : "is-invalid"),
+                                attrs: { type: "text" },
+                                domProps: {
+                                  value: _vm.novelty.cie10_description
+                                },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.novelty,
+                                      "cie10_description",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "" } }, [
+                                _vm._v("Fecha Inicio")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.novelty.start_date,
+                                    expression: "novelty.start_date"
+                                  }
+                                ],
+                                class:
+                                  "form-control " +
+                                  (_vm.checkField.start_date
+                                    ? ""
+                                    : "is-invalid"),
+                                attrs: { type: "date", id: "startdate" },
+                                domProps: { value: _vm.novelty.start_date },
+                                on: {
+                                  change: _vm.calcDias,
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.novelty,
+                                      "start_date",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "" } }, [
+                                _vm._v("Fecha Fin")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.novelty.end_date,
+                                    expression: "novelty.end_date"
+                                  }
+                                ],
+                                class:
+                                  "form-control " +
+                                  (_vm.checkField.end_date ? "" : "is-invalid"),
+                                attrs: { type: "date" },
+                                domProps: { value: _vm.novelty.end_date },
+                                on: {
+                                  change: _vm.calcDias,
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.novelty,
+                                      "end_date",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "" } }, [
+                                _vm._v("Dias/Horas")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model.number",
+                                    value: _vm.novelty.days_hours,
+                                    expression: "novelty.days_hours",
+                                    modifiers: { number: true }
+                                  }
+                                ],
+                                class:
+                                  "form-control " +
+                                  (_vm.checkField.days_hours
+                                    ? ""
+                                    : "is-invalid"),
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.novelty.days_hours },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.novelty,
+                                      "days_hours",
+                                      _vm._n($event.target.value)
+                                    )
+                                  },
+                                  blur: function($event) {
+                                    return _vm.$forceUpdate()
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _vm.contingencies_extension.includes(
+                            _vm.novelty.contingency
+                          )
+                            ? _c("div", { staticClass: "col-md-6" }, [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("label", { attrs: { for: "" } }, [
+                                    _vm._v("Prorroga")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("span", { staticClass: "form-control" }, [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.novelty.extension == 1 ? "SI" : "NO"
+                                      )
+                                    )
+                                  ])
+                                ])
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "" } }, [
+                                _vm._v("Estado")
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.novelty.status,
+                                      expression: "novelty.status"
+                                    }
+                                  ],
+                                  class:
+                                    "custom-select " +
+                                    (_vm.checkField.status ? "" : "is-invalid"),
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.novelty,
+                                        "status",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    }
+                                  }
+                                },
+                                _vm._l(_vm.statuses, function(status) {
+                                  return _c(
+                                    "option",
+                                    {
+                                      key: status,
+                                      domProps: { value: status }
+                                    },
+                                    [_vm._v(_vm._s(status))]
+                                  )
+                                }),
+                                0
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "" } }, [
+                                _vm._v("Fecha Nomina")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.novelty.payroll_date,
+                                    expression: "novelty.payroll_date"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "date" },
+                                domProps: { value: _vm.novelty.payroll_date },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.novelty,
+                                      "payroll_date",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _vm.hideFields
+                            ? _c("div", { staticClass: "col-md-6" }, [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("label", { attrs: { for: "" } }, [
+                                    _vm._v("Dias a Recobrar")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model.number",
+                                        value: _vm.novelty.days_to_recover,
+                                        expression: "novelty.days_to_recover",
+                                        modifiers: { number: true }
+                                      }
+                                    ],
+                                    class:
+                                      "form-control " +
+                                      (_vm.checkField.days_to_recover
+                                        ? ""
+                                        : "is-invalid"),
+                                    attrs: { type: "number" },
+                                    domProps: {
+                                      value: _vm.novelty.days_to_recover
+                                    },
+                                    on: {
+                                      change: _vm.daysRecover,
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.novelty,
+                                          "days_to_recover",
+                                          _vm._n($event.target.value)
+                                        )
+                                      },
+                                      blur: function($event) {
+                                        return _vm.$forceUpdate()
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.hideFields
+                            ? _c("div", { staticClass: "col-md-6" }, [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("label", { attrs: { for: "" } }, [
+                                    _vm._v("Fecha Radicación")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.novelty.date_of_filing,
+                                        expression: "novelty.date_of_filing"
+                                      }
+                                    ],
+                                    class:
+                                      "form-control " +
+                                      (_vm.checkField.date_of_filing
+                                        ? ""
+                                        : "is-invalid"),
+                                    attrs: { type: "date" },
+                                    domProps: {
+                                      value: _vm.novelty.date_of_filing
+                                    },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.novelty,
+                                          "date_of_filing",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.hideFields
+                            ? _c("div", { staticClass: "col-md-6" }, [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("label", { attrs: { for: "" } }, [
+                                    _vm._v("Valor Reconocido")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.novelty.recognized_value,
+                                        expression: "novelty.recognized_value"
+                                      }
+                                    ],
+                                    class:
+                                      "form-control " +
+                                      (_vm.checkField.recognized_value
+                                        ? ""
+                                        : "is-invalid"),
+                                    attrs: { type: "number" },
+                                    domProps: {
+                                      value: _vm.novelty.recognized_value
+                                    },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.novelty,
+                                          "recognized_value",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.hideFields
+                            ? _c("div", { staticClass: "col-md-6" }, [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("label", { attrs: { for: "" } }, [
+                                    _vm._v("Fecha Abono")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.novelty.date_of_deposit,
+                                        expression: "novelty.date_of_deposit"
+                                      }
+                                    ],
+                                    class:
+                                      "form-control " +
+                                      (_vm.checkField.date_of_deposit
+                                        ? ""
+                                        : "is-invalid"),
+                                    attrs: { type: "date" },
+                                    domProps: {
+                                      value: _vm.novelty.date_of_deposit
+                                    },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.novelty,
+                                          "date_of_deposit",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
+                                ])
+                              ])
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Observación")
+                          ]),
+                          _vm._v(" "),
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.novelty.observation,
+                                expression: "novelty.observation"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { cols: "30", rows: "10" },
+                            domProps: { value: _vm.novelty.observation },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.novelty,
+                                  "observation",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "modal-footer" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            attrs: {
+                              type: "button",
+                              "data-dismiss": "modal",
+                              disabled: _vm.saving
+                            },
+                            on: { click: _vm.clearNovelty }
+                          },
+                          [_vm._v("Cancelar")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "button", disabled: _vm.saving },
+                            on: { click: _vm.saveNovelty }
+                          },
+                          [
+                            _vm.saving
+                              ? _c("span", {
+                                  staticClass:
+                                    "spinner-border spinner-border-sm",
+                                  attrs: {
+                                    role: "status",
+                                    "aria-hidden": "true"
+                                  }
+                                })
+                              : _vm._e(),
+                            _vm._v(
+                              "\n                        Guardar Cambios\n                    "
+                            )
+                          ]
+                        )
+                      ])
+                    ])
+                  ]
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-12" }, [
+              _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "card-body" }, [
+                  _c("div", { staticClass: "table-responsive" }, [
+                    _c("table", { staticClass: "table table-sm" }, [
+                      _vm._m(0),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.novelties, function(n, idx) {
+                          return _c("tr", { key: n.id }, [
+                            _c("td", { staticClass: "text-nowrap" }, [
+                              _vm._v(_vm._s(n.id))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-nowrap" }, [
+                              _vm._v(_vm._s(n.tag))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-nowrap" }, [
+                              _vm._v(_vm._s(n.contingency))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", {}, [
+                              _vm._v(
+                                _vm._s(n.cie10) +
+                                  " - " +
+                                  _vm._s(n.cie10_description)
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-nowrap" }, [
+                              _vm._v(_vm._s(n.start_date))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-nowrap" }, [
+                              _vm._v(_vm._s(n.end_date))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-nowrap" }, [
+                              _vm._v(_vm._s(n.days_hours))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "text-nowrap" }, [
+                              _vm._v(
+                                _vm._s(
+                                  n.extension == 0
+                                    ? "NO"
+                                    : n.extension == 1
+                                    ? "SI"
+                                    : ""
+                                ) + " "
+                              ),
+                              n.extension_id
+                                ? _c("span", [
+                                    _vm._v("-" + _vm._s(n.extension_id) + " ")
+                                  ])
+                                : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _c("td", {}, [
+                              _vm._v(_vm._s(n.status) + " / " + _vm._s(n.eps))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "btn-group animateButtons",
+                                  attrs: {
+                                    role: "group",
+                                    "aria-label": "Basic example"
+                                  }
+                                },
+                                [
+                                  n.extension == 0
+                                    ? _c(
+                                        "button",
+                                        {
+                                          staticClass: "btn btn-outline-info",
+                                          attrs: {
+                                            type: "button",
+                                            title: "Prorroga"
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.addExtension(idx)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "far fa-newspaper"
+                                          })
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-outline-primary",
+                                      attrs: {
+                                        type: "button",
+                                        title: "Editar"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.editNovelty(idx)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("i", {
+                                        staticClass: "fas fa-pencil-alt"
+                                      })
+                                    ]
+                                  )
+                                ]
+                              )
+                            ])
+                          ])
+                        }),
+                        0
+                      )
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ]
+        : _vm._e()
+    ],
+    2
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("CON")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("ETIQUETA")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("CONT")]),
+        _vm._v(" "),
+        _c("th", { attrs: { width: "800" } }, [_vm._v("DX")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("FEC INICIO")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("FEC FIN")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("D/H")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("PROR")]),
+        _vm._v(" "),
+        _c("th", { attrs: { width: "800" } }, [_vm._v("ESTADO / ENTIDAD")]),
+        _vm._v(" "),
+        _c("th")
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -103634,6 +105409,7 @@ var map = {
 	"./components/CalltrackerComponent.vue": "./resources/js/components/CalltrackerComponent.vue",
 	"./components/ExampleComponent.vue": "./resources/js/components/ExampleComponent.vue",
 	"./components/KaizenComponent.vue": "./resources/js/components/KaizenComponent.vue",
+	"./components/PayrollNoveltyComponent.vue": "./resources/js/components/PayrollNoveltyComponent.vue",
 	"./components/Select2Component.vue": "./resources/js/components/Select2Component.vue",
 	"./components/ServiceExpertsFileComponent.vue": "./resources/js/components/ServiceExpertsFileComponent.vue",
 	"./components/TimerComponent.vue": "./resources/js/components/TimerComponent.vue",
@@ -104116,6 +105892,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_KaizenComponent_vue_vue_type_template_id_6757165c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_KaizenComponent_vue_vue_type_template_id_6757165c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/PayrollNoveltyComponent.vue":
+/*!*************************************************************!*\
+  !*** ./resources/js/components/PayrollNoveltyComponent.vue ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _PayrollNoveltyComponent_vue_vue_type_template_id_0598c334___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PayrollNoveltyComponent.vue?vue&type=template&id=0598c334& */ "./resources/js/components/PayrollNoveltyComponent.vue?vue&type=template&id=0598c334&");
+/* harmony import */ var _PayrollNoveltyComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PayrollNoveltyComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/PayrollNoveltyComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _PayrollNoveltyComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _PayrollNoveltyComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PayrollNoveltyComponent_vue_vue_type_template_id_0598c334___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PayrollNoveltyComponent_vue_vue_type_template_id_0598c334___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/PayrollNoveltyComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/PayrollNoveltyComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/PayrollNoveltyComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./PayrollNoveltyComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \**********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--5-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--5-2!../../../node_modules/vue-loader/lib??vue-loader-options!./PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/PayrollNoveltyComponent.vue?vue&type=template&id=0598c334&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/PayrollNoveltyComponent.vue?vue&type=template&id=0598c334& ***!
+  \********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_template_id_0598c334___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./PayrollNoveltyComponent.vue?vue&type=template&id=0598c334& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/PayrollNoveltyComponent.vue?vue&type=template&id=0598c334&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_template_id_0598c334___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PayrollNoveltyComponent_vue_vue_type_template_id_0598c334___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
