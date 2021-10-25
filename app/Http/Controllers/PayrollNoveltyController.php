@@ -66,7 +66,7 @@ class PayrollNoveltyController extends Controller
                 "observation"
             )
             ->where('national_id',$employee_data->national_id)
-            ->orderBy('start_date')
+            ->orderBy('start_date','desc')
             ->get();
 
             foreach ($novelties as $key => $novelty) {
