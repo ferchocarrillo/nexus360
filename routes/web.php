@@ -130,6 +130,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('payrollnovelty/reports/general','PayrollNoveltyReportsController@general')->name('payrollnovelty.reports.general');
     Route::post('payrollnovelty/reports/general','PayrollNoveltyReportsController@generalDownload')->name('payrollnovelty.reports.generalDownload');
 
+    // American Water BO Tracker
+    Route::get('americanwater/botracker','AmericanWaterBoTrackerController@index')->name('americanwater.botracker');
+    Route::post('americanwater/botracker','AmericanWaterBoTrackerController@store')->name('americanwater.botrackerStore');
+    Route::post('americanwater/botracker/getlists','AmericanWaterBoTrackerController@getLists')->name('americanwater.getLists');
+
+    Route::get('/getdatenow',function(){
+        return date('Y-m-d H:i:s');
+    });
+
 });
 
 Auth::routes(['register' => false]);

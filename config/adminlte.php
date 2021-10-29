@@ -292,6 +292,18 @@ return [
             ]
         ],     
         [
+            'text' => 'Amerian Water',
+            'icon' => 'nav-icon fa fa-cubes',
+            'can' => 'americanwater',
+            'submenu' => [
+                [
+                    'text' => 'BO Tracker',
+                    'url' => 'americanwater/botracker',
+                    'can' => 'americanwater.botracker'
+                ],
+            ]
+        ],     
+        [
             'text' => 'Reports',
             'icon' => 'nav-icon fas fa-chart-line',
             'can' => 'agentactivity.report',

@@ -276,5 +276,17 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "payrollnovelty.flatfile",
             'description'   => "Payroll Novelty Flat File",
         ]);
+
+        Permission::firstOrCreate([
+            'name'          => "American Water",
+            'slug'          => "americanwater",
+            'description'   => "American Water",
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "American Water BO Tracker",
+            'slug'          => "americanwater.botracker",
+            'description'   => "American Water BO Tracker",
+        ]);
     }
 }
