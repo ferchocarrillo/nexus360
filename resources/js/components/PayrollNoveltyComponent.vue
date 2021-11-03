@@ -253,6 +253,7 @@
                                     <div class="btn-group animateButtons" role="group" aria-label="Basic example">
                                         <button type="button" class="btn btn-outline-info" title="Prorroga" @click="addExtension(idx)" v-if="n.extension == 0"><i class="far fa-newspaper"></i></button>
                                         <button type="button" class="btn btn-outline-primary" title="Editar" @click="editNovelty(idx)"><i class="fas fa-pencil-alt"></i></button>
+                                        <button v-if="permission_delete" type="button" class="btn btn-outline-danger" title="Eliminar" @click="deleteNovelty(idx)"> <i class="fas fa-trash"></i> </button>
                                     </div>
                                 </td>
                             </tr>
@@ -277,6 +278,7 @@
                 employee_id:"",
                 employee_data:{},
                 novelties:[],
+                permission_delete:false,
                 novelty:{},
                 cie10:"",
                 cie10s:[],
@@ -303,6 +305,7 @@
                 .then(res=>{
                     this.employee_data = res.data.employee_data
                     this.novelties = res.data.novelties
+                    this.permission_delete = res.data.permission_delete
                     setTimeout(function() {
                         $('#logoLoading').modal('toggle');   
                     }, 1000);
@@ -412,6 +415,33 @@
                     */
                     
                 }
+            },
+            deleteNovelty(i){
+                var id = this.novelties[i].id;
+                swal
+                .fire({
+                    title: "Estas seguro de eliminar esa novedad ?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Si",
+                    cancelButtonText: "Cancelar"
+                })
+                .then(result => {
+                    if (result.value) {
+                        $('#logoLoading').modal('show');
+                        axios.delete("/payrollnovelty/"+id)
+                        .then(response=>{
+                            if(response.data.delete){
+                                $('#logoLoading').modal('hide');
+                                setTimeout(() => {this.findId();},1000)
+
+                            } 
+                        });
+                    }
+                });
+                
             },
             checkDates:function(){
                 var startDate = new Date(this.novelty.start_date)

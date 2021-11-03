@@ -363,6 +363,11 @@ return [
                             'text'=>'General',
                             'url'=>'/payrollnovelty/reports/general',
                             'can'=>'payrollnovelty.reports.general'
+                        ],
+                        [
+                            'text'=>'Novelties RRHH',
+                            'url'=>'/payrollnovelty/reports/noveltiesrrhh',
+                            'can'=>'payrollnovelty.reports.noveltiesrrhh'
                         ]
                     ]
                 ]

@@ -266,6 +266,12 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         Permission::firstOrCreate([
+            'name'          => "Payroll Novelty Reports Novelties RRHH",
+            'slug'          => "payrollnovelty.reports.noveltiesrrhh",
+            'description'   => "Payroll Novelty Reports Novelties RRHH",
+        ]);
+
+        Permission::firstOrCreate([
             'name'          => "Payroll Novelty Reports General",
             'slug'          => "payrollnovelty.reports.general",
             'description'   => "Payroll Novelty Reports General",
@@ -275,6 +281,12 @@ class PermissionsTableSeeder extends Seeder
             'name'          => "Payroll Novelty Flat File",
             'slug'          => "payrollnovelty.flatfile",
             'description'   => "Payroll Novelty Flat File",
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Payroll Novelty Delete Novelties",
+            'slug'          => "payrollnovelty.delete",
+            'description'   => "Payroll Novelty Delete Novelties",
         ]);
 
         Permission::firstOrCreate([

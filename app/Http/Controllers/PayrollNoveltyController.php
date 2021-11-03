@@ -73,7 +73,9 @@ class PayrollNoveltyController extends Controller
                 $novelties[$key]->plansaludmas = ($novelty->eps == 'Plan Salud Mas' ? true : false );
             }
 
-            return response()->json(['employee_data'=>$employee_data,'novelties'=>$novelties]);
+            $permission_delete = auth()->user()->hasPermissionTo('payrollnovelty.delete');
+
+            return response()->json(['employee_data'=>$employee_data,'novelties'=>$novelties,'permission_delete'=>$permission_delete]);
             
         }
     }
@@ -214,6 +216,19 @@ class PayrollNoveltyController extends Controller
         ]);
 
         
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(PayrollNovelty $payrollnovelty)
+    {
+        $delete = $payrollnovelty->delete();
+        return response()->json(['delete'=>$delete]);
+        // return back()->with('info', 'Successfully removed');
     }
 
 }

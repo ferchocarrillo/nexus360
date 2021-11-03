@@ -112,7 +112,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Payroll Novelty
     Route::resource('payrollnovelty', 'PayrollNoveltyController',[
-        'only'=>['index','create','store','update']
+        'only'=>['index','create','store','update','destroy']
     ]);
     Route::post('payrollnovelty/cie10s','PayrollNoveltyController@cie10s')->name('payrollnovelty.cie10s');
     Route::post('payrollnovelty/findemployee','PayrollNoveltyController@findemployee')->name('payrollnovelty.findemployee');
@@ -129,6 +129,9 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('payrollnovelty/reports/general','PayrollNoveltyReportsController@general')->name('payrollnovelty.reports.general');
     Route::post('payrollnovelty/reports/general','PayrollNoveltyReportsController@generalDownload')->name('payrollnovelty.reports.generalDownload');
+    
+    Route::get('payrollnovelty/reports/noveltiesrrhh','PayrollNoveltyReportsController@noveltiesrrhh')->name('payrollnovelty.reports.noveltiesrrhh');
+    Route::post('payrollnovelty/reports/noveltiesrrhh','PayrollNoveltyReportsController@noveltiesrrhhDownload')->name('payrollnovelty.reports.noveltiesrrhhDownload');
 
     // American Water BO Tracker
     Route::get('americanwater/botracker','AmericanWaterBoTrackerController@index')->name('americanwater.botracker');

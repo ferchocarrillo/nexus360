@@ -3646,6 +3646,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['contingencies', 'statuses', 'tags', 'employess', 'smlvs'],
@@ -3655,6 +3656,7 @@ __webpack_require__.r(__webpack_exports__);
       employee_id: "",
       employee_data: {},
       novelties: [],
+      permission_delete: false,
       novelty: {},
       cie10: "",
       cie10s: [],
@@ -3684,6 +3686,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         _this.employee_data = res.data.employee_data;
         _this.novelties = res.data.novelties;
+        _this.permission_delete = res.data.permission_delete;
         setTimeout(function () {
           $('#logoLoading').modal('toggle');
         }, 1000);
@@ -3807,6 +3810,32 @@ __webpack_require__.r(__webpack_exports__);
         */
 
       }
+    },
+    deleteNovelty: function deleteNovelty(i) {
+      var _this4 = this;
+
+      var id = this.novelties[i].id;
+      swal.fire({
+        title: "Estas seguro de eliminar esa novedad ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "Cancelar"
+      }).then(function (result) {
+        if (result.value) {
+          $('#logoLoading').modal('show');
+          axios["delete"]("/payrollnovelty/" + id).then(function (response) {
+            if (response.data["delete"]) {
+              $('#logoLoading').modal('hide');
+              setTimeout(function () {
+                _this4.findId();
+              }, 1000);
+            }
+          });
+        }
+      });
     },
     checkDates: function checkDates() {
       var startDate = new Date(this.novelty.start_date);
@@ -93454,7 +93483,30 @@ var render = function() {
                                         staticClass: "fas fa-pencil-alt"
                                       })
                                     ]
-                                  )
+                                  ),
+                                  _vm._v(" "),
+                                  _vm.permission_delete
+                                    ? _c(
+                                        "button",
+                                        {
+                                          staticClass: "btn btn-outline-danger",
+                                          attrs: {
+                                            type: "button",
+                                            title: "Eliminar"
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.deleteNovelty(idx)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "fas fa-trash"
+                                          })
+                                        ]
+                                      )
+                                    : _vm._e()
                                 ]
                               )
                             ])
