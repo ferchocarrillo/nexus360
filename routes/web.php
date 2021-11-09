@@ -138,6 +138,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('americanwater/botracker','AmericanWaterBoTrackerController@store')->name('americanwater.botrackerStore');
     Route::post('americanwater/botracker/getlists','AmericanWaterBoTrackerController@getLists')->name('americanwater.getLists');
 
+    Route::get('americanwater/botracker/reports/general','AmericanWaterBoTrackerReportsController@general')->name('americanwater.botracker.reportsGeneral');
+    Route::post('americanwater/botracker/reports/general','AmericanWaterBoTrackerReportsController@generalDownload')->name('americanwater.botracker.reportsGeneralDownload');
+
     Route::get('/getdatenow',function(){
         return date('Y-m-d H:i:s');
     });

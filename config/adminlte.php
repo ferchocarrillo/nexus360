@@ -301,6 +301,18 @@ return [
                     'url' => 'americanwater/botracker',
                     'can' => 'americanwater.botracker'
                 ],
+                [
+                    'text' => 'Reports',
+                    'icon' => 'nav-icon fas fa-chart-line',
+                    'can' => 'americanwater.botracker.reports',
+                    'submenu' => [
+                        [
+                            'text' => 'General',
+                            'url' => 'americanwater/botracker/reports/general',
+                            'can' => 'americanwater.botracker.reports.general'
+                        ],
+                    ]
+                ],
             ]
         ],     
         [

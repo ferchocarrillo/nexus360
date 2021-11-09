@@ -300,5 +300,17 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "americanwater.botracker",
             'description'   => "American Water BO Tracker",
         ]);
+
+        Permission::firstOrCreate([
+            'name'          => "American Water BO Tracker Reports",
+            'slug'          => "americanwater.botracker.reports",
+            'description'   => "American Water BO Tracker Reports",
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "American Water BO Tracker Report General",
+            'slug'          => "americanwater.botracker.reports.general",
+            'description'   => "American Water BO Tracker Report General",
+        ]);
     }
 }
