@@ -91,7 +91,7 @@ class User extends Authenticatable
         $permissionCampaign = [];
         foreach ($campaigns as $key => $campaign) {
             $permission = 'agentactivity.campaign.'.mb_strtolower(str_replace(' ','_',$campaign),'UTF-8');
-            if($this->hasPermissionTo($permission)){
+            if($this->can($permission)){
                 $permissionCampaign[]=$campaign;
             }            
         }
