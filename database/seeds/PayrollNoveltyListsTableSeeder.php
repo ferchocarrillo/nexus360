@@ -47,7 +47,8 @@ class PayrollNoveltyListsTableSeeder extends Seeder
                 "NEGADA",
                 "NEGADA PERIODO COTIZACION",
                 "PAGADA",
-                "PTE. TRANSFERENCIA"
+                "PTE. TRANSFERENCIA",
+                "PTE. TRANSCRIPCION"
             ]
         ]);
 
