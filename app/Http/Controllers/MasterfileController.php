@@ -61,6 +61,7 @@ class MasterfileController extends Controller
             $lastWFH = DB::connection('sqlsrvmasterfile')
             ->table('wfh')
             ->whereRaw('id in (select max(id) from wfh group by employee_id)')
+            ->where('employee_id',$request->employee_id)
             ->first();
 
             if($lastWFH && $lastWFH->wfh == $request->wfh) return response()->json(['result'=>'No changes to save']);
