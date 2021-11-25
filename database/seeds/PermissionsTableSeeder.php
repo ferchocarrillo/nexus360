@@ -312,5 +312,18 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "americanwater.botracker.reports.general",
             'description'   => "American Water BO Tracker Report General",
         ]);
+
+        Permission::firstOrCreate([
+            'name'          => "MasterFile",
+            'slug'          => "masterfile",
+            'description'   => "MasterFile"
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "MasterFile WFH",
+            'slug'          => "masterfile.wfh",
+            'description'   => "MasterFile WFH"
+        ]);
+
     }
 }

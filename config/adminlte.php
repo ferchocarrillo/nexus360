@@ -386,6 +386,19 @@ return [
             ]
         ],
         [
+            'text'=>'MasterFile',
+            'icon'=>'nav-icon fas fa-user-friends',
+            'can'=>'masterfile',
+            'submenu'=>[
+                [
+                    'text' => 'WFH',
+                    'icon' => 'nav-icon fas fa-home',
+                    'url' => 'masterfile/wfh',
+                    'can' => 'masterfile.wfh'
+                ]
+            ]
+        ],
+        [
             'text'=>"Pandora's Box",
             'icon'=>'nav-icon fas fa-inbox',
             'url'=>'pandorasbox',
