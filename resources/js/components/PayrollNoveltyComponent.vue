@@ -270,7 +270,7 @@
     import moment from "moment";
     export default {
         props:[
-            'contingencies' ,'statuses','tags','employess','smlvs'
+            'contingencies' ,'statuses','tags','employess','smlvs', 'searchnovelty'
         ],
         data(){
             return {
@@ -300,14 +300,23 @@
         },
         methods:{
             findId(){
-                $('#logoLoading').modal('toggle');   
-                axios.post("findemployee",{id:this.employee_id})
+                $('#logoLoading').modal('show');
+                axios.post("/payrollnovelty/findemployee",{id:this.employee_id})
                 .then(res=>{
                     this.employee_data = res.data.employee_data
                     this.novelties = res.data.novelties
                     this.permission_delete = res.data.permission_delete
+                    let self = this
                     setTimeout(function() {
-                        $('#logoLoading').modal('toggle');   
+                        $('#logoLoading').modal('hide');
+                        setTimeout(function(){
+                            if(self.searchnovelty){
+                                let idx = self.novelties.findIndex(n=> n.id == self.searchnovelty.id)
+                                if(idx>=0){
+                                    self.editNovelty(idx)
+                                }
+                            }
+                        },1000)
                     }, 1000);
                 })
             },
@@ -531,7 +540,11 @@
 
         },
         mounted() {
-            this.clearNovelty()
+            this.clearNovelty();
+            if(this.searchnovelty) this.findId();
+        },
+        created(){
+            if(this.searchnovelty) this.employee_id = this.searchnovelty.employee_id;
         }
     }
 </script>

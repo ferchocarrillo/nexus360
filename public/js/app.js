@@ -3649,7 +3649,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['contingencies', 'statuses', 'tags', 'employess', 'smlvs'],
+  props: ['contingencies', 'statuses', 'tags', 'employess', 'smlvs', 'searchnovelty'],
   data: function data() {
     return {
       saving: false,
@@ -3680,15 +3680,27 @@ __webpack_require__.r(__webpack_exports__);
     findId: function findId() {
       var _this = this;
 
-      $('#logoLoading').modal('toggle');
-      axios.post("findemployee", {
+      $('#logoLoading').modal('show');
+      axios.post("/payrollnovelty/findemployee", {
         id: this.employee_id
       }).then(function (res) {
         _this.employee_data = res.data.employee_data;
         _this.novelties = res.data.novelties;
         _this.permission_delete = res.data.permission_delete;
+        var self = _this;
         setTimeout(function () {
-          $('#logoLoading').modal('toggle');
+          $('#logoLoading').modal('hide');
+          setTimeout(function () {
+            if (self.searchnovelty) {
+              var idx = self.novelties.findIndex(function (n) {
+                return n.id == self.searchnovelty.id;
+              });
+
+              if (idx >= 0) {
+                self.editNovelty(idx);
+              }
+            }
+          }, 1000);
         }, 1000);
       });
     },
@@ -3929,6 +3941,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.clearNovelty();
+    if (this.searchnovelty) this.findId();
+  },
+  created: function created() {
+    if (this.searchnovelty) this.employee_id = this.searchnovelty.employee_id;
   }
 });
 
@@ -8971,7 +8987,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.modal-backdrop.show {\n    opacity: 0.8 !important;\n    background-color: #231161 !important;\n}\n.animateButtons button:hover{\n    -webkit-transition: .5s;\n    transition: .5s;\n    -webkit-transform: scale(1.5);\n            transform: scale(1.5);\n}\n", ""]);
+exports.push([module.i, "\n.modal-backdrop.show {\r\n    opacity: 0.8 !important;\r\n    background-color: #231161 !important;\n}\n.animateButtons button:hover{\r\n    -webkit-transition: .5s;\r\n    transition: .5s;\r\n    -webkit-transform: scale(1.5);\r\n            transform: scale(1.5);\n}\r\n", ""]);
 
 // exports
 

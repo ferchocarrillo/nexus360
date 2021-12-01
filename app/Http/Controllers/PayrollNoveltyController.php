@@ -16,7 +16,7 @@ class PayrollNoveltyController extends Controller
 
     public function __construct()
     {
-        $this->middleware('can:payrollnovelty')->only(['cie10s','findemployee','index','create','store','update']);
+        $this->middleware('can:payrollnovelty')->only(['cie10s','findemployee','index','pending','store','update']);
         $this->middleware('can:payrollnovelty.flatfile')->only(['downloadFlatFile','updateTags','noveltiesFlatFile']);
     }
 
@@ -107,13 +107,13 @@ class PayrollNoveltyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function pending()
     {
         $tags = PayrollNoveltyList::where('name','tags')->firstOrFail()->list;
         $tags = array_column(array_filter($tags,function($tag){return $tag['filter'] == 1;}),'text');        
         $novelties = PayrollNovelty::whereIn('tag',$tags)->orderBy('start_date')->get();
 
-        return view('payrollnovelty.index',compact('novelties'));
+        return view('payrollnovelty.pending',compact('novelties'));
     }
 
     /**
@@ -121,7 +121,7 @@ class PayrollNoveltyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function index(Request $request, PayrollNovelty $novelty=null)
     {
         $lists = PayrollNoveltyList::all();
         $contingencies = $lists[0]->list;
@@ -141,7 +141,7 @@ class PayrollNoveltyController extends Controller
         ) as b on a.national_id = b.national_id 
         and a.date_of_hire = b.date_of_hire");
 
-        return view('payrollnovelty.create',compact('contingencies','statuses','tags','employess','smlvs'));
+        return view('payrollnovelty.index',compact('contingencies','statuses','tags','employess','smlvs','novelty'));
     }
 
     /**

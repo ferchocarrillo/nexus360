@@ -114,8 +114,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Payroll Novelty
     Route::resource('payrollnovelty', 'PayrollNoveltyController',[
-        'only'=>['index','create','store','update','destroy']
+        'only'=>['store','update','destroy']
     ]);
+    
+    Route::get('payrollnovelty/{novelty?}', 'PayrollNoveltyController@index')->name('payrollnovelty.index')->where('novelty', '[0-9]+');
+    Route::get('payrollnovelty/pending', 'PayrollNoveltyController@pending')->name('payrollnovelty.pending');
+
     Route::post('payrollnovelty/cie10s','PayrollNoveltyController@cie10s')->name('payrollnovelty.cie10s');
     Route::post('payrollnovelty/findemployee','PayrollNoveltyController@findemployee')->name('payrollnovelty.findemployee');
     Route::get('payrollnovelty/downloadflatfile','PayrollNoveltyController@downloadFlatFile')->name('payrollnovelty.downloadFlatFile');
