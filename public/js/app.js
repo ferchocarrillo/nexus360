@@ -89716,479 +89716,470 @@ var render = function() {
     _vm._v(" "),
     _vm.start
       ? _c("div", { staticClass: "card" }, [
-          _c(
-            "div",
-            { staticClass: "card-body" },
-            [
+          _c("div", { staticClass: "card-body" }, [
+            _c(
+              "form",
+              { attrs: { action: "/americanwater/botracker", method: "POST" } },
               [
-                _c(
-                  "form",
-                  {
-                    attrs: {
-                      action: "/americanwater/botracker",
-                      method: "POST"
-                    }
-                  },
-                  [
-                    _c("input", {
-                      attrs: { type: "hidden", name: "_token" },
-                      domProps: { value: _vm.csrf }
-                    }),
-                    _vm._v(" "),
-                    _c("input", {
-                      attrs: { type: "hidden", name: "started_at" },
-                      domProps: { value: _vm.form.started_at }
-                    }),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group" }, [
-                      _c("label", { attrs: { for: "queue" } }, [
-                        _vm._v("Queue")
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "select",
+                _c("input", {
+                  attrs: { type: "hidden", name: "_token" },
+                  domProps: { value: _vm.csrf }
+                }),
+                _vm._v(" "),
+                _c("input", {
+                  attrs: { type: "hidden", name: "started_at" },
+                  domProps: { value: _vm.form.started_at }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", { attrs: { for: "queue" } }, [_vm._v("Queue")]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
                         {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.queue,
+                          expression: "form.queue"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { name: "queue", id: "queue", required: "" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.$set(
+                            _vm.form,
+                            "queue",
+                            $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          )
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "option",
+                        { attrs: { value: "", selected: "", disabled: "" } },
+                        [_vm._v("Select Queue")]
+                      ),
+                      _vm._v(" "),
+                      _vm._l(_vm.lists.queues, function(queue, index) {
+                        return _c(
+                          "option",
+                          { key: index, domProps: { value: index } },
+                          [
+                            _vm._v(
+                              "\r\n                " +
+                                _vm._s(index) +
+                                "\r\n              "
+                            )
+                          ]
+                        )
+                      })
+                    ],
+                    2
+                  )
+                ]),
+                _vm._v(" "),
+                _vm.form.queue && !_vm.lists.queues[_vm.form.queue].endForm
+                  ? [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { for: "cus_id" } }, [
+                          _vm._v("CUS ID")
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
                           directives: [
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.form.queue,
-                              expression: "form.queue"
+                              value: _vm.form.cus_id,
+                              expression: "form.cus_id"
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { name: "queue", id: "queue", required: "" },
+                          attrs: {
+                            type: "text",
+                            name: "cus_id",
+                            id: "cus_id",
+                            required: ""
+                          },
+                          domProps: { value: _vm.form.cus_id },
                           on: {
-                            change: function($event) {
-                              var $$selectedVal = Array.prototype.filter
-                                .call($event.target.options, function(o) {
-                                  return o.selected
-                                })
-                                .map(function(o) {
-                                  var val = "_value" in o ? o._value : o.value
-                                  return val
-                                })
-                              _vm.$set(
-                                _vm.form,
-                                "queue",
-                                $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              )
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(_vm.form, "cus_id", $event.target.value)
                             }
                           }
-                        },
-                        [
-                          _c(
-                            "option",
-                            {
-                              attrs: { value: "", selected: "", disabled: "" }
-                            },
-                            [_vm._v("Select Queue")]
-                          ),
-                          _vm._v(" "),
-                          _vm._l(_vm.lists.queues, function(queue, index) {
-                            return _c(
-                              "option",
-                              { key: index, domProps: { value: index } },
-                              [
-                                _vm._v(
-                                  "\r\n                " +
-                                    _vm._s(index) +
-                                    "\r\n              "
-                                )
-                              ]
-                            )
-                          })
-                        ],
-                        2
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _vm.form.queue && !_vm.lists.queues[_vm.form.queue].endForm
-                      ? [
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "cus_id" } }, [
-                              _vm._v("CUS ID")
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.form.cus_id,
-                                  expression: "form.cus_id"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: {
-                                type: "text",
-                                name: "cus_id",
-                                id: "cus_id",
-                                required: ""
-                              },
-                              domProps: { value: _vm.form.cus_id },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.$set(
-                                    _vm.form,
-                                    "cus_id",
-                                    $event.target.value
-                                  )
-                                }
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "customer_name" } }, [
-                              _vm._v("Customer Name")
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.form.customer_name,
-                                  expression: "form.customer_name"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: {
-                                type: "text",
-                                name: "customer_name",
-                                id: "customer_name",
-                                required: ""
-                              },
-                              domProps: { value: _vm.form.customer_name },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.$set(
-                                    _vm.form,
-                                    "customer_name",
-                                    $event.target.value
-                                  )
-                                }
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "spreadsheet" } }, [
-                              _vm._v("Spreadsheet")
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.form.spreadsheet,
-                                  expression: "form.spreadsheet"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: {
-                                type: "text",
-                                name: "spreadsheet",
-                                id: "spreadsheet",
-                                required: ""
-                              },
-                              domProps: { value: _vm.form.spreadsheet },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.$set(
-                                    _vm.form,
-                                    "spreadsheet",
-                                    $event.target.value
-                                  )
-                                }
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "status" } }, [
-                              _vm._v("Status")
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "select",
-                              {
+                        })
+                      ]),
+                      _vm._v(" "),
+                      !_vm.lists.queues[_vm.form.queue].onlyCusID
+                        ? [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "customer_name" } }, [
+                                _vm._v("Customer Name")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
                                 directives: [
                                   {
                                     name: "model",
                                     rawName: "v-model",
-                                    value: _vm.form.status,
-                                    expression: "form.status"
+                                    value: _vm.form.customer_name,
+                                    expression: "form.customer_name"
                                   }
                                 ],
                                 staticClass: "form-control",
                                 attrs: {
-                                  name: "status",
-                                  id: "id",
+                                  type: "text",
+                                  name: "customer_name",
+                                  id: "customer_name",
                                   required: ""
                                 },
+                                domProps: { value: _vm.form.customer_name },
                                 on: {
-                                  change: function($event) {
-                                    var $$selectedVal = Array.prototype.filter
-                                      .call($event.target.options, function(o) {
-                                        return o.selected
-                                      })
-                                      .map(function(o) {
-                                        var val =
-                                          "_value" in o ? o._value : o.value
-                                        return val
-                                      })
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
                                     _vm.$set(
                                       _vm.form,
-                                      "status",
-                                      $event.target.multiple
-                                        ? $$selectedVal
-                                        : $$selectedVal[0]
+                                      "customer_name",
+                                      $event.target.value
                                     )
                                   }
                                 }
-                              },
-                              [
-                                _c(
-                                  "option",
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "spreadsheet" } }, [
+                                _vm._v("Spreadsheet")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
                                   {
-                                    attrs: {
-                                      value: "",
-                                      selected: "",
-                                      disabled: ""
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.spreadsheet,
+                                    expression: "form.spreadsheet"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: {
+                                  type: "text",
+                                  name: "spreadsheet",
+                                  id: "spreadsheet",
+                                  required: ""
+                                },
+                                domProps: { value: _vm.form.spreadsheet },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
                                     }
+                                    _vm.$set(
+                                      _vm.form,
+                                      "spreadsheet",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", { attrs: { for: "status" } }, [
+                                _vm._v("Status")
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.status,
+                                      expression: "form.status"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: {
+                                    name: "status",
+                                    id: "id",
+                                    required: ""
                                   },
-                                  [_vm._v("Select Status")]
-                                ),
-                                _vm._v(" "),
-                                _vm._l(_vm.lists.statuses, function(
-                                  status,
-                                  index
-                                ) {
-                                  return _c(
-                                    "option",
-                                    { key: index, domProps: { value: index } },
-                                    [
-                                      _vm._v(
-                                        "\r\n                  " +
-                                          _vm._s(index) +
-                                          "\r\n                "
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.form,
+                                        "status",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
                                       )
-                                    ]
-                                  )
-                                })
-                              ],
-                              2
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _vm.form.status &&
-                          _vm.lists.statuses[_vm.form.status].gotoENR
-                            ? [
-                                _c("div", { staticClass: "form-group" }, [
-                                  _c(
-                                    "label",
-                                    { attrs: { for: "enr_number" } },
-                                    [_vm._v("ENR Number")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.form.enr_number,
-                                        expression: "form.enr_number"
-                                      }
-                                    ],
-                                    staticClass: "form-control",
-                                    attrs: {
-                                      type: "text",
-                                      name: "enr_number",
-                                      id: "enr_number",
-                                      required: ""
-                                    },
-                                    domProps: { value: _vm.form.enr_number },
-                                    on: {
-                                      input: function($event) {
-                                        if ($event.target.composing) {
-                                          return
-                                        }
-                                        _vm.$set(
-                                          _vm.form,
-                                          "enr_number",
-                                          $event.target.value
-                                        )
-                                      }
                                     }
-                                  })
-                                ]),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "form-group" }, [
+                                  }
+                                },
+                                [
                                   _c(
-                                    "label",
+                                    "option",
                                     {
-                                      attrs: { for: "agreement_classification" }
+                                      attrs: {
+                                        value: "",
+                                        selected: "",
+                                        disabled: ""
+                                      }
                                     },
-                                    [_vm._v("Agreement Classification")]
+                                    [_vm._v("Select Status")]
                                   ),
                                   _vm._v(" "),
-                                  _c(
-                                    "select",
-                                    {
+                                  _vm._l(_vm.lists.statuses, function(
+                                    status,
+                                    index
+                                  ) {
+                                    return _c(
+                                      "option",
+                                      {
+                                        key: index,
+                                        domProps: { value: index }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\r\n                  " +
+                                            _vm._s(index) +
+                                            "\r\n                "
+                                        )
+                                      ]
+                                    )
+                                  })
+                                ],
+                                2
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _vm.form.status &&
+                            _vm.lists.statuses[_vm.form.status].gotoENR
+                              ? [
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c(
+                                      "label",
+                                      { attrs: { for: "enr_number" } },
+                                      [_vm._v("ENR Number")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c("input", {
                                       directives: [
                                         {
                                           name: "model",
                                           rawName: "v-model",
-                                          value:
-                                            _vm.form.agreement_classification,
-                                          expression:
-                                            "form.agreement_classification"
+                                          value: _vm.form.enr_number,
+                                          expression: "form.enr_number"
                                         }
                                       ],
                                       staticClass: "form-control",
                                       attrs: {
-                                        name: "agreement_classification",
-                                        id: "agreement_classification",
+                                        type: "text",
+                                        name: "enr_number",
+                                        id: "enr_number",
                                         required: ""
                                       },
+                                      domProps: { value: _vm.form.enr_number },
                                       on: {
-                                        change: function($event) {
-                                          var $$selectedVal = Array.prototype.filter
-                                            .call(
-                                              $event.target.options,
-                                              function(o) {
-                                                return o.selected
-                                              }
-                                            )
-                                            .map(function(o) {
-                                              var val =
-                                                "_value" in o
-                                                  ? o._value
-                                                  : o.value
-                                              return val
-                                            })
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
                                           _vm.$set(
                                             _vm.form,
-                                            "agreement_classification",
-                                            $event.target.multiple
-                                              ? $$selectedVal
-                                              : $$selectedVal[0]
+                                            "enr_number",
+                                            $event.target.value
                                           )
                                         }
                                       }
-                                    },
-                                    [
-                                      _c(
-                                        "option",
-                                        {
-                                          attrs: {
-                                            value: "",
-                                            selected: "",
-                                            disabled: ""
-                                          }
-                                        },
-                                        [
-                                          _vm._v(
-                                            "\r\n                    Select Agreement Classification\r\n                  "
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _vm._l(
-                                        _vm.lists.agreement_classifications,
-                                        function(
-                                          agreement_classification,
-                                          index
-                                        ) {
-                                          return _c(
-                                            "option",
-                                            {
-                                              key: index,
-                                              domProps: {
-                                                value: agreement_classification
-                                              }
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\r\n                    " +
-                                                  _vm._s(
-                                                    agreement_classification
-                                                  ) +
-                                                  "\r\n                  "
-                                              )
-                                            ]
-                                          )
+                                    })
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c(
+                                      "label",
+                                      {
+                                        attrs: {
+                                          for: "agreement_classification"
                                         }
-                                      )
-                                    ],
-                                    2
-                                  )
-                                ])
-                              ]
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-group" }, [
-                            _c(
-                              "label",
-                              { attrs: { for: "additional_notes" } },
-                              [_vm._v("Additional Notes")]
-                            ),
+                                      },
+                                      [_vm._v("Agreement Classification")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value:
+                                              _vm.form.agreement_classification,
+                                            expression:
+                                              "form.agreement_classification"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        attrs: {
+                                          name: "agreement_classification",
+                                          id: "agreement_classification",
+                                          required: ""
+                                        },
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              _vm.form,
+                                              "agreement_classification",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "option",
+                                          {
+                                            attrs: {
+                                              value: "",
+                                              selected: "",
+                                              disabled: ""
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\r\n                    Select Agreement Classification\r\n                  "
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _vm._l(
+                                          _vm.lists.agreement_classifications,
+                                          function(
+                                            agreement_classification,
+                                            index
+                                          ) {
+                                            return _c(
+                                              "option",
+                                              {
+                                                key: index,
+                                                domProps: {
+                                                  value: agreement_classification
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "\r\n                    " +
+                                                    _vm._s(
+                                                      agreement_classification
+                                                    ) +
+                                                    "\r\n                  "
+                                                )
+                                              ]
+                                            )
+                                          }
+                                        )
+                                      ],
+                                      2
+                                    )
+                                  ])
+                                ]
+                              : _vm._e(),
                             _vm._v(" "),
-                            _c("textarea", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.form.additional_notes,
-                                  expression: "form.additional_notes"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: {
-                                name: "additional_notes",
-                                id: "additional_notes",
-                                required: ""
-                              },
-                              domProps: { value: _vm.form.additional_notes },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "label",
+                                { attrs: { for: "additional_notes" } },
+                                [_vm._v("Additional Notes")]
+                              ),
+                              _vm._v(" "),
+                              _c("textarea", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.additional_notes,
+                                    expression: "form.additional_notes"
                                   }
-                                  _vm.$set(
-                                    _vm.form,
-                                    "additional_notes",
-                                    $event.target.value
-                                  )
+                                ],
+                                staticClass: "form-control",
+                                attrs: {
+                                  name: "additional_notes",
+                                  id: "additional_notes",
+                                  required: ""
+                                },
+                                domProps: { value: _vm.form.additional_notes },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.form,
+                                      "additional_notes",
+                                      $event.target.value
+                                    )
+                                  }
                                 }
-                              }
-                            })
-                          ])
-                        ]
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm._m(0)
-                  ],
-                  2
-                )
-              ]
-            ],
-            2
-          )
+                              })
+                            ])
+                          ]
+                        : _vm._e()
+                    ]
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._m(0)
+              ],
+              2
+            )
+          ])
         ])
       : _vm._e()
   ])

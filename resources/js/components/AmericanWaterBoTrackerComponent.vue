@@ -3,7 +3,6 @@
   <button v-if="!start && !Object.keys(this.olddata).length" class="btn btn-success" @click="startForm"> <i class="fas fa-play-circle"></i>  Start</button>
   <div class="card" v-if="start">
     <div class="card-body">
-      <template >
         <form action="/americanwater/botracker" method="POST">
           <input type="hidden" name="_token" :value="csrf" />
           <input type="hidden" name="started_at" :value="form.started_at" />
@@ -38,6 +37,7 @@
                 required
               />
             </div>
+            <template v-if="!lists.queues[form.queue].onlyCusID">
             <div class="form-group">
               <label for="customer_name">Customer Name</label>
               <input
@@ -127,12 +127,12 @@
                 required
               />
             </div>
+            </template>
           </template>
           <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i> Save
           </button>
         </form>
-      </template>
     </div>
   </div>
 </div>
