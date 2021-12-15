@@ -19,13 +19,14 @@ class AmericanWaterBoTrackerController extends Controller
 
     public function store(Request $request){
         $lists = $this->getLists();
-        $queue =(($request->queue)?!$lists['queues'][$request->queue]['endForm']:null);
+        $queue =(($request->queue)?!$lists['queues'][$request->queue]['endForm']&&!$lists['queues'][$request->queue]['onlyCusID']:null);
+        $onlyCusID =(($request->queue)?$lists['queues'][$request->queue]['onlyCusID']:null);
         $status =(($request->status)?$lists['statuses'][$request->status]['gotoENR']:null);
 
         $request->validate([
             "queue"=>['required'],
             "started_at"=>['required'],
-            "cus_id"=> [($queue?'required':'nullable'),'max:50'],
+            "cus_id"=> [($queue||$onlyCusID?'required':'nullable'),'max:50'],
             "customer_name"=> [($queue?'required':'nullable'),'max:50'],
             "spreadsheet"=> [($queue?'required':'nullable'),'max:10'],
             "status"=> [($queue?'required':'nullable'),'max:50'],
