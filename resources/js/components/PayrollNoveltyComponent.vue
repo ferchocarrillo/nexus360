@@ -92,6 +92,11 @@
                         </button> -->
                     </div>
                     <div class="modal-body">
+                        <div class="form-group border-bottom mb-2">
+                                <label>Dia Descanso: <span class="badge badge-primary">{{employee_data.mandatory_rest_day}}</span> </label>
+                                <span> | </span>
+                                <label>Dia Compensatorio: <span class="badge badge-primary">{{employee_data.compensation_day}}</span></label>
+                        </div>
                         <div class="form-group">
                             <label for="">Etiqueta</label>
                             <select :class="'custom-select ' + (novelty.tag ? '' : 'is-invalid')" v-model="novelty.tag">
@@ -270,7 +275,7 @@
     import moment from "moment";
     export default {
         props:[
-            'contingencies' ,'statuses','tags','employess','smlvs', 'searchnovelty'
+            'contingencies' ,'statuses','tags','employess','smlvs', 'snovelty'
         ],
         data(){
             return {
@@ -282,6 +287,7 @@
                 novelty:{},
                 cie10:"",
                 cie10s:[],
+                searchnovelty: (this.snovelty ? Object.assign({}, this.snovelty) : null),
                 ajx:{
                     type:'POST',
                     url:function(params){
@@ -386,6 +392,10 @@
                     recognized_value:"",
                     date_of_deposit:"",
                     observation:""
+                }
+                if(this.searchnovelty){
+                    window.history.pushState({}, null ,'/payrollnovelty');
+                    this.searchnovelty = null;
                 }
             },
             saveNovelty(){
@@ -540,7 +550,7 @@
 
         },
         mounted() {
-            this.clearNovelty();
+            if(!this.searchnovelty) this.clearNovelty();
             if(this.searchnovelty) this.findId();
         },
         created(){

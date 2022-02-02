@@ -3647,9 +3647,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['contingencies', 'statuses', 'tags', 'employess', 'smlvs', 'searchnovelty'],
+  props: ['contingencies', 'statuses', 'tags', 'employess', 'smlvs', 'snovelty'],
   data: function data() {
     return {
       saving: false,
@@ -3660,6 +3665,7 @@ __webpack_require__.r(__webpack_exports__);
       novelty: {},
       cie10: "",
       cie10s: [],
+      searchnovelty: this.snovelty ? Object.assign({}, this.snovelty) : null,
       ajx: {
         type: 'POST',
         url: function url(params) {
@@ -3776,6 +3782,11 @@ __webpack_require__.r(__webpack_exports__);
         date_of_deposit: "",
         observation: ""
       };
+
+      if (this.searchnovelty) {
+        window.history.pushState({}, null, '/payrollnovelty');
+        this.searchnovelty = null;
+      }
     },
     saveNovelty: function saveNovelty() {
       var _this3 = this;
@@ -3940,7 +3951,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.clearNovelty();
+    if (!this.searchnovelty) this.clearNovelty();
     if (this.searchnovelty) this.findId();
   },
   created: function created() {
@@ -92606,6 +92617,40 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "modal-body" }, [
+                        _c(
+                          "div",
+                          { staticClass: "form-group border-bottom mb-2" },
+                          [
+                            _c("label", [
+                              _vm._v("Dia Descanso: "),
+                              _c(
+                                "span",
+                                { staticClass: "badge badge-primary" },
+                                [
+                                  _vm._v(
+                                    _vm._s(_vm.employee_data.mandatory_rest_day)
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("span", [_vm._v(" | ")]),
+                            _vm._v(" "),
+                            _c("label", [
+                              _vm._v("Dia Compensatorio: "),
+                              _c(
+                                "span",
+                                { staticClass: "badge badge-primary" },
+                                [
+                                  _vm._v(
+                                    _vm._s(_vm.employee_data.compensation_day)
+                                  )
+                                ]
+                              )
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
                             _vm._v("Etiqueta")
@@ -108971,8 +109016,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\Nexus360\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\Nexus360\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Laragon\www\Nexus360\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Laragon\www\Nexus360\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

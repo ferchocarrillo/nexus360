@@ -15,7 +15,7 @@
         :tags='@json($tags)'
         :employess='@json($employess)'
         :smlvs='@json($smlvs)'
-        :searchnovelty='@json($novelty)'
+        :snovelty='@json($novelty)'
         ></payroll-novelty-component>
 
 @stop

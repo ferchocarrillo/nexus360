@@ -57,7 +57,7 @@
                     <td class="text-nowrap">{{$novelty->days_hours}}</td>
                     <td class="text-nowrap">{{($novelty->extension==0?'NO':($novelty->extension==1?'SI':''))}} <span>-{{$novelty->extension_id}} </span> </td>
                     <td class="">{{$novelty->status}} / {{$novelty->eps}}</td>
-                    <td><a href="/payrollnovelty/{{$novelty->id}}" class="btn btn-info btn-sm" target="_blank" rel="noopener noreferrer"><i class="fas fa-eye"></i></a></td>
+                    <td><a href="/payrollnovelty/{{$novelty->id}}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a></td>
                 </tr>
                 @endforeach
             </tbody>

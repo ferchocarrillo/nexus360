@@ -40,7 +40,9 @@ class PayrollNoveltyController extends Controller
                 'campaign',
                 'eps',
                 'supervisor',
-                DB::raw('CONVERT(int,round(basic_salary_cop,0)) as basic_salary_cop'))
+                DB::raw('CONVERT(int,round(basic_salary_cop,0)) as basic_salary_cop'),
+                'mandatory_rest_day',
+                'compensation_day')
                 ->where('id',$request->id)
             ->get()
             ->first();
