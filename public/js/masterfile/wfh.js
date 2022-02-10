@@ -46,6 +46,7 @@ $(document).ready(function () {
                     }
                     let eIndex  = employess.findIndex(employee=>employee.id == employee_id)
                     employess[eIndex].wfh = (wfh ? 1 : 0);
+                    employeeData = employess[eIndex];
                 })
             }
         } else {
