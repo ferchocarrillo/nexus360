@@ -41,10 +41,11 @@ $(document).ready(function () {
             if (employee_id) {
                 axios.post('/masterfile/wfh', { employee_id, wfh }).then(res => {
                     setTimeout(() => { $('#logoLoading').modal('hide'); }, 1000)
-                    
                     if(res.data.result != true){
                         alert(res.data.result);
                     }
+                    let eIndex  = employess.findIndex(employee=>employee.id == employee_id)
+                    employess[eIndex].wfh = (wfh ? 1 : 0);
                 })
             }
         } else {
