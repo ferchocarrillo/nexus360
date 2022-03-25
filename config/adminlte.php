@@ -391,6 +391,25 @@ return [
             ]
         ],
         [
+            'text'=>'Trivias',
+            'icon'=>'nav-icon fas fa-question-circle',
+            'can'=>'trivias',
+            'submenu'=>[
+                [
+                    'text'=>'Play',
+                    'url'=>'trivias',
+                    'can'=>'trivias',
+                    'active' => ['regex:@^trivias/[0-9 A-Z]+$@','trivias']
+                ],
+                [
+                    'text'=>'Admin',
+                    'url'=>'trivias/admin',
+                    'can'=>'trivias.admin',
+                    'active' => ['trivias/admin', 'trivias/create'],
+                ]
+            ]
+        ],
+        [
             'text'=>'MasterFile',
             'icon'=>'nav-icon fas fa-user-friends',
             'can'=>'masterfile',

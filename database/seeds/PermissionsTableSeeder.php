@@ -357,5 +357,16 @@ class PermissionsTableSeeder extends Seeder
             'description'   => "Receive a copy of Daily Sessions emails"
         ]);
 
+        Permission::firstOrCreate([
+            'name'          => 'Trivias',
+            'slug'          => 'trivias',
+            'description'   => 'Show and Answer Trivias'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Trivias Admin',
+            'slug'          => 'trivias.admin',
+            'description'   => 'Create, show and Download Trivias'
+        ]);
     }
 }

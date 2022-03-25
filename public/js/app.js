@@ -4357,6 +4357,615 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaAdminComponent.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TriviaAdminComponent.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["trivias"],
+  data: function data() {
+    return {
+      trivia: {}
+    };
+  },
+  methods: {
+    showTrivia: function showTrivia(e, id) {
+      var _this = this;
+
+      e.preventDefault();
+      this.trivia = {};
+      axios.get("/trivias/".concat(id, "/edit")).then(function (res) {
+        _this.trivia = res.data;
+        $("#showTriviaModal").modal("show");
+      });
+    },
+    downloadAnswers: function downloadAnswers(e, id) {
+      e.preventDefault();
+      $('#logoLoading').modal('show');
+      var trivia = this.trivias.find(function (t) {
+        return t.id == id;
+      });
+      axios({
+        url: '/trivias/download',
+        method: 'PUT',
+        responseType: 'blob',
+        data: {
+          id: id
+        }
+      }).then(function (res) {
+        var fileURL = window.URL.createObjectURL(new Blob([res.data]));
+        var fileLink = document.createElement('a');
+        $('#logoLoading').modal('hide');
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', trivia.code + '.xlsx');
+        document.body.appendChild(fileLink);
+        fileLink.click();
+        fileLink.remove();
+      });
+    }
+  },
+  computed: {
+    isEmpty: function isEmpty() {
+      return Object.keys(this.trivia).length === 0;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TriviaComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    action: String,
+    trivia: Object,
+    minQuestions: {
+      type: Number,
+      "default": 4
+    }
+  },
+  data: function data() {
+    return {
+      name: null,
+      started_at: null,
+      end_date: null,
+      time_limit_question: 0,
+      question: this.defaultQuestionData(),
+      questions: [],
+      dataTrivia: {},
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+      href: '/trivias'
+    };
+  },
+  methods: {
+    defaultQuestionData: function defaultQuestionData() {
+      return {
+        question: null,
+        optionCorrect: null,
+        options: [{
+          option: null,
+          is_correct: false
+        }, {
+          option: null,
+          is_correct: false
+        }, {
+          option: null,
+          is_correct: false
+        }, {
+          option: null,
+          is_correct: false
+        }]
+      };
+    },
+    showModalQuestion: function showModalQuestion() {
+      this.question = this.defaultQuestionData();
+      $("#newQuestionModal").modal("show");
+      this.$refs.question_name.focus();
+    },
+    addQuestion: function addQuestion(e) {
+      e.preventDefault();
+      this.questions.push(this.question);
+      $("#newQuestionModal").modal("hide");
+      this.$refs.btnAddQuestion.focus();
+    },
+    deleteQuestion: function deleteQuestion(idx) {
+      this.questions.splice(idx, 1);
+    },
+    getOptionCorrect: function getOptionCorrect() {
+      var idx = this.question.options.findIndex(function (option) {
+        return option.is_correct;
+      });
+
+      if (idx >= 0) {
+        this.question.optionCorrect = idx;
+      }
+    },
+    saveTrivia: function saveTrivia(e) {
+      // e.preventDefault();
+      if (this.questions.length < this.minQuestions) {
+        alert('You must add minimum ' + this.minQuestions + ' questions');
+        e.preventDefault();
+        return false;
+      }
+
+      this.dataTrivia = {
+        name: this.name,
+        started_at: this.started_at,
+        end_date: this.end_date,
+        time_limit_question: this.time_limit_question,
+        questions: this.questions
+      };
+      var ValidateForm = ['name', 'started_at', 'end_date', 'time_limit_question'];
+
+      for (var i = 0; i < ValidateForm.length; i++) {
+        if (!this.dataTrivia[ValidateForm[i]] && this.dataTrivia[ValidateForm[i]] !== 0) {
+          alert('The field: ' + ValidateForm[i] + ' is required');
+          this.$refs[ValidateForm[i]].focus();
+          e.preventDefault();
+          return false;
+        }
+      }
+
+      return true;
+    }
+  },
+  watch: {
+    "question.optionCorrect": function questionOptionCorrect(newVal, oldVal) {
+      this.question.options.forEach(function (option, idx) {
+        option.is_correct = idx == newVal;
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.$refs.name.focus();
+
+    if (this.trivia) {
+      this.name = this.trivia.name;
+      this.started_at = this.trivia.started_at;
+      this.end_date = this.trivia.end_date;
+      this.time_limit_question = this.trivia.time_limit_question;
+      this.questions = this.trivia.questions;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaPlayComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TriviaPlayComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["trivia"],
+  data: function data() {
+    return {
+      start: false,
+      end: false,
+      nQuestion: 0,
+      question: {},
+      seconds: 0,
+      timer: null,
+      answers: []
+    };
+  },
+  methods: {
+    startTrivia: function startTrivia() {
+      this.seconds = parseInt(this.trivia.time_limit_question);
+      this.start = true;
+      this.changeQuestion();
+    },
+    changeQuestion: function changeQuestion() {
+      if (this.nQuestion >= this.trivia.questions.length) {
+        this.endTrivia();
+      } else {
+        this.question = this.trivia.questions[this.nQuestion];
+        if (this.trivia.time_limit_question > 0) this.startTimer();
+        this.nQuestion++;
+      }
+    },
+    answerQuestion: function answerQuestion() {
+      var option = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      this.answers.push({
+        question_id: this.question.id,
+        option_id: option,
+        seconds: parseInt(this.trivia.time_limit_question) - this.seconds
+      });
+      this.stopTimer();
+      this.changeQuestion();
+    },
+    startTimer: function startTimer() {
+      var _this = this;
+
+      this.timer = setInterval(function () {
+        if (_this.seconds <= 0) {
+          _this.answerQuestion();
+        } else {
+          _this.seconds--;
+        }
+      }, 1000);
+    },
+    stopTimer: function stopTimer() {
+      clearInterval(this.timer);
+      this.seconds = parseInt(this.trivia.time_limit_question);
+    },
+    endTrivia: function endTrivia() {
+      this.end = true;
+      axios.post("/trivias/answer", {
+        trivia_id: this.trivia.id,
+        answers: this.answers
+      }).then(function (res) {
+        if (res.data) {
+          location.href = '/trivias';
+        }
+      });
+    }
+  },
+  created: function created() {}
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/UpdateUsersComponent.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/UpdateUsersComponent.vue?vue&type=script&lang=js& ***!
@@ -8999,6 +9608,25 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, "\n.modal-backdrop.show {\r\n    opacity: 0.8 !important;\r\n    background-color: #231161 !important;\n}\n.animateButtons button:hover{\r\n    -webkit-transition: .5s;\r\n    transition: .5s;\r\n    -webkit-transform: scale(1.5);\r\n            transform: scale(1.5);\n}\r\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TriviaComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.btn:focus {\r\n    box-shadow: 0px 0px 0px 5px rgb(0 0 0 / 20%);\n}\n.list-questions {\r\n    padding-left: 20px;\n}\n.list-questions li:before {\r\n    content: \"\";\r\n    width: 8px;\r\n    height: 8px;\r\n    position: absolute;\r\n    border-radius: 50%;\r\n    -webkit-transform: translate(-18px, 7px);\r\n            transform: translate(-18px, 7px);\n}\n.list-questions li.correct:before {\r\n    background: var(--success);\n}\n.list-questions li.incorrect:before {\r\n    background: var(--secondary);\n}\r\n", ""]);
 
 // exports
 
@@ -85832,6 +86460,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TriviaComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./TriviaComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -93921,6 +94579,785 @@ var render = function() {
   ])
 }
 var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaAdminComponent.vue?vue&type=template&id=dc3d1f88&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TriviaAdminComponent.vue?vue&type=template&id=dc3d1f88& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("table", { staticClass: "table table-sm" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "tbody",
+        _vm._l(_vm.trivias, function(trivia) {
+          return _c("tr", { key: trivia.id }, [
+            _c("td", [_vm._v(_vm._s(trivia.id))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(trivia.code))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(trivia.name))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(trivia.status))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(trivia.answers_count))]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-sm btn-info rounded-circle",
+                  attrs: { title: "Show Trivia", href: "#" },
+                  on: {
+                    click: function($event) {
+                      return _vm.showTrivia($event, trivia.id)
+                    }
+                  }
+                },
+                [
+                  _c("i", {
+                    staticClass: "fas fa-eye",
+                    attrs: { "aria-hidden": "true" }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              trivia.answers_count > 0
+                ? _c(
+                    "a",
+                    {
+                      staticClass: "btn btn-sm btn-secondary rounded-circle",
+                      attrs: { title: "Download Answers", href: "#" },
+                      on: {
+                        click: function($event) {
+                          return _vm.downloadAnswers($event, trivia.id)
+                        }
+                      }
+                    },
+                    [_c("i", { staticClass: "fas fa-download" })]
+                  )
+                : _vm._e()
+            ])
+          ])
+        }),
+        0
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: { tabindex: "-1", role: "dialog", id: "showTriviaModal" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog modal-lg", attrs: { role: "document" } },
+          [
+            !_vm.isEmpty
+              ? _c("div", { staticClass: "modal-content" }, [
+                  _c("div", { staticClass: "modal-header" }, [
+                    _c("h5", { staticClass: "modal-title" }, [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(_vm.trivia.name) +
+                          " - " +
+                          _vm._s(_vm.trivia.code) +
+                          "\n                    "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _vm._m(1)
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "modal-body" },
+                    [
+                      _c("trivia-component", {
+                        attrs: { action: "edit", trivia: _vm.trivia }
+                      })
+                    ],
+                    1
+                  )
+                ])
+              : _vm._e()
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Code")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")]),
+        _vm._v(" "),
+        _c("th", { attrs: { width: "70px" } }, [_vm._v("Answers")]),
+        _vm._v(" "),
+        _c("th", { attrs: { width: "80px" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaComponent.vue?vue&type=template&id=7de4dd1f&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TriviaComponent.vue?vue&type=template&id=7de4dd1f& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "col-12" }, [
+      _c("div", { staticClass: "card" }, [
+        _c("div", { staticClass: "card-body" }, [
+          _c("div", { staticClass: "form-row form-custom" }, [
+            _c("div", { staticClass: "form-group col-md-6" }, [
+              _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.name,
+                    expression: "name"
+                  }
+                ],
+                ref: "name",
+                staticClass: "form-control form-control-sm",
+                attrs: {
+                  type: "text",
+                  required: "",
+                  disabled: _vm.action != "create"
+                },
+                domProps: { value: _vm.name },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.name = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group col-md-3" }, [
+              _c("label", { attrs: { for: "started_at" } }, [
+                _vm._v("Started At")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.started_at,
+                    expression: "started_at"
+                  }
+                ],
+                ref: "started_at",
+                staticClass: "form-control form-control-sm",
+                attrs: {
+                  type: "date",
+                  required: "",
+                  disabled: _vm.action != "create"
+                },
+                domProps: { value: _vm.started_at },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.started_at = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group col-md-3" }, [
+              _c("label", { attrs: { for: "end_date" } }, [_vm._v("End Date")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.end_date,
+                    expression: "end_date"
+                  }
+                ],
+                ref: "end_date",
+                staticClass: "form-control form-control-sm",
+                attrs: {
+                  type: "date",
+                  required: "",
+                  disabled: _vm.action != "create"
+                },
+                domProps: { value: _vm.end_date },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.end_date = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group col-md-6" }, [
+              _c("div", { staticClass: "row" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "col-sm-9 col-form-label",
+                    attrs: { for: "time_limit_question" }
+                  },
+                  [
+                    _vm._v(
+                      "\n                                Time Limit by Question (seconds)\n                            "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-sm-3" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model.number",
+                        value: _vm.time_limit_question,
+                        expression: "time_limit_question",
+                        modifiers: { number: true }
+                      }
+                    ],
+                    ref: "time_limit_question",
+                    staticClass: "form-control form-control-sm",
+                    attrs: {
+                      type: "number",
+                      min: "7",
+                      required: "",
+                      disabled: _vm.action != "create"
+                    },
+                    domProps: { value: _vm.time_limit_question },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.time_limit_question = _vm._n($event.target.value)
+                      },
+                      blur: function($event) {
+                        return _vm.$forceUpdate()
+                      }
+                    }
+                  })
+                ])
+              ])
+            ])
+          ])
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "col-md-12" }, [
+      _c("div", { staticClass: "card" }, [
+        _c("div", { staticClass: "card-header" }, [
+          _c("h1", { staticClass: "card-title" }, [_vm._v("Questions")]),
+          _vm._v(" "),
+          _vm.action == "create"
+            ? _c(
+                "button",
+                {
+                  ref: "btnAddQuestion",
+                  staticClass:
+                    "btn btn-outline-primary btn-sm rounded-circle float-right",
+                  on: {
+                    click: function($event) {
+                      return _vm.showModalQuestion()
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-plus" })]
+              )
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _vm.questions.length
+          ? _c("div", { staticClass: "card-body" }, [
+              _c("table", { staticClass: "table table-sm mb-2" }, [
+                _c("thead", [
+                  _c("tr", [
+                    _c("th", [_vm._v("Name")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Options")]),
+                    _vm._v(" "),
+                    _vm.action == "create"
+                      ? _c("th", { attrs: { width: "40px" } })
+                      : _vm._e()
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.questions, function(q, q_idx) {
+                    return _c("tr", { key: q_idx }, [
+                      _c("td", [_vm._v(_vm._s(q.question))]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "ul",
+                          { staticClass: "list-unstyled list-questions" },
+                          _vm._l(q.options, function(o, o_idx) {
+                            return _c(
+                              "li",
+                              {
+                                key: o_idx,
+                                class: {
+                                  correct: o.is_correct,
+                                  incorrect: !o.is_correct
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                        " +
+                                    _vm._s(o.option) +
+                                    "\n                                    "
+                                )
+                              ]
+                            )
+                          }),
+                          0
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _vm.action == "create"
+                        ? _c("td", [
+                            _c(
+                              "button",
+                              {
+                                staticClass:
+                                  "btn btn-sm btn-danger rounded-circle",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteQuestion(q_idx)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-trash" })]
+                            )
+                          ])
+                        : _vm._e()
+                    ])
+                  }),
+                  0
+                )
+              ]),
+              _vm._v(" "),
+              _vm.action == "create"
+                ? _c(
+                    "form",
+                    {
+                      attrs: { action: _vm.href, method: "POST" },
+                      on: {
+                        submit: function($event) {
+                          return _vm.saveTrivia($event)
+                        }
+                      }
+                    },
+                    [
+                      _c("input", {
+                        attrs: { type: "hidden", name: "_token" },
+                        domProps: { value: _vm.csrf }
+                      }),
+                      _vm._v(" "),
+                      _c("input", {
+                        attrs: { type: "hidden", name: "data" },
+                        domProps: { value: JSON.stringify(_vm.dataTrivia) }
+                      }),
+                      _vm._v(" "),
+                      _vm._m(0)
+                    ]
+                  )
+                : _vm._e()
+            ])
+          : _vm._e()
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal ",
+        attrs: { tabindex: "-1", role: "dialog", id: "newQuestionModal" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _vm.action == "create"
+              ? _c("div", { staticClass: "modal-content" }, [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c(
+                      "form",
+                      {
+                        attrs: { action: "" },
+                        on: {
+                          submit: function($event) {
+                            return _vm.addQuestion($event)
+                          }
+                        }
+                      },
+                      [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.question.question,
+                                expression: "question.question"
+                              }
+                            ],
+                            ref: "question_name",
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              placeholder: "Question?",
+                              maxlength: "145",
+                              required: ""
+                            },
+                            domProps: { value: _vm.question.question },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.question,
+                                  "question",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.question.options, function(option, idx) {
+                          return _c(
+                            "div",
+                            { key: idx, staticClass: "input-group mb-2" },
+                            [
+                              _c(
+                                "div",
+                                { staticClass: "input-group-prepend" },
+                                [
+                                  _c(
+                                    "div",
+                                    { staticClass: "input-group-text" },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.question.optionCorrect,
+                                            expression: "question.optionCorrect"
+                                          }
+                                        ],
+                                        attrs: {
+                                          type: "radio",
+                                          name: "option",
+                                          required: ""
+                                        },
+                                        domProps: {
+                                          checked: option.is_correct,
+                                          value: idx,
+                                          checked: _vm._q(
+                                            _vm.question.optionCorrect,
+                                            idx
+                                          )
+                                        },
+                                        on: {
+                                          change: function($event) {
+                                            return _vm.$set(
+                                              _vm.question,
+                                              "optionCorrect",
+                                              idx
+                                            )
+                                          }
+                                        }
+                                      })
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: option.option,
+                                    expression: "option.option"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: {
+                                  type: "text",
+                                  placeholder: "Option " + (idx + 1),
+                                  maxlength: "95",
+                                  required: ""
+                                },
+                                domProps: { value: option.option },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      option,
+                                      "option",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]
+                          )
+                        }),
+                        _vm._v(" "),
+                        _vm._m(2)
+                      ],
+                      2
+                    )
+                  ])
+                ])
+              : _vm._e()
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      { staticClass: "btn btn-outline-primary float-right" },
+      [
+        _c("i", { staticClass: "fas fa-save" }),
+        _vm._v(" Save Trivia\n                    ")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("New Question")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-primary float-right",
+        attrs: { type: "subbmit" }
+      },
+      [
+        _c("i", { staticClass: "fas fa-plus" }),
+        _vm._v(" Add\n                        ")
+      ]
+    )
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaPlayComponent.vue?vue&type=template&id=63d9414b&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TriviaPlayComponent.vue?vue&type=template&id=63d9414b& ***!
+  \**********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm.start && !_vm.end
+    ? _c("div", [
+        _c("div", { staticClass: "jumbotron jumbotron-fluid" }, [
+          _c("div", { staticClass: "container" }, [
+            _c("h1", { staticClass: "display-4" }, [
+              _vm._v(
+                "\n                " +
+                  _vm._s(_vm.question.question) +
+                  "\n                "
+              ),
+              _vm.seconds > 0
+                ? _c("span", { staticClass: "float-right" }, [
+                    _vm._v(_vm._s(_vm.seconds))
+                  ])
+                : _vm._e()
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "row" },
+          _vm._l(_vm.question.options, function(option) {
+            return _c("div", { key: option.id, staticClass: "col-md-6" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-block btn-primary mb-3 p-3",
+                  on: {
+                    click: function($event) {
+                      return _vm.answerQuestion(option.id)
+                    }
+                  }
+                },
+                [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(option.option) +
+                      "\n            "
+                  )
+                ]
+              )
+            ])
+          }),
+          0
+        )
+      ])
+    : !_vm.start && !_vm.end
+    ? _c("div", [
+        _c("div", { staticClass: "container text-center" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-success",
+              on: {
+                click: function($event) {
+                  return _vm.startTrivia()
+                }
+              }
+            },
+            [
+              _c("i", { staticClass: "fas fa-play" }),
+              _vm._v("  Start\n        ")
+            ]
+          )
+        ])
+      ])
+    : _c("div", [_vm._m(0)])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "jumbotron jumbotron-fluid" }, [
+      _c("div", { staticClass: "container" }, [
+        _c("h1", { staticClass: "display-4" }, [_vm._v("Thank you !")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -106247,6 +107684,9 @@ var map = {
 	"./components/Select2Component.vue": "./resources/js/components/Select2Component.vue",
 	"./components/ServiceExpertsFileComponent.vue": "./resources/js/components/ServiceExpertsFileComponent.vue",
 	"./components/TimerComponent.vue": "./resources/js/components/TimerComponent.vue",
+	"./components/TriviaAdminComponent.vue": "./resources/js/components/TriviaAdminComponent.vue",
+	"./components/TriviaComponent.vue": "./resources/js/components/TriviaComponent.vue",
+	"./components/TriviaPlayComponent.vue": "./resources/js/components/TriviaPlayComponent.vue",
 	"./components/UpdateUsersComponent.vue": "./resources/js/components/UpdateUsersComponent.vue"
 };
 
@@ -107089,6 +108529,231 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TimerComponent_vue_vue_type_template_id_11a6bb3a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TimerComponent_vue_vue_type_template_id_11a6bb3a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaAdminComponent.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/TriviaAdminComponent.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TriviaAdminComponent_vue_vue_type_template_id_dc3d1f88___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TriviaAdminComponent.vue?vue&type=template&id=dc3d1f88& */ "./resources/js/components/TriviaAdminComponent.vue?vue&type=template&id=dc3d1f88&");
+/* harmony import */ var _TriviaAdminComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TriviaAdminComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/TriviaAdminComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TriviaAdminComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TriviaAdminComponent_vue_vue_type_template_id_dc3d1f88___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TriviaAdminComponent_vue_vue_type_template_id_dc3d1f88___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TriviaAdminComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaAdminComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/TriviaAdminComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaAdminComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./TriviaAdminComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaAdminComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaAdminComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaAdminComponent.vue?vue&type=template&id=dc3d1f88&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/TriviaAdminComponent.vue?vue&type=template&id=dc3d1f88& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaAdminComponent_vue_vue_type_template_id_dc3d1f88___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./TriviaAdminComponent.vue?vue&type=template&id=dc3d1f88& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaAdminComponent.vue?vue&type=template&id=dc3d1f88&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaAdminComponent_vue_vue_type_template_id_dc3d1f88___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaAdminComponent_vue_vue_type_template_id_dc3d1f88___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaComponent.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/TriviaComponent.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TriviaComponent_vue_vue_type_template_id_7de4dd1f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TriviaComponent.vue?vue&type=template&id=7de4dd1f& */ "./resources/js/components/TriviaComponent.vue?vue&type=template&id=7de4dd1f&");
+/* harmony import */ var _TriviaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TriviaComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/TriviaComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _TriviaComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TriviaComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/TriviaComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _TriviaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TriviaComponent_vue_vue_type_template_id_7de4dd1f___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TriviaComponent_vue_vue_type_template_id_7de4dd1f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TriviaComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/TriviaComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./TriviaComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaComponent.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/TriviaComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./TriviaComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaComponent.vue?vue&type=template&id=7de4dd1f&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/TriviaComponent.vue?vue&type=template&id=7de4dd1f& ***!
+  \************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_template_id_7de4dd1f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./TriviaComponent.vue?vue&type=template&id=7de4dd1f& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaComponent.vue?vue&type=template&id=7de4dd1f&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_template_id_7de4dd1f___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaComponent_vue_vue_type_template_id_7de4dd1f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaPlayComponent.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/TriviaPlayComponent.vue ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _TriviaPlayComponent_vue_vue_type_template_id_63d9414b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TriviaPlayComponent.vue?vue&type=template&id=63d9414b& */ "./resources/js/components/TriviaPlayComponent.vue?vue&type=template&id=63d9414b&");
+/* harmony import */ var _TriviaPlayComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TriviaPlayComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/TriviaPlayComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _TriviaPlayComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TriviaPlayComponent_vue_vue_type_template_id_63d9414b___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TriviaPlayComponent_vue_vue_type_template_id_63d9414b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TriviaPlayComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaPlayComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/TriviaPlayComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaPlayComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./TriviaPlayComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaPlayComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaPlayComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TriviaPlayComponent.vue?vue&type=template&id=63d9414b&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/TriviaPlayComponent.vue?vue&type=template&id=63d9414b& ***!
+  \****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaPlayComponent_vue_vue_type_template_id_63d9414b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./TriviaPlayComponent.vue?vue&type=template&id=63d9414b& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TriviaPlayComponent.vue?vue&type=template&id=63d9414b&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaPlayComponent_vue_vue_type_template_id_63d9414b___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TriviaPlayComponent_vue_vue_type_template_id_63d9414b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

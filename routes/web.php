@@ -158,6 +158,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dailysessions/download','DailySessionController@download')->name('dailysession.download');
     Route::resource('dailysessions','DailySessionController');
     Route::put('/dailysessions/acknowledge/{dailySession}','DailySessionController@acknowledge')->name('dailysession.acknowledge');
+
+    // Trivias
+    Route::get('trivias/admin','TriviaController@admin')->name('trivias.admin');
+    Route::put('trivias/download','TriviaController@download')->name('trivias.download');
+    Route::post('trivias/answer','TriviaController@answer')->name('trivias.answer');
+    Route::resource('trivias','TriviaController');
 });
 
 Auth::routes(['register' => false]);
