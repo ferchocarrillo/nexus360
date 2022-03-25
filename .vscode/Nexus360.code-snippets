@@ -15,6 +15,38 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+	"TemplateView":{
+		"scope": "blade",
+		"prefix": "tmpview",
+		"body":[
+			"@extends('adminlte::page')\n",
+			"@section('title_postfix', ' | $1')\n",
+			"@section('css')",
+			"@stop\n",
+			"@section('content_header')",
+			"\t<h1 class='d-inline'>$1</h1>",
+			"@stop",
+			"@section('content')",
+			"\t<div class='card'>",
+			"\t\t<div class='card-body'>",
+			"\t\t\t$2",
+			"\t\t</div>",
+			"\t</div>",
+			"@stop"
+		]
+	},
+
+	"Permission":{
+		"scope": "php",
+		"prefix": "perm",
+		"body": [
+			"Permission::firstOrCreate([",
+			"\t'name'          => '$1',",
+			"\t'slug'          => '$2',",
+			"\t'description'   => '${3:$1}'",
+			"]);"
+		]
+	},
 
 	"EnercareCategories":{
 		"scope": "php",
