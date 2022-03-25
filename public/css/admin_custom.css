@@ -27,3 +27,18 @@ textarea {
     opacity: 1 !important;
 }
 
+.form-custom .form-group label {
+    font-size: .8rem;
+    font-weight: normal;
+    margin-bottom: .1rem;
+    color: #9e9e9e;
+}
+
+.form-custom .form-group label.required::after{
+    content: ' *';
+    color: red;
+}
+
+.form-custom .form-group{
+    margin-bottom: .3rem;
+}

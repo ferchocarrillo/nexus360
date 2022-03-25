@@ -325,5 +325,37 @@ class PermissionsTableSeeder extends Seeder
             'description'   => "MasterFile WFH"
         ]);
 
+        // Daily Sessions
+
+        Permission::firstOrCreate([
+            'name'          => "Daily Sessions",
+            'slug'          => "dailysessions",
+            'description'   => "Show and Acknowledge Daily Sessions"
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Daily Sessions Create",
+            'slug'          => "dailysessions.create",
+            'description'   => "Create Daily Sessions"
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Daily Sessions Filters",
+            'slug'          => "dailysessions.filters",
+            'description'   => "Filter list of Daily Sessions"
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Daily Sessions Download",
+            'slug'          => "dailysessions.download",
+            'description'   => "Download Daily Sessions"
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => "Daily Sessions Email",
+            'slug'          => "dailysessions.email",
+            'description'   => "Receive a copy of Daily Sessions emails"
+        ]);
+
     }
 }

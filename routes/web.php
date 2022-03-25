@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/home', 'HomeController@index')->name('home');
@@ -151,6 +154,10 @@ Route::middleware(['auth'])->group(function () {
         return date('Y-m-d H:i:s');
     });
 
+    // Daily Sessions
+    Route::post('/dailysessions/download','DailySessionController@download')->name('dailysession.download');
+    Route::resource('dailysessions','DailySessionController');
+    Route::put('/dailysessions/acknowledge/{dailySession}','DailySessionController@acknowledge')->name('dailysession.acknowledge');
 });
 
 Auth::routes(['register' => false]);

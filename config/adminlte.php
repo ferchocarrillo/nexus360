@@ -191,7 +191,12 @@ return [
             'icon' => 'nav-icon fas fa-binoculars',
             'can' => 'agentactivity.supervisor'
         ],
-        
+        [
+            'text' => 'Daily Sessions',
+            'url' => 'dailysessions',
+            'icon' => 'nav-icon fab fa-wpforms',
+            'can' => 'dailysessions'
+        ],
         [
             'text' => 'CGM',
             'icon' => 'nav-icon fa fa-cubes',
