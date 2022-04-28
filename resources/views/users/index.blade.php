@@ -96,15 +96,15 @@
             <table class=" table-borderless table-sm">
                 <tr>
                     <td>Manager:</td>
-                    <td>${(row.masterfile2.length ? row.masterfile2[0].supervisor : '')}</td>
+                    <td>${(row.nid ? row.supervisor : '')}</td>
                 </tr>
                 <tr>
                     <td>Position:</td>
-                    <td>${(row.masterfile2.length ? row.masterfile2[0].position : '')}</td>
+                    <td>${(row.nid ? row.position : '')}</td>
                 </tr>
                 <tr>
                     <td>Campaign:</td>
-                    <td>${(row.masterfile2.length ? row.masterfile2[0].campaign : '')}</td>
+                    <td>${(row.nid ? row.campaign : '')}</td>
                 </tr>
             </table>
             
@@ -138,13 +138,13 @@
                     },
                     {
                         "render":function(data,type,row){
-                            return (row.masterfile2.length ? `<span class="badge badge-${(row.masterfile2[0].status=='Active'?'success':'danger')}">${row.masterfile2[0].status}</span>` : '');
+                            return (row.nid ? `<span class="badge badge-${(row.status=='Active'?'success':'danger')}">${row.status}</span>` : '');
                         },
                         "targets": 2
                     },
                     {
                         "render":function(data,type,row){
-                            return (row.masterfile2.length ? row.masterfile2[0].full_name : row.name);
+                            return (row.nid ? row.full_name : row.name);
                         },
                         "targets": 4
                     },

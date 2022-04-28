@@ -12,6 +12,7 @@ use App\MasterFile;
 use Maatwebsite\Excel\Facades\Excel;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -131,8 +132,17 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()){
+            // Get last ids from master_files
+            $latestIdMasterFile = MasterFile::groupBy('national_id')->select('national_id',DB::raw('MAX(id) AS id'));
+            $masterfile = Masterfile::joinSub($latestIdMasterFile,'latest_id_master_file','master_files.id','latest_id_master_file.id')
+            ->select('master_files.national_id as nid',
+            'master_files.full_name',
+            'master_files.position',
+            'master_files.campaign',
+            'master_files.supervisor',
+            'master_files.status');
             $arr = [];
-            $arr["data"] = User::with(['roles','masterfile2'])->get();
+            $arr["data"] = User::with('roles')->leftJoinSub($masterfile,'masterfile','users.national_id','masterfile.nid')->get();
             return $arr;
         }
         return view('users.index');
