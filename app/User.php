@@ -130,4 +130,33 @@ class User extends Authenticatable
         return $this->belongsToMany(Activity::class)->withTimestamps() ;
         //return $this->belongsToMany(Activity::class)->withPivot('created_at') ;
     }
+
+    // Logout User
+    public function logout()
+    {
+        // Logout
+        $this->logout=  true;
+        $this->save();
+
+        // Get latest activity
+        $lastActivity = AgentActivity::where('user_id',$this->id)
+        ->orderBy('id','desc')
+        ->first();
+        
+        // Update latest activity
+        if($lastActivity){
+            $lastActivity->touch();
+        }
+
+        // Logout
+        AgentActivity::create([
+            'user_id' => $this->id,
+            'activity_id' => 2,
+            'logout_by' => 1,
+        ]);
+        $this->latestactivity()->sync( 2);
+        return 'success';
+    }
+
+    
 }
