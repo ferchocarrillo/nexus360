@@ -1,8 +1,19 @@
+<style>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity .5s
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0
+}
+</style>
 <template>
   <div class="card">
     <div class="card-body">
       <!-- <div class="jumbotron {{ ($userActivity ? $userActivity->name : '')}}"> -->
-      <div class="jumbotron text-light"   :style="(useractivity ? 'background-color:'+useractivity.color+';' : '')  ">
+      <div class="jumbotron text-light mb-0"   :style="(useractivity ? 'background-color:'+useractivity.color+';' : '')  ">
         <div class="row align-items-center">
           <div class="col-sm-4 col-md-3 d-none d-sm-block">
             <i :class="(useractivity ? useractivity.icon : '') + ' fa-4x'"></i>
@@ -15,12 +26,12 @@
           <div class="col-md-3 display-4 text-nowrap text-center">
             <hr class="d-md-none" />
             <small v-if="useractivity && useractivity.id != 2" class="font-weight-light">
-              <timer-component :timeserver="timeserver" :useractivity="useractivity"></timer-component>
+              <timer-component :timeserver="timeserver" :useractivity="useractivity" @time="changeTime"></timer-component>
             </small>
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row mt-4" v-if="lunchValidate && showButtons">
         <div
           v-for="activity in activities"
           :key="activity.id"
@@ -58,9 +69,21 @@ export default {
       type: String
     }
   },
+  data(){
+    return {
+      lunchValidate: true,
+      showButtons: true,
+    }
+  },
   methods: {
+    changeTime(time) {
+      if(this.useractivity.name == 'Lunch' && time.hours == 0 && time.minutes < 50){
+        this.lunchValidate = false;
+      }else{
+        this.lunchValidate = true;
+      }
+    },
     changeActivity(id) {
-      if (id == 2) {
         swal
           .fire({
             title: "Are you sure ?",
@@ -68,34 +91,28 @@ export default {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes"
-          })
-          .then(result => {
-            if (result.value) {
-              axios
+            confirmButtonText: "Yes",
+            showLoaderOnConfirm: true,
+            preConfirm: ()=>{
+              return axios
                 .post("/agentactivity", {
                   idActivity: id
                 })
                 .then(response => {
+                  this.showButtons = false;
                   this.sendEventActivity({
                     userID: my_userID,
                     idActivity: id
                   });
                 });
             }
-          });
-      } else {
-        axios
-          .post("/agentactivity", {
-            idActivity: id
           })
-          .then(response => {
-            this.sendEventActivity({
-              userID: my_userID,
-              idActivity: id
-            });
+          .then(result => {
+            if (result.value) {
+              console.log('OK');
+            }
           });
-      }
+          if(id==7) swal.showValidationMessage("You will not be able to change this activity before 58 minutes")
     },
     sendEventActivity(data) {
       let iframe = document.getElementById("ifm_activity");

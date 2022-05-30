@@ -27,12 +27,16 @@ export default {
         this.now - Date.parse(this.useractivity.pivot.created_at)
       );
 
-      return {
+      let data = {
         total: moment.utc(time.asMilliseconds()).format("H:mm:ss"),
         hours: this.addZero(time.days() * 24 + time.hours()),
         minutes: this.addZero(time.minutes()),
         seconds: this.addZero(time.seconds())
-      };
+      }
+
+      this.$emit("time", data);
+
+      return data;
     }
   },
   methods: {
