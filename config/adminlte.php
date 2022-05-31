@@ -333,6 +333,35 @@ return [
             ]
         ],
         [
+            'text' => 'Reporting',
+            'icon' => 'nav-icon fas fa-chart-line',
+            'can' => 'reporting',
+            'submenu' => [
+                [
+                    'text' => 'Links',
+                    'can' => 'reporting.links',
+                    'submenu' => [
+                        [
+                            'text' => 'Scorecard',
+                            'url' => 'reporting/links/scorecard',
+                            'can' => 'reporting.links.scorecard'
+                        ],
+                        [
+                            'text' => 'Dashboard',
+                            'url' => 'reporting/links/dashboard',
+                            'can' => 'reporting.links.dashboard'
+                        ],
+                        [
+                            'text'=> 'Admin',
+                            'url' => 'reporting/links/',
+                            'can' => 'reporting.links.admin',
+                            'active' => ['reporting/links','reporting/links/*/edit','reporting/links/create']
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        [
             'text'=>'Reminders',
             'icon'=>'nav-icon fas fa-bell',
             'url'=>'reminders',

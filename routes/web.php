@@ -164,6 +164,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('trivias/download','TriviaController@download')->name('trivias.download');
     Route::post('trivias/answer','TriviaController@answer')->name('trivias.answer');
     Route::resource('trivias','TriviaController');
+
+    // Reporting Links
+    Route::get('/reporting/links/scorecard','ReportingLinkController@scorecard')->name('links.scorecard');
+    Route::get('/reporting/links/dashboard','ReportingLinkController@dashboard')->name('links.dashboard');
+    Route::resource('reporting/links','ReportingLinkController',['only'=>['index','create','store','edit','update']]);
+
 });
 
 Auth::routes(['register' => false]);

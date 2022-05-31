@@ -368,5 +368,35 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => 'trivias.admin',
             'description'   => 'Create, show and Download Trivias'
         ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Reporting',
+            'slug'          => 'reporting',
+            'description'   => 'Reporting'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Reporting Links',
+            'slug'          => 'reporting.links',
+            'description'   => 'Reporting Links'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Reporting Links Scorecard',
+            'slug'          => 'reporting.links.scorecard',
+            'description'   => 'Reporting Links Scorecard'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Reporting Links Dashboard',
+            'slug'          => 'reporting.links.dashboard',
+            'description'   => 'Reporting Links Dashboard'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Reporting Links Admin',
+            'slug'          => 'reporting.links.admin',
+            'description'   => 'Reporting Links Admin, List, Create, Edit'
+        ]);
     }
 }
