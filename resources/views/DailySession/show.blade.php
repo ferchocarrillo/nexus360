@@ -7,59 +7,64 @@
 <div class="modal-body">
     <div class="form-custom">
         <div class="employee-info">
-            <div class="form-group">
-                <label>Corp Email</label>
-                <span class="form-control">{{ $dailysession->corporate_email }}</span>
+            <div class="row">
+                <div class="form-group col-md-6 col-lg-4">
+                    <label>Corp Email</label>
+                    <span class="form-control text-truncate" title="{{ $dailysession->corp_email }}">{{ $dailysession->corp_email }}</span>
+                </div>
+                <div class="form-group col-md-6 col-lg-4">
+                    <label>Team Leader</label>
+                    <span class="form-control text-truncate" title="{{ $dailysession->team_leader }}">{{ $dailysession->team_leader }}</span>
+                </div>
+                <div class="form-group col-md-6 col-lg-4">
+                    <label>Campaign</label>
+                    <span class="form-control text-truncate" title="{{ $dailysession->campaign }}">{{ $dailysession->campaign }}</span>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Team Leader</label>
-                <span class="form-control">{{ $dailysession->team_leader }}</span>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6 col-lg-4">
+                <label>Type</label>
+                <span class="form-control">{{ $dailysession->type }}</span>
             </div>
-            <div class="form-group">
-                <label>Campaign</label>
-                <span class="form-control">{{ $dailysession->campaign }}</span>
+            <div class="form-group col-md-6 col-lg-4">
+                <label>Tactic</label>
+                <span class="form-control">{{ $dailysession->tactic }}</span>
+            </div>
+            <div class="form-group col-md-6 col-lg-4">
+                <label>Behaviour</label>
+                <span class="form-control">{{ $dailysession->behaviour }}</span>
+            </div>
+            <div class="form-group col-md-6 col-lg-4">
+                <label>Metric</label>
+                <span class="form-control">{{ $dailysession->metric }}</span>
+            </div>
+            <div class="form-group col-md-6 col-lg-4">
+                <label>Score</label>
+                <span class="form-control">{{ $dailysession->score }}</span>
+            </div>
+            <div class="form-group col-md-6 col-lg-4">
+                <label>Documented</label>
+                <span class="form-control">{{ $dailysession->documented }}</span>
+            </div>
+            <div class="form-group col-md-6 col-lg-4">
+                <label>Root Cause</label>
+                <span class="form-control">{{ $dailysession->root_cause }}</span>
+            </div>
+            <div class="form-group col-md-6 col-lg-4">
+                <label>Educational Tool</label>
+                <span class="form-control">{{ $dailysession->educational_tool }}</span>
+            </div>
+            <div class="form-group col-md-6 col-lg-4">
+                <label>Created By</label>
+                <span class="form-control">{{ $dailysession->creator->name }}</span>
+            </div>
+            <div class="form-group col-12">
+                <label>Comments</label>
+                <p class="form-control" style="white-space:pre-wrap;height:auto;">{!! $dailysession->comments !!}</p>
             </div>
         </div>
-        <div class="form-group">
-            <label>Type</label>
-            <span class="form-control">{{ $dailysession->type }}</span>
-        </div>
-        <div class="form-group">
-            <label>Tactic</label>
-            <span class="form-control">{{ $dailysession->tactic }}</span>
-        </div>
-        <div class="form-group">
-            <label>Behaviour</label>
-            <span class="form-control">{{ $dailysession->behaviour }}</span>
-        </div>
-        <div class="form-group">
-            <label>Metric</label>
-            <span class="form-control">{{ $dailysession->metric }}</span>
-        </div>
-        <div class="form-group">
-            <label>Score</label>
-            <span class="form-control">{{ $dailysession->score }}</span>
-        </div>
-        <div class="form-group">
-            <label>Documented</label>
-            <span class="form-control">{{ $dailysession->documented }}</span>
-        </div>
-        <div class="form-group">
-            <label>Root Cause</label>
-            <span class="form-control">{{ $dailysession->root_cause }}</span>
-        </div>
-        <div class="form-group">
-            <label>Educational Tool</label>
-            <span class="form-control">{{ $dailysession->educational_tool }}</span>
-        </div>
-        <div class="form-group">
-            <label>Comments</label>
-            <span class="form-control"><p>{!! $dailysession->comments !!}</p></span>
-        </div>
-        <div class="form-group">
-            <label>Created By</label>
-            <span class="form-control">{{ $dailysession->creator->name }}</span>
-        </div>
+        
     </div>
 </div>
 <div class="modal-footer">
