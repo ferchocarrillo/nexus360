@@ -123,6 +123,12 @@ class DailySessionListsTableSeeder extends Seeder
                 "NPS",
                 "C-SAT",
                 "Compliance",
+                "Save Rate",
+                "Reject Rate",
+                "Denied Upfront",
+                "Denied with Cost",
+                "Occupancy",
+                "Proposals"
             ]
         ]);
 
