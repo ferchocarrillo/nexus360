@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="form-group col-md-6 col-lg-4">
                     <label>Corp Email</label>
-                    <span class="form-control text-truncate" title="{{ $dailysession->corp_email }}">{{ $dailysession->corp_email }}</span>
+                    <span class="form-control text-truncate" title="{{ $dailysession->corporate_email }}">{{ $dailysession->corporate_email }}</span>
                 </div>
                 <div class="form-group col-md-6 col-lg-4">
                     <label>Team Leader</label>
