@@ -27,6 +27,12 @@ class PandorasBoxMail extends Mailable
      */
     public function build()
     {
-        return $this->view('pandorasbox.mail.notification')->with(['message'=>$this])->subject('Pandoras Box Notification');
+        return $this->view('pandorasbox.mail.notification')->with(['message'=>$this])
+        ->subject('Pandoras Box Notification')
+        ->to([
+            'brigitte.pardo@contactpoint360.com',
+            'heidy.morales@contactpoint360.com',
+            'juand.cuellar@contactpoint360.com',
+        ]);
     }
 }

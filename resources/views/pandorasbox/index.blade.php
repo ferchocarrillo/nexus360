@@ -14,7 +14,7 @@
     </div>
     <div class="col-sm-9">
         <div class="card">
-            <form action="/pandorasbox" method="POST">
+            <form action="/pandorasbox" method="POST" id="formPandorasBox">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
@@ -48,7 +48,7 @@
 @stop
 @push('js')
 <script>
-    $('#sendSuggestion').click(function(e){
+    $('#formPandorasBox').submit(function(e){
         $("#logoLoading").modal("toggle");
     })
 

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\PandorasBoxMail;
+use App\Jobs\PandorasBoxMailJob;
 use App\PandorasBox;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class PandorasBoxController extends Controller
 {
@@ -38,12 +37,7 @@ class PandorasBoxController extends Controller
             'category'=>$request->category,
             'created_by'=>Auth::user()->id
         ]);
-        Mail::to([
-            'kelly.gamez@contactpoint360.com',
-            'brigitte.pardo@contactpoint360.com',
-            'heidy.morales@contactpoint360.com',
-            'juand.cuellar@contactpoint360.com',
-        ])->send(new PandorasBoxMail($pandora));
+        PandorasBoxMailJob::dispatch($pandora);
         
         return redirect()->back()->with('info', 'Created successfully');
     }
