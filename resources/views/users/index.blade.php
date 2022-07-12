@@ -1,25 +1,17 @@
 @extends('adminlte::page')
-
-{{-- @section('title', 'Dashboard' . ' | ' .  config('app.name', 'Laravel')) --}}
 @section('title_postfix', ' | Users')
-
 @section('content_header')
 <h1 class="d-inline">Users</h1>
-
 <div class="float-right">
     @can('users.create')
     <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Create</a>
     @endcan
 </div>
-
-
 @stop
-
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css') }}" />
 @endsection
-
 @section('content')
 @can('users.upload')
 <div class="card bg-transparent shadow-none">
@@ -68,6 +60,7 @@
                     <th>Username</th>
                     <th>Name</th>
                     <th>Roles</th>
+                    <th>Created</th>
                     <th></th>
                 </tr>
             </thead>
@@ -81,7 +74,7 @@
     <script type="text/javascript" src="{{ asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }} "></script>
 
 
-    
+
     <script>
 
     $('.custom-file-input').on('change',function(){
@@ -107,7 +100,6 @@
                     <td>${(row.nid ? row.campaign : '')}</td>
                 </tr>
             </table>
-            
             `;
         }
 
@@ -156,11 +148,16 @@
                     },
                     {
                         "render":function(data,type,row){
-                            return `<a class="btn btn-info btn-sm" href="/users/${row.id}/edit"><i class="fas fa-pencil-alt"></i></a>`
+                            return (row.created_at);
                         },
                         "targets": 6
                     },
-                    
+                    {
+                        "render":function(data,type,row){
+                            return `<a class="btn btn-info btn-sm" href="/users/${row.id}/edit"><i class="fas fa-pencil-alt"></i></a>`
+                        },
+                        "targets": 7
+                    },
                 ],
                 order:[[3,"asc"]]
             });
