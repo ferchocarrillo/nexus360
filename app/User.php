@@ -49,7 +49,7 @@ class User extends Authenticatable
         return $this->hasMany(MasterFile::class,'national_id','national_id')->orderBy('joining_date','DESC') ;
     }
 
-    public function employessAllHierarchy(){
+    public function employessAllHierarchy($onlyNationalIds = false){
 
         $query = DB::select(DB::raw("
         SELECT a.* 
@@ -109,6 +109,7 @@ class User extends Authenticatable
         $nationalids = array_filter($nationalids);
 
         
+        if($onlyNationalIds) return $nationalids;
 
         $users = User::whereIn('national_id',$nationalids);
 
