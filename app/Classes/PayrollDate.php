@@ -154,7 +154,7 @@ class PayrollDate
                         } else if (
                             $activity !== $this->agentActivities->last() &&
                             $activity->activity == 'Logout' &&
-                            $date['end_date'] < $this->schedule->out &&
+                            $date['end_date'] <= $this->schedule->out &&
                             $date['end_date'] > $this->schedule->in
                         ) {
                             // Si la actividad es logout, no es la última y el end_date es menor a la hora de salida
@@ -226,7 +226,8 @@ class PayrollDate
         $end_date_timestamp = strtotime($end_date);
         $endDates = [];
 
-        if ($activity->activity != 'Logout') {
+        if ($activity->activity != 'Logout' || 
+            ($this->schedule && $activity->activity == 'Logout' && $start_date < $this->schedule->out && $end_date > $this->schedule->out)){
             if ($this->schedule) {
                 if ($start_date < $this->schedule->in && $end_date > $this->schedule->in) {
                     $endDates[] = $this->schedule->in;
@@ -325,8 +326,10 @@ class PayrollDate
             $novedad = 'Tiempo pendiente aprobar';
         }
 
-        // Si es festivo, es tiempo laborado y la actividad es diferente a Break
-        if($is_holiday && $novedad == 'Tiempo laborado' && $actividad != 'Break' ){
+        // Si es festivo, es tiempo laborado y, la actividad es diferente a Break o Es Break 
+        // y el Tiempo laborado festivo es inferior al  el tiempo maximo laborado para los festivos
+        if($is_holiday && $novedad == 'Tiempo laborado' && ($actividad != 'Break' || 
+            ($actividad == 'Break' && $this->timeWorkedOnHoliday < $this->maxWorkingTimeForHolidays))){
             // Si el tiempo laborado festivo + el tiempo actual es superior al maximo tiempo trabajado para los festivos
             if($this->timeWorkedOnHoliday + $total_time > $this->maxWorkingTimeForHolidays){
                 if($this->timeWorkedOnHoliday < $this->maxWorkingTimeForHolidays){

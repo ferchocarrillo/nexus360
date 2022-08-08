@@ -32,5 +32,10 @@ class Payroll extends Model
     {
         return $this->hasMany('App\PayrollActivity', 'payroll_id', 'id');
     }
+
+    public function calendar()
+    {
+        return $this->belongsTo('App\PayrollCalendar','date','date');
+    }
     
 }

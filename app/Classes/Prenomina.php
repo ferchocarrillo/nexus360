@@ -3,7 +3,7 @@
 namespace App\Classes;
 
 use App\Payroll;
-use App\PayrollActivity;
+use App\PayrollAdjustment;
 use App\PayrollCalendar;
 use App\PayrollDayOffDiscount;
 use Carbon\Carbon;
@@ -109,6 +109,7 @@ class Prenomina
 
         \Log::info('Prenomina -> Deleted employees: '.$deletedEmployees);
 
+        $masterDB = config('database.connections.sqlsrvmasterfile.database');
         // Insert into employees from masterquery
         DB::connection('sqlsrvmasterfile')->insert("INSERT INTO payroll.dbo.employees
         SELECT [id]
@@ -125,7 +126,7 @@ class Prenomina
             , '$this->year' AS [year]
             , '$this->month' AS [month]
             , '$this->q' AS [q]
-        FROM cp360.dbo.masterquery
+        FROM $masterDB.dbo.masterquery
         WHERE [date_of_hire] <= ?
             AND ([termination_date] IS NULL OR [termination_date] > ?)
             AND [position] = ?",
@@ -283,18 +284,39 @@ class Prenomina
 
     protected function closedPayrollActual(){
         // Closed actual period active
-        DB::connection('sqlsrvmasterfile')->table('payroll.dbo.calendario')
-            ->whereBetween('date',[$this->startDateQ, $this->endDateQ])
+        PayrollCalendar::whereBetween('date',[$this->startDateQ, $this->endDateQ])
             ->update(['closed'=>1]);
 
         // Active next period
-        $dataEndDate = DB::connection('sqlsrvmasterfile')->table('payroll.dbo.calendario')->where('date',$this->endDate)->get()->first();
-        DB::connection('sqlsrvmasterfile')->table('payroll.dbo.calendario')
-            ->where('year',$dataEndDate->year)
+        $dataEndDate = PayrollCalendar::where('date',$this->endDate)->get()->first();
+        PayrollCalendar::where('year',$dataEndDate->year)
             ->where('month',$dataEndDate->month)
             ->where('q',$dataEndDate->q)
             ->update(['active'=>1]);
 
+        // Rechazar los ajustes que los supervisores no dieron respuesta
+        PayrollAdjustment::whereHas('payroll_activity', function($query)use($dataEndDate){
+            return $query->where('date','<',$dataEndDate->date);
+        })->where('supervisor_approval_required',1)
+        ->whereNull('supervisor_approval_status')
+        ->update([
+            'supervisor_approval_status' => 'Rechazado',
+            'supervisor_approval_date' => date('Y-m-d H:i:s'),
+            'supervisor_approval_comment' => 'Rechazo automático. No cuenta con flujo de aprobacion/rechazo'
+        ]);
+
+        // Rechazar los ajustes que los oms no dieron respuesta
+        PayrollAdjustment::whereHas('payroll_activity', function($query)use($dataEndDate){
+            return $query->where('date','<',$dataEndDate->date);
+        })->where('supervisor_approval_required',1)
+        ->where('supervisor_approval_status','Aprobado')
+        ->where('om_approval_required',1)
+        ->whereNull('om_approval_status')
+        ->update([
+            'om_approval_status' => 'Rechazado',
+            'om_approval_date' => date('Y-m-d H:i:s'),
+            'om_approval_comment' => 'Rechazo automático. No cuenta con flujo de aprobacion/rechazo'
+        ]);
         
     }
 
@@ -335,7 +357,7 @@ class Prenomina
 
     public function getPayroll($employee_id, $date)
     {
-        $payroll = Payroll::with('payroll_activities','payroll_activities.adjustments')
+        $payroll = Payroll::with('calendar','payroll_activities','payroll_activities.adjustments')
         ->where('employee_id', $employee_id)->where('date', $date)->firstOrFail();
         
         return $payroll;
@@ -363,13 +385,6 @@ class Prenomina
             ->select('date','day','day_of_week','holiday')
             ->orderBy('date')
             ->get();  
-        return DB::connection('sqlsrvmasterfile')->table('payroll.dbo.calendario')
-            ->leftJoin('payroll.dbo.festivos', 'festivos.fecha', '=', 'calendario.date')
-            ->select('calendario.date', 'calendario.day', 'calendario.day_of_week')
-            ->selectRaw('IIF(festivos.[fecha] is null, null,1) AS holiday')
-            ->whereBetween('date',[$this->startDate, $this->endDate])
-            ->orderBy('date')
-            ->get();
     }
 
     public function getEmployees($filterEmployees = [])

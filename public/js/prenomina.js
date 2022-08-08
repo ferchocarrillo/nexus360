@@ -159,7 +159,8 @@ $(function() {
                     .show();
                 }
                 if (payroll.schedule) {
-                    if (payroll.availableOffsetHoliday && payroll.employee_id != master_id && payroll.payroll_activities.length) {
+                    if (payroll.availableOffsetHoliday && payroll.employee_id != master_id && payroll.payroll_activities.length
+                        && !payroll.calendar.closed) {
                         $(
                             `<button class="btn btn-primary"> Request Offset Holiday </button>`
                         )
@@ -259,6 +260,7 @@ $(function() {
                                     activity.adjustments[
                                         activity.adjustments.length - 1
                                     ].status == "Rechazado") && activity.employee_id == master_id
+                                    && !payroll.calendar.closed
                                 ) {
                                     // Create
                                     buttons += `

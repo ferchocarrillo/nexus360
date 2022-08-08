@@ -25,8 +25,13 @@ class PrenominaAdjustmentController extends Controller
     {
         // if ajax
         if (request()->ajax()) {
-            $filterEmployees = auth()->user()->employessAllHierarchy(true);
-            $employees = MasterFile::whereIn('national_id', $filterEmployees)->get('id')->toArray() ;
+            $user = auth()->user();
+            if($user->can('payroll.admin')){
+                $employees = MasterFile::whereNull('termination_date')->get('id')->toArray();
+            }else{
+                $filterEmployees = auth()->user()->employessAllHierarchy(true);
+                $employees = MasterFile::whereIn('national_id', $filterEmployees)->get('id')->toArray();
+            }
             $employees = array_column($employees,'id');
             
             $adjustments = PayrollAdjustment::with('employee', 'payroll_activity')->where('om_approval_required', true)
@@ -57,8 +62,13 @@ class PrenominaAdjustmentController extends Controller
     {
         // if ajax
         if (request()->ajax()) {
-            $filterEmployees = auth()->user()->employessAllHierarchy(true);
-            $employees = MasterFile::whereIn('national_id', $filterEmployees)->get('id')->toArray() ;
+            $user = auth()->user();
+            if($user->can('payroll.admin')){
+                $employees = MasterFile::whereNull('termination_date')->get('id')->toArray();
+            }else{
+                $filterEmployees = auth()->user()->employessAllHierarchy(true);
+                $employees = MasterFile::whereIn('national_id', $filterEmployees)->get('id')->toArray();
+            }
             $employees = array_column($employees,'id');
 
             $adjustments = PayrollAdjustment::with('employee', 'payroll_activity')->where('supervisor_approval_required', true)

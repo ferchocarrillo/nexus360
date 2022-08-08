@@ -12,7 +12,13 @@ class PayrollCreatePrenominaCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'payroll:createprenomina {--year=} {--month=} {--q=} {--test=}';
+    protected $signature = 'payroll:createprenomina 
+    {--year= : Year of the fortnight (optional)}
+    {--month= : Month of the fortnight (optional)}
+    {--q= : Fortnight number (optional)}
+    {--test= : (optional); "1" Only Merge Data, "2" Refresh and Merge Data}
+    {--nid=* : Filter National Ids}
+        ';
 
     /**
      * The console command description.
@@ -42,6 +48,7 @@ class PayrollCreatePrenominaCommand extends Command
         $month = $this->option('month');
         $q = $this->option('q');
         $test = $this->option('test');
+        $filterEmployees = $this->option('nid');
 
         if($year && $month && $q){
             $prenomina = new Prenomina($year,$month,$q);    
@@ -54,11 +61,11 @@ class PayrollCreatePrenominaCommand extends Command
 
         if($test){
             switch ($test) {
-                case '1':
-                    $prenomina->createPrenomina(false,true,false);
+                case '1': // Only Merge Data
+                    $prenomina->createPrenomina(false,true,false,$filterEmployees);
                     break;
-                case '2':
-                    $prenomina->createPrenomina(true,true,false);
+                case '2': //Refresh and Merge Data
+                    $prenomina->createPrenomina(true,true,false,$filterEmployees);
                     break;
             }
 

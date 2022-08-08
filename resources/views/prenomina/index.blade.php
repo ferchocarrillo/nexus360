@@ -4,7 +4,7 @@
 
 @section('css')
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{{asset('vendor/flatpickr/flatpickr.min.css')}}">
     <style>
         .table-nowrap td,
         .table-nowrap th {
@@ -115,8 +115,8 @@
 @stop
 @push('js')
     <script type="text/javascript" src="{{ asset('vendor/daterangepicker/moment.min.js') }} "></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="{{ asset('js/prenomina.js?v=1.0')}}"></script>
+    <script src="{{asset('vendor/flatpickr/flatpickr.js')}}"></script>
+    <script src="{{ asset('js/prenomina.js?v=1.1')}}"></script>
     <script>
         const master_id = {{auth()->user()->masterfile2[0]->id}}
         $(document).ready(function () {

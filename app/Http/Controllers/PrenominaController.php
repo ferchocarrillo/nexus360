@@ -53,7 +53,9 @@ class PrenominaController extends Controller
         $employees = $prenomina->getEmployees($filterEmployees);
 
         if($prenomina->endDateQ >= date("Y-m-d")){
-            $prenomina->endDateQ = date("Y-m-d", strtotime("-1 days"));
+            $time = date("H:i:s");
+            $daysBefore = $time >= '10:15:00' ?1:2;
+            $prenomina->endDateQ = date("Y-m-d", strtotime("-$daysBefore days"));
         }
 
         $calendar = $prenomina->calendar->whereBetween('date',[$prenomina->startDateQ, $prenomina->endDateQ])->map->only(['date','holiday'])->values();
