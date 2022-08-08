@@ -170,6 +170,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reporting/links/dashboard','ReportingLinkController@dashboard')->name('links.dashboard');
     Route::resource('reporting/links','ReportingLinkController',['only'=>['index','create','store','edit','update']]);
 
+    Route::get('/prenomina','PrenominaController@index')->name('prenomina.index');
+    Route::post('/prenomina/getpayroll','PrenominaController@getPayroll')->name('prenomina.getPayroll');
+    Route::post('/prenomina/getemployees','PrenominaController@getEmployees')->name('prenomina.getEmployees');
+
+    Route::get('/prenomina/adjustments','PrenominaAdjustmentController@index')->name('prenomina.adjustments');
+    Route::get('/prenomina/adjustments/pending/om','PrenominaAdjustmentController@pendingForOM')->name('prenomina.adjustments.pending.om');
+    Route::get('/prenomina/adjustments/pending/supervisor','PrenominaAdjustmentController@pendingForSupervisor')->name('prenomina.adjustments.pending.supervisor');
+
+    Route::get('/prenomina/adjustments/{adjustment}','PrenominaAdjustmentController@show')->name('prenomina.adjustments.show');
+    Route::get('/prenomina/adjustments/create/{activity_code}','PrenominaAdjustmentController@create')->name('prenomina.adjustments.create');
+    Route::post('/prenomina/adjustments','PrenominaAdjustmentController@store')->name('prenomina.adjustments.store');
+    
+    Route::post('/prenomina/adjustments/approve/{id}','PrenominaAdjustmentController@approve')->name('prenomina.adjustments.approve');
+    Route::post('/prenomina/adjustments/approveall','PrenominaAdjustmentController@approveAll')->name('prenomina.adjustments.approveall');
+    Route::post('/prenomina/adjustments/offsetholiday','PrenominaAdjustmentController@offsetHoliday')->name('prenomina.adjustments.offsetholiday');
 });
 
 Auth::routes(['register' => false]);

@@ -420,6 +420,23 @@ return [
             ]
         ],
         [
+            'text'=>'Payroll',
+            'icon'=>'nav-icon fas fa-dollar-sign',
+            'can'=>'payroll',
+            'submenu'=>[
+                [
+                    'text'=>'Prenomina',
+                    'url'=>'prenomina',
+                    'can'=>'payroll'
+                ],
+                [
+                    'text'=>'Adjustments',
+                    'url'=>'prenomina/adjustments',
+                    'can'=>'payroll.adjustments'
+                ]
+            ]
+        ],
+        [
             'text'=>'Trivias',
             'icon'=>'nav-icon fas fa-question-circle',
             'can'=>'trivias',
