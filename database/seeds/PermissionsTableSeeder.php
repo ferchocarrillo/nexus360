@@ -20,7 +20,7 @@ class PermissionsTableSeeder extends Seeder
             'description'   => 'Login Without Masterfile',
         ]);
 
-        
+
         // Users
         Permission::firstOrCreate([
             'name'          => 'Browse Users',
@@ -101,7 +101,7 @@ class PermissionsTableSeeder extends Seeder
             'description'   => 'Download Report Agent Activity',
         ]);
 
-        // CGM 
+        // CGM
         Permission::firstOrCreate([
             'name'          => 'CGM Appointment Tracker',
             'slug'          => 'cgm.appointmenttracker',
@@ -171,9 +171,15 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => 'enercare.uploadagentperformance',
             'description'   => 'Enercare Upload AgentPerformance',
         ]);
-        
+
+        Permission::firstOrCreate([
+            'name'          => 'Enercare Sales Ranking',
+            'slug'          => 'enercare.salesranking',
+            'description'   => 'Enercare Sales Rankings',
+        ]);
+
         // SERVICE EXPERTS
-        
+
         Permission::firstOrCreate([
             'name'          => 'Service Experts',
             'slug'          => 'serviceexperts',
