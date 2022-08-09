@@ -8,7 +8,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/', 'HomeController@index')->name('home');
 
-   
+
 
     // --------------- Agent Activity --------------- //
     Route::get('agentactivity', 'AgentActivityController@index')->name('agentactivity.index')->middleware('can:agentactivity.index');
@@ -44,13 +44,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('cgm/reports/pdf/{id}','CGMController@pdf')->name('cgm.reports.pdf')->middleware('can:cgm.reports');
     Route::get('cgm/reports/pdfView/{id}','CGMController@viewpdf')->name('cgm.reports.viewpdf')->middleware('can:cgm.reports');
 
- 
+
     // --------------- Enercare --------------- //
 
     //CallTracker
     Route::get('enercare/calltracker','EnercareController@calltracker')->name('enercare.calltracker')->middleware('can:enercare.calltracker');
     Route::post('enercare/calltracker','EnercareController@calltrackerStore')->name('enercare.calltrackerStore')->middleware('can:enercare.calltracker');
-    
+
     //Report Sales
     Route::get('enercare/reports/sales','EnercareController@reportSales')->name('enercare.reportsales')->middleware('can:enercare.reportsales');
     Route::post('enercare/reports/sales','EnercareController@getReportSales')->name('enercare.getreportsales')->middleware('can:enercare.reportsales');
@@ -59,7 +59,7 @@ Route::middleware(['auth'])->group(function () {
     //Report CallTracker
     Route::get('enercare/reports/calltracker','EnercareController@reportCallTracker')->name('enercare.reportcalltracker')->middleware('can:enercare.reportcalltracker');
     Route::post('enercare/reports/calltracker','EnercareController@downloadreportCallTracker')->name('enercare.downloadreportcalltracker')->middleware('can:enercare.reportcalltracker');
-    
+
     //Report CallTracker
     Route::get('enercare/reports/kpis','EnercareController@reportkpis')->name('enercare.reportcalltracker')->middleware('can:enercare.reportkpis');
     Route::post('enercare/reports/kpis','EnercareController@reportkpisPOST')->name('enercare.reportkpisPOST')->middleware('can:enercare.reportkpis');
@@ -69,7 +69,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('enercare/uploads/agentperformance','EnercareController@uploadAgentPerformance')->name('enercare.uploadAgentPerformance')->middleware('can:enercare.uploadAgentPerformance');
     Route::post('enercare/uploads/agentperformance','EnercareController@uploadAgentPerformancePost')->name('enercare.uploadAgentPerformancePost')->middleware('can:enercare.uploadAgentPerformance');
 
-    
+    //SalesShow
+    Route::get('enercare/rankingsales','SalesShowController@index')->name('enercare.rankingsales');
 
     // --------------- Service Experts --------------- //
 
@@ -80,10 +81,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('serviceexperts/uploadFiles','ServiceExpertsController@filesUpload')->name('serviceexperts.filesupload')->middleware('can:serviceexperts.filesupload');
     Route::post('serviceexperts/uploadFiles','ServiceExpertsController@filesUploadStore')->name('serviceexperts.filesuploadstore')->middleware('can:serviceexperts.filesupload');
     Route::get('serviceexperts/files/{file}','ServiceExpertsController@filesDownload')->name('serviceexperts.filesdownload')->middleware('can:serviceexperts.files');
-    
+
     Route::post('serviceexperts/files/delete','ServiceExpertsController@filesDelete')->name('serviceexperts.filesdelete')->middleware('can:serviceexperts.filesdelete');
     //Route::get('serviceexperts/files/{filename}','ServiceExpertsController@filesDownload')->name('serviceexperts.filesdownload')->middleware('can:serviceexperts.files');
-    
+
     Route::post('serviceexperts/createdirectory','ServiceExpertsController@createDirectory')->name('serviceexperts.filescreatedirectory')->middleware('can:serviceexperts.filescreatedirectory');
 
     // --------------- Resources --------------- //
@@ -92,11 +93,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/upload/downloadusers','UserController@downloadUsersCreated')->name('users.downloadUsersCreated');
     Route::resource('roles', 'RoleController'); //Roles
     Route::resource('users', 'UserController'); //Users
-    
+
     // --------------- MasterFile --------------- //
     Route::get('management/uploadmasterfile','ManagementController@uploadMasterfile')->name('management.uploadMasterfile')->middleware('can:masterfile.upload');
     Route::post('management/uploadmasterfile','ManagementController@uploadMasterfilePost')->name('management.uploadMasterfilePost')->middleware('can:masterfile.upload');
-    
+
     Route::get('masterfile/wfh','MasterfileController@wfhIndex')->name('masterfile.wfw.index');
     Route::post('masterfile/wfh','MasterfileController@wfhStore')->name('masterfile.wfw.store');
 
@@ -119,7 +120,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('payrollnovelty', 'PayrollNoveltyController',[
         'only'=>['store','update','destroy']
     ]);
-    
+
     Route::get('payrollnovelty/{novelty?}', 'PayrollNoveltyController@index')->name('payrollnovelty.index')->where('novelty', '[0-9]+');
     Route::get('payrollnovelty/pending', 'PayrollNoveltyController@pending')->name('payrollnovelty.pending');
 
@@ -131,14 +132,14 @@ Route::middleware(['auth'])->group(function () {
     //Payroll Novelty Admin
     Route::get('payrollnovelty/admin','PayrollNoveltyAdminController@index')->name('payrollnovelty.admin.index');
     Route::post('payrollnovelty/admin/smlv','PayrollNoveltyAdminController@smlvSave')->name('payrollnovelty.admin.smlvSave');
-    
+
     //Payroll Novelty Reports
     Route::get('payrollnovelty/reports/novelties','PayrollNoveltyReportsController@novelties')->name('payrollnovelty.reports.novelties');
     Route::post('payrollnovelty/reports/novelties','PayrollNoveltyReportsController@noveltiesDownload')->name('payrollnovelty.reports.noveltiesDownload');
-    
+
     Route::get('payrollnovelty/reports/general','PayrollNoveltyReportsController@general')->name('payrollnovelty.reports.general');
     Route::post('payrollnovelty/reports/general','PayrollNoveltyReportsController@generalDownload')->name('payrollnovelty.reports.generalDownload');
-    
+
     Route::get('payrollnovelty/reports/noveltiesrrhh','PayrollNoveltyReportsController@noveltiesrrhh')->name('payrollnovelty.reports.noveltiesrrhh');
     Route::post('payrollnovelty/reports/noveltiesrrhh','PayrollNoveltyReportsController@noveltiesrrhhDownload')->name('payrollnovelty.reports.noveltiesrrhhDownload');
 
