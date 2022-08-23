@@ -167,7 +167,7 @@ class PayrollDate
                         // Si la actividad es la última del día y el end_date es menor a la hora de salida
                         if (
                             $activity === $this->agentActivities->last() &&
-                            $i == count($dates) - 1 &&
+                            ($i == count($dates) - 1 || $activity->activity == 'Logout') &&
                             (($activity->activity == 'Logout' && $date['start_date'] < $this->schedule->out) ||
                                 ($activity->activity != 'Logout' && $date['end_date'] < $this->schedule->out))
                         ) {
