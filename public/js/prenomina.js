@@ -382,6 +382,85 @@ $(function() {
                             `<span class="badge badge-danger text-uppercase p-2">${payroll.novelty.type}</span>`
                         )
                         .show();
+
+                    if(payroll.adjustment && payroll.adjustment.status == 'Aprobado'){
+                        $(`<h4 class="mb-0"><span class="badge badge-success text-uppercase p-3 w-100">
+                                <i class="fas fa-calendar-check fa-lg mr-2"></i>  ${payroll.adjustment.justification}
+                            </span></h4>`).appendTo("#novelty");
+                    }
+                        
+                    if(payroll.availableJustifyAbsence){
+                    
+                        $(
+                            `<button class="btn btn-info"><i class="fas fa-calendar-check fa-lg mr-2"></i> Justify Absense </button>`
+                        )
+                            .on({
+                                click: function() {
+                                    swal.fire({
+                                        title: "Justify Absense",
+                                        // icon: "info",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Send",
+                                        focusConfirm: false,
+                                        html: `
+                                        <select class="form-control form-control-lg" id="justifyAbsenseType">
+                                            <option value="" selected disabled>Justification</option>
+                                            <option>Cambio de Horario Extemporaneo</option>
+                                            <option>Agente olvidó Loguearse</option>
+                                            <option>Usuario no creado (Agente en Entrenamiento)</option>
+                                        </select>
+                                        <input type="text" id="justifyAbsenseObservations" class="swal2-input" placeholder="Observations">
+                                        `,
+                                        preConfirm: () => {
+                                            const observations = swal
+                                                .getPopup()
+                                                .querySelector(
+                                                    "#justifyAbsenseObservations"
+                                                )
+                                                .value.trim();
+                                            const justification = swal
+                                                .getPopup()
+                                                .querySelector(
+                                                    "#justifyAbsenseType"
+                                                )
+                                                .value.trim();
+                                            if (!justification){
+                                                swal.showValidationMessage(
+                                                    `Please enter justification`
+                                                );
+                                            }else if(!observations) {
+                                                swal.showValidationMessage(
+                                                    `Please enter observations`
+                                                );
+                                            }
+                                            return { justification, observations };
+                                        }
+                                    }).then(result => {
+                                        if (result.value) {
+                                            const justification = result.value.justification;
+                                            const observations = result.value.observations;
+                                            $("#logoLoading").modal("show");
+
+                                            axios
+                                                .post(
+                                                    "/prenomina/adjustments/justifyabsense",
+                                                    {
+                                                        'id':payroll.id,
+                                                        justification,
+                                                        observations
+                                                    }
+                                                )
+                                                .then(function(response) {
+                                                    getPayroll();
+                                                });
+                                        }
+                                    });
+                                }
+                            })
+                            .appendTo("#novelty");
+                    }
                 }
 
                 // hide modal logoLoading
