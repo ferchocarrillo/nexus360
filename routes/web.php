@@ -185,6 +185,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/prenomina/adjustments/approve/{id}','PrenominaAdjustmentController@approve')->name('prenomina.adjustments.approve');
     Route::post('/prenomina/adjustments/approveall','PrenominaAdjustmentController@approveAll')->name('prenomina.adjustments.approveall');
     Route::post('/prenomina/adjustments/offsetholiday','PrenominaAdjustmentController@offsetHoliday')->name('prenomina.adjustments.offsetholiday');
+    Route::post('/prenomina/adjustments/justifyabsense','PrenominaAdjustmentController@justifyAbsense')->name('prenomina.adjustments.justifyabsense');
 });
 
 Auth::routes(['register' => false]);

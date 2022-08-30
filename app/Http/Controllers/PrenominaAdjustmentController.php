@@ -7,6 +7,7 @@ use App\Payroll;
 use App\PayrollActivity;
 use App\PayrollAdjustment;
 use App\PayrollAdjustmentType;
+use App\PayrollDayOffDiscount;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class PrenominaAdjustmentController extends Controller
 {
     function __construct()
     {
-        $this->middleware('can:payroll')->only(['show','create','store','offsetHoliday']);
+        $this->middleware('can:payroll')->only(['show','create','store','offsetHoliday','justifyAbsense']);
         $this->middleware('can:payroll.adjustments')->only(['index',]);
         $this->middleware('can:payroll.om')->only(['pendingForOM','approveAll']);
         $this->middleware('can:payroll.supervisor')->only(['pendingForSupervisor']);
@@ -233,6 +234,10 @@ class PrenominaAdjustmentController extends Controller
             $adjustment->om_approval_user_id = $user->id;
             $adjustment->om_approval_comment = $request->adjustment_comments;
             $adjustment->save();
+            if($adjustment->adjustment_type == "Inasistencia Justificada" && $adjustment->status == PayrollAdjustment::APPROVED_STATUS ){
+                $payroll= Payroll::where('id',$adjustment->activity_code)->first();
+                PayrollDayOffDiscount::where('employee_id',$payroll->employee_id)->where('date_of_absence',$payroll->date)->delete();
+            }
         } else if (
             $user->can('payroll.supervisor') && $adjustment->supervisor_approval_required &&
             $adjustment->supervisor_approval_status == null
@@ -255,16 +260,22 @@ class PrenominaAdjustmentController extends Controller
     {
         $employee_id = $request->employee_id;
 
-        PayrollAdjustment::where('om_approval_required', true)
+        $adjustments = PayrollAdjustment::where('om_approval_required', true)
             ->whereNull('om_approval_status')
             ->where('supervisor_approval_status', PayrollAdjustment::APPROVED_STATUS)
-            ->where('employee_id', $employee_id)
-            ->update([
-                'om_approval_status' => PayrollAdjustment::APPROVED_STATUS,
-                'om_approval_date' => now(),
-                'om_approval_user_id' => auth()->user()->id,
-                'om_approval_comment' => 'Aprobado automáticamente'
-            ]);
+            ->where('employee_id', $employee_id);
+        
+        $adjustments->get()->where('adjustment_type','Inasistencia Justificada')->each(function($adjustment){
+            $payroll= Payroll::where('id',$adjustment->activity_code)->first();
+            PayrollDayOffDiscount::where('employee_id',$payroll->employee_id)->where('date_of_absence',$payroll->date)->delete();
+        });
+
+        $adjustments->update([
+            'om_approval_status' => PayrollAdjustment::APPROVED_STATUS,
+            'om_approval_date' => now(),
+            'om_approval_user_id' => auth()->user()->id,
+            'om_approval_comment' => 'Aprobado automáticamente'
+        ]);
 
         return response()->json(['success' => true]);
     }
@@ -308,6 +319,35 @@ class PrenominaAdjustmentController extends Controller
         abort(401);        
     }
 
+    public function justifyAbsense(Request $request){
 
-    
+        $payroll = Payroll::findOrFail($request->id);
+        $user = auth()->user();
+
+        // Validar si el Employee ID logueado es igual al del Payroll
+        if($user->national_id == $payroll->national_id) abort(401);
+
+        $adjustment = PayrollAdjustment::where("employee_id",$payroll->employee_id)
+            ->where("activity_code",strval($payroll->id))
+            ->get();
+
+        if($payroll->novelty && $payroll->novelty['type'] == 'Inasistencia' && $adjustment->count() === 0){
+            $adjustment = PayrollAdjustment::firstOrCreate([
+                'activity_code' => $payroll->id,
+                'employee_id' => $payroll->employee_id,
+                'adjustment_type' => 'Inasistencia Justificada',
+                'justification' => $request->justification,
+                'observations' => $request->observations,
+                'supervisor_approval_required' => 1,
+                'supervisor_approval_status' => PayrollAdjustment::APPROVED_STATUS,
+                'supervisor_approval_date' => now(),
+                'supervisor_approval_user_id' => $user->id,
+                'supervisor_approval_comment' => $request->observations,
+                'om_approval_required' => 1
+            ]);
+            return response()->json(['success' => true]);
+        }
+
+        abort(401);  
+    }
 }

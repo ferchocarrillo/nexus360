@@ -460,12 +460,20 @@ class Prenomina
             $this->employees = $this->employees->whereIn('national_id',$filterEmployees);
         }
 
+        $this->absenceJustifications = PayrollAdjustment::leftJoin('payrolls',DB::raw('CAST(payrolls.id as varchar)'), '=', 'payroll_adjustments.activity_code')
+        ->select('payrolls.employee_id','payrolls.date as payroll_date')
+        ->whereBetween('payrolls.date',[$this->startDate,$this->endDate])
+        ->where('payroll_adjustments.adjustment_type','Inasistencia Justificada')
+        ->where('payroll_adjustments.om_approval_status',PayrollAdjustment::APPROVED_STATUS)
+        ->get();
+
         $this->employees = $this->employees->map(function ($employee){
             $employee->payroll = collect();
             $employee->schedules = collect($this->schedules->get($employee->national_id, collect()));
             $employee->novelties = collect($this->novelties->get($employee->id, collect()));
             $employee->agentActivities = collect($this->agentActivities->get($employee->national_id, collect()));
             $employee->payroll_activities = collect();
+            $employee->absenceJustifications = $this->absenceJustifications->where('employee_id',$employee->id);
 
             $this->calendar->each(function ($date) use ($employee) {
                 // create id with date to YYYYMMDD and employee id
@@ -480,6 +488,7 @@ class Prenomina
                 $payroll->holiday = $date->holiday;
                 $payroll->schedule = $employee->schedules->where('date', $date->date)->first();
                 $payroll->novelty = $employee->novelties->where('start_date', '<=', $date->date)->where('end_date', '>=', $date->date)->first();
+                $payroll->absenceJustification = $employee->absenceJustifications->where('payroll_date',$date->date)->first();
                 $payroll->agentActivities = null;
                 $payroll->id = $id;
                 $payroll->employee_id = $employee->id;

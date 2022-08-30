@@ -191,12 +191,13 @@ class PayrollDate
 
         if($this->count < 1 && $this->schedule && !$this->novelty){
             $this->novelty = ['type' => 'Inasistencia', 'novelty' => null];
-
-            PayrollDayOffDiscount::firstOrCreate([
-                'employee_id' => $this->employee_id,
-                'date' => $this->getNextDateOfMandatoryResDay($this->date, $this->mandatory_res_day),
-                'date_of_absence' => $this->date,
-            ]);
+            if(!$this->absenceJustification){
+                PayrollDayOffDiscount::firstOrCreate([
+                    'employee_id' => $this->employee_id,
+                    'date' => $this->getNextDateOfMandatoryResDay($this->date, $this->mandatory_res_day),
+                    'date_of_absence' => $this->date,
+                ]);
+            }
         }
 
 
