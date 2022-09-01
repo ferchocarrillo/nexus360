@@ -508,6 +508,10 @@ $(function() {
                 <table class="table table-nowrap table-borderless table-sm mb-0">
                     <tbody>
                         <tr>
+                            <td><strong>Employee ID: </strong>${employee.id}</td>
+                            <td><strong>National ID: </strong>${employee.national_id}</td>
+                        </tr>
+                        <tr>
                             <td><strong>Campaign: </strong>${employee.campaign}</td>
                             <td><strong>Date of hire: </strong>${employee.date_of_hire}</td>
                         </tr>
@@ -517,9 +521,10 @@ $(function() {
                         </tr>
                         <tr>
                             <td><strong>Supervisor: </strong>${employee.supervisor}</td>
-                            <td><strong>Day off: </strong>${employee.mandatory_rest_day}</td>
+                            <td><strong>Supervisor: </strong>${employee.payroll_manager}</td>
                         </tr>
                         <tr>
+                            <td><strong>Day off: </strong>${employee.mandatory_rest_day}</td>
                             <td><strong>Compensation day: </strong>${employee.compensation_day}</td>
                         </tr>
                     </tbody>
