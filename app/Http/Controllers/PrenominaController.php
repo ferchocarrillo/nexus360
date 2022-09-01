@@ -52,7 +52,7 @@ class PrenominaController extends Controller
         $prenomina = new Prenomina($request->year, $request->month, $request->q);
         $employees = $prenomina->getEmployees($filterEmployees);
 
-        if($prenomina->endDateQ >= date("Y-m-d")){
+        if($prenomina->endDateQ >= date("Y-m-d") || $prenomina->endDate == date("Y-m-d")){
             $time = date("H:i:s");
             $daysBefore = $time >= '07:45:00' ?1:2;
             $prenomina->endDateQ = date("Y-m-d", strtotime("-$daysBefore days"));
