@@ -263,7 +263,7 @@ class Prenomina
         $this->payroll_activities = collect();
 
         if($refreshData)  $this->refreshDatabases();
-        $this->getData();
+        $this->getData($filterEmployees);
         $this->validateData();
 
         if(!$onlyMergeData) PayrollDayOffDiscount::whereBetween('date',[$this->startDate,$this->endDate])->delete();
@@ -370,10 +370,10 @@ class Prenomina
         return $payrolls;        
     }
 
-    protected function getData()
+    protected function getData($filterEmployees = [])
     {
         
-        $this->employees = $this->getEmployees();
+        $this->employees = $this->getEmployees($filterEmployees);
         $this->schedules = $this->getSchedules();
         $this->novelties = $this->getNovelties();
         $this->agentActivities = $this->getAgentActivities();
