@@ -90,7 +90,7 @@ class PrenominaController extends Controller
         );
 
         $payroll->availableJustifyAbsence = ($payroll->novelty && $payroll->novelty['type'] == 'Inasistencia' 
-            && !$adjustment && auth()->user()->national_id != $payroll->national_id );
+            && !$adjustment && auth()->user()->national_id != $payroll->national_id  && !$payroll->calendar->closed);
 
         $payroll->payroll_activities = $payroll->payroll_activities->map(function($activity)use($payroll) {
             if($payroll->adjustment && $payroll->adjustment->status == PayrollAdjustment::APPROVED_STATUS 
