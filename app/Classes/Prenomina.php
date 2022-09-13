@@ -304,7 +304,7 @@ class Prenomina
         $this->getData($filterEmployees);
         $this->validateData();
 
-        if(!$onlyMergeData) PayrollDayOffDiscount::whereBetween('date',[$this->startDate,$this->endDate])->delete();
+        if(!$onlyMergeData) PayrollDayOffDiscount::whereBetween('date_of_absence',[$this->startDate,$this->endDate])->delete();
 
         $this->mergeData($filterEmployees);
 
