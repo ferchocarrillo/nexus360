@@ -286,8 +286,9 @@ class Prenomina
             WHERE year = ? AND month = ? AND q = ?) as employees
             ON employee_id = employees.id
         WHERE ([start_date] BETWEEN ? AND ?
-            OR [end_date] BETWEEN ? AND ?)",
-        [$this->year, $this->month, $this->q, $this->startDate, $this->endDate, $this->startDate, $this->endDate]);
+            OR [end_date] BETWEEN ? AND ?
+            OR([start_date] < ? AND [end_date] >?))",
+        [$this->year, $this->month, $this->q, $this->startDate, $this->endDate, $this->startDate, $this->endDate, $this->startDate, $this->endDate]);
         
         $insertedNovelties = DB::connection('sqlsrvmasterfile')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
