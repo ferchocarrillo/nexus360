@@ -85,6 +85,9 @@ class PayrollDate
             }
         }
 
+        if($this->novelty){
+            return $this;
+        }
         $timeByActivity = [];
         $this->agentActivities->each(function ($activity) use (&$timeByActivity) {
 
@@ -97,10 +100,6 @@ class PayrollDate
             // Tiempo actual por actividad
             $actualTimeByActivity = $timeByActivity[$activity->activity] ?? 0;
 
-            
-            // if($activity->agent_activity_id == '785369'){
-            //     dd($activity, $this->schedule,$dates, $this->agentActivities);
-            // }
             for ($i = 0; $i < count($dates); $i++) {
                 $this->i = $i;
                 $date = [
@@ -145,7 +144,6 @@ class PayrollDate
                         // Si la actividad es la primera del día y el start_date es mayor a la hora de entrada
                         if ($activity === $this->agentActivities->first() && $i == 0 && $date['start_date'] > $this->schedule->in) {
                             $this->addNovedadesNomina($activity->agent_activity_id, 'Inasistencia Hrs', $activity->activity, $this->schedule->in, $date['start_date']);
-                            // dd($dates, $activity, $this->novedades_nomina);
                         }
 
                         if ($activity->activity != 'Logout' && ($date['start_date'] < $this->schedule->in ||  $date['end_date'] > $this->schedule->out)) {
@@ -173,23 +171,17 @@ class PayrollDate
                         ) {
                             $this->addNovedadesNomina($activity->agent_activity_id, 'Inasistencia Hrs', $activity->activity, ($activity->activity == 'Logout' ?  $date['start_date'] :  $date['end_date']), $this->schedule->out);
                         }
-                        // if($this->novedades_nomina->where('actividad','!=','Logout')->isEmpty()) {
-                        //     $this->inasistencia = $this->date;
-                        // }
                     } else {
                         if ($activity->activity != 'Logout') {
                             // Si la actividad no es logout
                             $this->addNovedadesNomina($activity->agent_activity_id, 'Tiempo laborado', $activity->activity, $date['start_date'], $date['end_date']);
                         }
-                        // if (count($this->getDates($activity)) > 2 && !in_array($activity->agent_activity_id, ['597541', '600539', '603368'])) {
-                        //     dd($this, $activity, $this->getDates($activity));
-                        // }
                     }
                 }
             }
         });
 
-        if($this->count < 1 && $this->schedule && !$this->novelty){
+        if($this->count < 1 && $this->schedule && !$this->novelty && $this->day_of_week != $this->mandatory_res_day){
             $this->novelty = ['type' => 'Inasistencia', 'novelty' => null];
             if(!$this->absenceJustification){
                 PayrollDayOffDiscount::firstOrCreate([
