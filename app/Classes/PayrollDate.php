@@ -258,6 +258,7 @@ class PayrollDate
             }
         }
         $endDates[] = $end_date;
+        $endDates = array_unique($endDates);
 
         usort($endDates, function ($a, $b) {
             return strtotime($a) - strtotime($b);
