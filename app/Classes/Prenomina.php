@@ -558,7 +558,7 @@ class Prenomina
                         'date' => $date->date,
                         'day' => $date->day,
                         'day_of_week' => $date->day_of_week,
-                        'is_holiday' => $date->holiday,
+                        'is_holiday' => $date->is_holiday,
                         'schedule' => $payroll->schedule ? json_encode($payroll->schedule) : null,
                         'novelty' => $payroll->novelty ? json_encode($payroll->novelty) : null
                     ]);
