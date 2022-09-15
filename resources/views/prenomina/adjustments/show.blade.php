@@ -66,6 +66,12 @@
         <div class="info">
             <h3>Adjustment</h3>
             <ul class="list-group list-group-flush">
+                @if($adjustment->created_by)
+                <li class="list-group-item">
+                    <strong>Creator</strong>
+                    <span id="adjustment-created-by">{{ $adjustment->creator->name }}</span>
+                </li>
+                @endif
                 <li class="list-group-item">
                     <strong>Adjustment Type</strong>
                     <span id="adjustment-type">{{ $adjustment->adjustment_type }}</span>

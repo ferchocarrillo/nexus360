@@ -40,7 +40,8 @@ class PayrollAdjustment extends Model
         'om_approval_status',
         'om_approval_date',
         'om_approval_user_id',
-        'om_approval_comment'
+        'om_approval_comment',
+        'created_by'
     ];
 
     protected $casts = [
@@ -79,5 +80,9 @@ class PayrollAdjustment extends Model
 
     public function employee(){
         return $this->setConnection('sqlsrvnexus360')->belongsTo('App\MasterFile', 'employee_id');
+    }
+
+    public function creator(){
+        return $this->setConnection('sqlsrvnexus360')->belongsTo('App\User', 'created_by');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\Prenomina;
 use App\MasterFile;
 use App\Payroll;
 use App\PayrollActivity;
@@ -169,9 +170,16 @@ class PrenominaAdjustmentController extends Controller
     public function create($activity_code)
     {
         $payroll_activity = PayrollActivity::where('code', $activity_code)->firstOrFail();
+        $user = auth()->user();
+        $prenomina = new Prenomina();
+
+        // Validar si el usuario logueado tiene permiso de OM o de Supervisor y es el ultimo dia de la quincena.
+        $today = date('Y-m-d');
+        $supervisorCanCreateAdjustments = (($user->can('payroll.om') || $user->can('payroll.supervisor')) && 
+            ($today == $prenomina->endDateQ || $today == $prenomina->endDate));
 
         // Validar si el Employee ID logueado es igual al del PayrollActivity
-        if(auth()->user()->masterfile2[0]->id != $payroll_activity->employee_id) abort(401);
+        if($user->masterfile2[0]->id != $payroll_activity->employee_id && !$supervisorCanCreateAdjustments) abort(401);
 
         $adjustmentTypes = PayrollAdjustmentType::where('activity_type', $payroll_activity->activity_type)->get()->groupBy('adjustment_type');
 
@@ -191,9 +199,16 @@ class PrenominaAdjustmentController extends Controller
     public function store(Request $request)
     {
         $payroll_activity = PayrollActivity::where('code', $request->activity_code)->firstOrFail();
+        $user = auth()->user();
+        $prenomina = new Prenomina();
+
+        // Validar si el usuario logueado tiene permiso de OM o de Supervisor y es el ultimo dia de la quincena.
+        $today = date('Y-m-d');
+        $supervisorCanCreateAdjustments = (($user->can('payroll.om') || $user->can('payroll.supervisor')) && 
+            ($today == $prenomina->endDateQ || $today == $prenomina->endDate));
 
         // Validar si el Employee ID logueado es igual al del PayrollActivity
-        if(auth()->user()->masterfile2[0]->id != $payroll_activity->employee_id) abort(401);
+        if($user->masterfile2[0]->id != $payroll_activity->employee_id && !$supervisorCanCreateAdjustments) abort(401);
 
         $adjustmentType = PayrollAdjustmentType::where('activity_type', $payroll_activity->activity_type)
             ->where('adjustment_type', $request->adjustment_type)
@@ -201,6 +216,7 @@ class PrenominaAdjustmentController extends Controller
             ->firstOrFail();
 
         $adjustment = PayrollAdjustment::create($request->merge([
+            'created_by' => $user->id,
             'activity_code' => $payroll_activity->code,
             'employee_id' => $payroll_activity->employee_id,
             'supervisor_approval_required' => 1,

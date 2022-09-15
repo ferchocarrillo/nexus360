@@ -259,7 +259,7 @@ $(function() {
                                     (!activity.adjustments.length ||
                                     activity.adjustments[
                                         activity.adjustments.length - 1
-                                    ].status == "Rechazado") && activity.employee_id == master_id
+                                    ].status == "Rechazado") && (activity.employee_id == master_id || payroll.supervisorCanCreateAdjustments)
                                     && !payroll.calendar.closed
                                 ) {
                                     // Create
