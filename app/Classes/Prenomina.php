@@ -286,8 +286,9 @@ class Prenomina
             WHERE year = ? AND month = ? AND q = ?) as employees
             ON employee_id = employees.id
         WHERE ([start_date] BETWEEN ? AND ?
-            OR [end_date] BETWEEN ? AND ?)",
-        [$this->year, $this->month, $this->q, $this->startDate, $this->endDate, $this->startDate, $this->endDate]);
+            OR [end_date] BETWEEN ? AND ?
+            OR([start_date] < ? AND [end_date] >?))",
+        [$this->year, $this->month, $this->q, $this->startDate, $this->endDate, $this->startDate, $this->endDate, $this->startDate, $this->endDate]);
         
         $insertedNovelties = DB::connection('sqlsrvmasterfile')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
@@ -303,7 +304,7 @@ class Prenomina
         $this->getData($filterEmployees);
         $this->validateData();
 
-        if(!$onlyMergeData) PayrollDayOffDiscount::whereBetween('date',[$this->startDate,$this->endDate])->delete();
+        if(!$onlyMergeData) PayrollDayOffDiscount::whereBetween('date_of_absence',[$this->startDate,$this->endDate])->delete();
 
         $this->mergeData($filterEmployees);
 
@@ -557,7 +558,7 @@ class Prenomina
                         'date' => $date->date,
                         'day' => $date->day,
                         'day_of_week' => $date->day_of_week,
-                        'is_holiday' => $date->holiday,
+                        'is_holiday' => $date->is_holiday,
                         'schedule' => $payroll->schedule ? json_encode($payroll->schedule) : null,
                         'novelty' => $payroll->novelty ? json_encode($payroll->novelty) : null
                     ]);
