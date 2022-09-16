@@ -176,8 +176,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/prenomina/getemployees','PrenominaController@getEmployees')->name('prenomina.getEmployees');
 
     Route::get('/prenomina/adjustments','PrenominaAdjustmentController@index')->name('prenomina.adjustments');
-    Route::get('/prenomina/adjustments/pending/om','PrenominaAdjustmentController@pendingForOM')->name('prenomina.adjustments.pending.om');
-    Route::get('/prenomina/adjustments/pending/supervisor','PrenominaAdjustmentController@pendingForSupervisor')->name('prenomina.adjustments.pending.supervisor');
+    Route::get('/prenomina/adjustments/pending/','PrenominaAdjustmentController@pending')->name('prenomina.adjustments.pending');
 
     Route::get('/prenomina/adjustments/{adjustment}','PrenominaAdjustmentController@show')->name('prenomina.adjustments.show');
     Route::get('/prenomina/adjustments/create/{activity_code}','PrenominaAdjustmentController@create')->name('prenomina.adjustments.create');

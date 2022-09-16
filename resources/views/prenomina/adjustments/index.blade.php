@@ -17,6 +17,9 @@
     <h1 class='d-inline'>Adjustments</h1>
 @stop
 @section('content')
+    <button type="button" class="btn btn-sm btn-outline-secondary float-right" data-toggle="modal" data-target="#summaryAdjustments">
+        <i class="fas fa-table"></i> Summary
+    </button>
     <ul class="nav nav-tabs" id="tabsAdjustments" role="tablist">
         @if ($permissionOM)
             <li class="nav-item">
@@ -78,7 +81,38 @@
         @endif
     </div>
 
-
+    <div class="modal fade" id="summaryAdjustments" tabindex="-1" role="dialog" aria-labelledby="summaryAdjustmentsLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="summaryAdjustmentsLabel">Summary</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="summary" class="table table-sm">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Supervisor</th>
+                                <th>Payroll Manager</th>
+                                <th>Pending For</th>
+                                <th>Cant</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot class="thead-dark">
+                            <tr>
+                                <th colspan="3">TOTAL</th>
+                                <th><span id="nAdjustments">0</span></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="adjustmentModal" tabindex="-1" role="dialog" aria-labelledby="adjustmentModalLabel"
         aria-hidden="true" data-keyboard="false" data-backdrop="static">
@@ -171,27 +205,40 @@
             return html;
         }
 
+        var totalAdjustments = {};
+        function summaryAdjustments(adjustments,pending_for,count){
+            let data =Object.values(adjustments).flat(1).reduce((p, c) => {
+                let idx = p.findIndex(x=>x.supervisor==c.employee.supervisor && x.payroll_manager == c.employee.payroll_manager)
+                if (idx<0) {
+                    p.push({'supervisor':c.employee.supervisor,'payroll_manager':c.employee.payroll_manager,'count': 1, 'pending_for':pending_for});
+                }else{
+                    p[idx].count ++;
+                }
+                return p;
+            }, []);
+
+
+            data.forEach(x=>{
+                $('#summary tbody').append(`
+                <tr>
+                    <td>${x.supervisor}</td>
+                    <td>${x.payroll_manager}</td>
+                    <td>${x.pending_for}</td>
+                    <td>${x.count}</td>
+                </tr>
+                `)
+            })
+
+            totalAdjustments[pending_for] = count;
+            $('#nAdjustments').text(Object.values(totalAdjustments).reduce((a, b) => a + b, 0))
+        }
         $(function() {
+            $('#tabsAdjustments li:first-child a').tab('show')
 
             var tableAdjustmentsOM = $('#adjustmentsOM').DataTable({
                 ordering: false,
                 responsive: true,
-                ajax: {
-                    url: "{{ route('prenomina.adjustments.pending.om') }}",
-                    dataSrc: function(json) {
-                        $('#om-tab>span').text(json.count);
-                        var data = [];
-                        for (var employee_id in json.adjustments) {
-                            data.push({
-                                'employee_id': employee_id, // employee_id
-                                'employee_name': json.adjustments[employee_id][0].employee
-                                    .full_name, // employee_name
-                                'adjustments': json.adjustments[employee_id] // adjustments
-                            });
-                        }
-                        return data;
-                    }
-                },
+                data: [],
                 columns: [{
                         className: "details-control",
                         data: 'employee_name',
@@ -222,22 +269,7 @@
             var tableAdjustmentsSupervisor = $('#adjustmentsSupervisor').DataTable({
                 ordering: false,
                 responsive: true,
-                ajax: {
-                    url: "{{ route('prenomina.adjustments.pending.supervisor') }}",
-                    dataSrc: function(json) {
-                        $('#supervisor-tab>span').text(json.count);
-                        var data = [];
-                        for (var employee_id in json.adjustments) {
-                            data.push({
-                                'employee_id': employee_id, // employee_id
-                                'employee_name': json.adjustments[employee_id][0].employee
-                                    .full_name, // employee_name
-                                'adjustments': json.adjustments[employee_id] // adjustments
-                            });
-                        }
-                        return data;
-                    }
-                },
+                data: [],
                 columns: [{
                     className: "details-control",
                     data: 'employee_name',
@@ -254,6 +286,40 @@
                 }]
             })
 
+            function convertData(adjustments){
+                var data = [];
+                for (var employee_id in adjustments) {
+                    data.push({
+                        'employee_id': employee_id, // employee_id
+                        'employee_name': adjustments[employee_id][0].employee
+                            .full_name, // employee_name
+                        'adjustments': adjustments[employee_id] // adjustments
+                    });
+                }
+                return data;
+            }
+
+            function getAdjustments(){
+                $.get('{{ route('prenomina.adjustments.pending') }}')
+                .then(response=>{
+                    let dataAdjustment = response;
+                    if(dataAdjustment.OM.adjustments){
+                        let OMAdjustments = convertData(dataAdjustment.OM.adjustments)
+                        $('#adjustmentsOM').DataTable().clear().rows.add(OMAdjustments).draw();
+                        $('#om-tab>span').text(dataAdjustment.OM.count);
+                        summaryAdjustments(dataAdjustment.OM.adjustments,'OM',dataAdjustment.OM.count)
+                    }
+                    if(dataAdjustment.Supervisor.adjustments){
+                        let SupervisorAdjustments = convertData(dataAdjustment.Supervisor.adjustments)
+                        $('#adjustmentsSupervisor').DataTable().clear().rows.add(SupervisorAdjustments).draw();
+                        $('#supervisor-tab>span').text(dataAdjustment.Supervisor.count);
+                        summaryAdjustments(dataAdjustment.Supervisor.adjustments,'Supervisor',dataAdjustment.Supervisor.count)
+                    }
+
+                    
+                })
+            }
+            getAdjustments();
             $('#adjustmentsOM tbody').on('click', 'tr td.details-control', function(e) {
                 e.preventDefault();
                 var tr = $(this).closest('tr');
@@ -351,8 +417,7 @@
             });
 
             document.addEventListener('refresh_data', function(e) {
-                tableAdjustmentsOM.ajax.reload();
-                tableAdjustmentsSupervisor.ajax.reload();
+                getAdjustments();
             });
 
         })

@@ -85,4 +85,22 @@ class PayrollAdjustment extends Model
     public function creator(){
         return $this->setConnection('sqlsrvnexus360')->belongsTo('App\User', 'created_by');
     }
+
+    public static $withoutAppends = false;
+
+    public function scopeWithoutAppends($query)
+    {
+        self::$withoutAppends = true;
+
+        return $query;
+    }
+
+    protected function getArrayableAppends()
+    {
+        if (self::$withoutAppends){
+            return [];
+        }
+
+        return parent::getArrayableAppends();
+    }
 }
