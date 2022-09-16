@@ -18,78 +18,77 @@ class PrenominaAdjustmentController extends Controller
     function __construct()
     {
         $this->middleware('can:payroll')->only(['show','create','store','offsetHoliday','justifyAbsense']);
-        $this->middleware('can:payroll.adjustments')->only(['index',]);
-        $this->middleware('can:payroll.om')->only(['pendingForOM','approveAll']);
-        $this->middleware('can:payroll.supervisor')->only(['pendingForSupervisor']);
+        $this->middleware('can:payroll.adjustments')->only(['index','pending']);
+        $this->middleware('can:payroll.om')->only(['approveAll']);
     }
-    // Get all payroll adjustments pending for OM approval
-    public function pendingForOM()
-    {
-        // if ajax
-        if (request()->ajax()) {
+        protected function pending(Request $request){
+        if($request->ajax()){
+            $data = [
+                'OM'=>[],
+                'Supervisor'=>[]
+            ];
+
             $user = auth()->user();
-            if($user->can('payroll.admin')){
-                $employees = MasterFile::whereNull('termination_date')->get('id')->toArray();
-            }else{
-                $filterEmployees = auth()->user()->employessAllHierarchy(true);
-                $employees = MasterFile::whereIn('national_id', $filterEmployees)->get('id')->toArray();
-            }
-            $employees = array_column($employees,'id');
-            
-            $adjustments = PayrollAdjustment::with('employee', 'payroll_activity')->where('om_approval_required', true)
-                ->whereNull('om_approval_status')
-                ->where('supervisor_approval_status', PayrollAdjustment::APPROVED_STATUS)
+            $permissionSupervisor = $user->can('payroll.supervisor');
+            $permissionOM = $user->can('payroll.om');
+            $permissionAdmin = $user->can('payroll.admin');
+
+            $adjustments = PayrollAdjustment::withoutAppends()
+                ->with([
+                    'employee'=>function($query){
+                        $query->select('id','full_name','supervisor','payroll_manager')
+                        ->whereNull('termination_date');
+                    }, 
+                    'payroll_activity'=>function($query){
+                        $query->withoutAppends()->select('code','date');
+                    }
+                ])->where(function($query)use($permissionSupervisor,$permissionOM,$permissionAdmin){
+                    if($permissionSupervisor || $permissionAdmin){
+                        $query->where(function($query){
+                            $query->where('supervisor_approval_required', true)
+                            ->whereNull('supervisor_approval_status');
+                        });
+                    }
+                    if($permissionOM || $permissionAdmin){
+                        $query->orWhere(function($query){
+                            $query->where('om_approval_required', true)
+                            ->whereNull('om_approval_status')
+                            ->where('supervisor_approval_status', PayrollAdjustment::APPROVED_STATUS);
+                        });
+                    }
+                })
                 ->leftJoin('payrolls',DB::raw('CAST(payrolls.id as varchar)'), '=', 'payroll_adjustments.activity_code')
-                ->select('payroll_adjustments.*','payrolls.date as payroll_date')
+                ->select(
+                    'payroll_adjustments.id',
+                    'payroll_adjustments.activity_code',
+                    'payroll_adjustments.employee_id',
+                    'payroll_adjustments.adjustment_type',
+                    'payroll_adjustments.justification',
+                    DB::raw("IIF([payroll_adjustments].[supervisor_approval_status] is null,'Supervisor','OM') as pending_for"),
+                    'payrolls.date as payroll_date'
+                    )
                 ->get();
 
-            $adjustments = $adjustments->whereIn('employee_id',$employees)->values()->groupBy('employee_id');
+                if(!$permissionAdmin){
+                    $filterEmployees = $user->employessAllHierarchy(true);
+                    $employees = MasterFile::select('id')->whereNull('termination_date')->whereIn('national_id', $filterEmployees)->get()->pluck('id')->toArray();
+                }else{
+                    $employees = MasterFile::select('id')->whereNull('termination_date')->get()->pluck('id')->toArray();
+                }
+                $adjustments = $adjustments->whereIn('employee_id',$employees)->values();
 
-            // Count all adjustments pending for OM approval
-            $count = 0;
-            foreach ($adjustments as $adjustment) {
-                $count += count($adjustment);
-            }
+                if($permissionSupervisor || $permissionAdmin){
+                    $data['Supervisor']['adjustments'] = $adjustments->where('pending_for','Supervisor')->values();
+                    $data['Supervisor']['count'] = $data['Supervisor']['adjustments']->count();
+                    $data['Supervisor']['adjustments'] = $data['Supervisor']['adjustments']->groupBy('employee_id');
+                }
+                if($permissionOM || $permissionAdmin){
+                    $data['OM']['adjustments'] = $adjustments->where('pending_for','OM')->values();
+                    $data['OM']['count'] = $data['OM']['adjustments']->count();
+                    $data['OM']['adjustments'] = $data['OM']['adjustments']->groupBy('employee_id');
+                }
 
-            return response()->json([
-                'adjustments' => $adjustments,
-                'count' => $count,
-            ]);
-        }
-        abort(401);
-    }
-
-    // Get all payroll adjustments pending for Supervisor approval
-    public function pendingForSupervisor()
-    {
-        // if ajax
-        if (request()->ajax()) {
-            $user = auth()->user();
-            if($user->can('payroll.admin')){
-                $employees = MasterFile::whereNull('termination_date')->get('id')->toArray();
-            }else{
-                $filterEmployees = auth()->user()->employessAllHierarchy(true);
-                $employees = MasterFile::whereIn('national_id', $filterEmployees)->get('id')->toArray();
-            }
-            $employees = array_column($employees,'id');
-
-            $adjustments = PayrollAdjustment::with('employee', 'payroll_activity')->where('supervisor_approval_required', true)
-                ->whereNull('supervisor_approval_status')
-                ->leftJoin('payrolls',DB::raw('CAST(payrolls.id as varchar)'), '=', 'payroll_adjustments.activity_code')
-                ->select('payroll_adjustments.*','payrolls.date as payroll_date')
-                ->get();
-
-            $adjustments = $adjustments->whereIn('employee_id',$employees)->values()->groupBy('employee_id');
-
-            // Count adjustments per employee
-            $count = 0;
-            foreach ($adjustments as $adjustment) {
-                $count += count($adjustment);
-            }
-            return response()->json([
-                'adjustments' => $adjustments,
-                'count' => $count
-            ]);
+            return response()->json($data); 
         }
         abort(401);
     }
@@ -135,7 +134,7 @@ class PrenominaAdjustmentController extends Controller
      */
     public function show( $adjustment)
     {
-        $adjustment = PayrollAdjustment::where('payroll_adjustments.id', $adjustment)
+        $adjustment = PayrollAdjustment::withoutAppends()->where('payroll_adjustments.id', $adjustment)
         ->leftJoin('payrolls',DB::raw('CAST(payrolls.id as varchar)'), '=', 'payroll_adjustments.activity_code')
         ->select('payroll_adjustments.*','payrolls.date as payroll_date')
         ->firstOrFail();
@@ -150,7 +149,7 @@ class PrenominaAdjustmentController extends Controller
                 ->firstOrFail();
             $national_id = $payroll->national_id;
         }else{
-            $payroll_activity = PayrollActivity::where('code', $adjustment->activity_code)->firstOrFail();
+            $payroll_activity = PayrollActivity::withoutAppends()->where('code', $adjustment->activity_code)->firstOrFail();
             $national_id = $payroll_activity->payroll->national_id;
         }
         // Validar si el Employee ID logueado es igual al del PayrollActivity
