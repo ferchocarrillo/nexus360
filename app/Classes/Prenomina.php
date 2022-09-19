@@ -315,7 +315,7 @@ class Prenomina
             $this->savePayrollActivities();
         }
 
-        if($closePayroll &&  $this->endDateQ < date("Y-m-d") && date("H:i:s") >= "10:00:00"){
+        if($closePayroll &&  $this->endDateQ < date("Y-m-d") && date('Y-m-d H:i:s') >= $this->endDate.' 10:00:00'){
             $this->closedPayrollActual();
         }
     }
