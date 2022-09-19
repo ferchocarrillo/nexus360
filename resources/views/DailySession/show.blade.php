@@ -44,18 +44,6 @@
                 <span class="form-control">{{ $dailysession->score }}</span>
             </div>
             <div class="form-group col-md-6 col-lg-4">
-                <label>Documented</label>
-                <span class="form-control">{{ $dailysession->documented }}</span>
-            </div>
-            <div class="form-group col-md-6 col-lg-4">
-                <label>Root Cause</label>
-                <span class="form-control">{{ $dailysession->root_cause }}</span>
-            </div>
-            <div class="form-group col-md-6 col-lg-4">
-                <label>Educational Tool</label>
-                <span class="form-control">{{ $dailysession->educational_tool }}</span>
-            </div>
-            <div class="form-group col-md-6 col-lg-4">
                 <label>Created By</label>
                 <span class="form-control">{{ $dailysession->creator->name }}</span>
             </div>
