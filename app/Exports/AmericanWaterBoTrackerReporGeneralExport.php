@@ -23,7 +23,23 @@ class AmericanWaterBoTrackerReporGeneralExport implements FromCollection, WithHe
     public function collection()
     {
         return AmericanWaterBoTracker::whereDate('created_at','>=',$this->start_date)
-        ->whereDate('created_at','<=',$this->end_date)->get();
+        ->whereDate('created_at','<=',$this->end_date)
+        ->select(
+            'id',
+            'username',
+            'queue',
+            'view',
+            'cus_id',
+            'customer_name',
+            'spreadsheet',
+            'status',
+            'enr_number',
+            'agreement_classification',
+            'additional_notes',
+            'started_at',
+            'created_at',
+            'updated_at'
+        )->get();
     }
 
     public function headings(): array
@@ -32,6 +48,7 @@ class AmericanWaterBoTrackerReporGeneralExport implements FromCollection, WithHe
             'id',
             'username',
             'queue',
+            'view',
             'cus_id',
             'customer_name',
             'spreadsheet',

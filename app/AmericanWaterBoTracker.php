@@ -17,5 +17,6 @@ class AmericanWaterBoTracker extends Model
         'agreement_classification',
         'additional_notes',
         'started_at',
+        'view',
     ];
 }
