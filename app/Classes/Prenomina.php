@@ -100,6 +100,9 @@ class Prenomina
         ]));
         
         $masterDB = config('database.connections.sqlsrvmasterfile.database');
+        if(config('database.connections.sqlsrvpayroll.host')!=config('database.connections.sqlsrvmasterfile.host')){
+            $masterDB = '[10.238.68.66\ADMIN].'.$masterDB;
+        }
         
         // Validar si la nomina no está cerrada
         if($this->calendar->where('date',$this->endDateQ)->first()->closed == false){
@@ -107,7 +110,7 @@ class Prenomina
             // EMPLOYEES
 
             // Delete Employees
-            $deletedEmployees = DB::connection('sqlsrvmasterfile')->table('payroll.dbo.employees')
+            $deletedEmployees = DB::connection('sqlsrvpayroll')->table('employees')
             ->leftJoin($masterDB.'.dbo.masterquery','employees.id','=','masterquery.id')
             ->where('employees.year', $this->year)
             ->where('employees.month', $this->month)
@@ -118,7 +121,7 @@ class Prenomina
             \Log::info('Prenomina -> Deleted employees: '.$deletedEmployees);
 
             
-            DB::connection('sqlsrvmasterfile')->table('payroll.dbo.employees')
+            DB::connection('sqlsrvpayroll')->table('employees')
             ->join($masterDB.'.dbo.masterquery','employees.id','=','masterquery.id')
             ->where('employees.year', $this->year)
             ->where('employees.month', $this->month)
@@ -138,8 +141,8 @@ class Prenomina
 
             // Insert into employees from masterquery
 
-            DB::connection('sqlsrvmasterfile')
-            ->insert("INSERT INTO payroll.dbo.employees
+            DB::connection('sqlsrvpayroll')
+            ->insert("INSERT INTO employees
             SELECT masterquery.[id]
                 , masterquery.[national_id]
                 , masterquery.[full_name]
@@ -158,7 +161,7 @@ class Prenomina
                 , '$this->q' AS [q]
             FROM $masterDB.dbo.masterquery
             LEFT JOIN (SELECT id
-                FROM payroll.dbo.employees
+                FROM employees
                 WHERE year = ? AND month = ? AND q = ?) as employees
                 ON masterquery.id = employees.id
             WHERE masterquery.[date_of_hire] <= ?
@@ -168,14 +171,14 @@ class Prenomina
                 [$this->year, $this->month, $this->q,$this->endDateQ, $this->startDateQ, 'Agent']
             );
 
-            $insertedEmployees = DB::connection('sqlsrvmasterfile')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
+            $insertedEmployees = DB::connection('sqlsrvpayroll')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
             \Log::info('Prenomina -> Inserted employees: '.$insertedEmployees);
 
             // SCHEDULES
 
             // Delete schedules
-            $deletedSchedules = DB::connection('sqlsrvmasterfile')->table('payroll.dbo.schedules')
+            $deletedSchedules = DB::connection('sqlsrvpayroll')->table('schedules')
             ->where('year', $this->year)
             ->where('month', $this->month)
             ->where('q', $this->q)
@@ -184,7 +187,7 @@ class Prenomina
             \Log::info('Prenomina -> Deleted schedules: '.$deletedSchedules);
 
             // Insert schedules
-            DB::connection('sqlsrvmasterfile')->insert("INSERT INTO payroll.dbo.schedules
+            DB::connection('sqlsrvpayroll')->insert("INSERT INTO schedules
             SELECT [date],
                 NationalID as national_id, 
                 [in], 
@@ -208,21 +211,21 @@ class Prenomina
                 '$this->q' AS [q]
             FROM [10.238.68.66\CP360].enercare.dbo.Tbschedulescontactpoint as schedules
             INNER JOIN (SELECT national_id
-                FROM payroll.dbo.employees
+                FROM employees
                 WHERE year = ? AND month = ? AND q = ?) as employees
                 ON schedules.NationalID = employees.national_id
             WHERE schedules.[date] BETWEEN ? AND ?",
             [$this->year, $this->month, $this->q, $this->startDate, $this->endDate]
             );
             
-            $insertedSchedules = DB::connection('sqlsrvmasterfile')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
+            $insertedSchedules = DB::connection('sqlsrvpayroll')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
             \Log::info('Prenomina -> Inserted schedules: '.$insertedSchedules);
 
             // AGENT ACTIVITIES
         
             // Delete agent activities
-            $deletedActivities = DB::connection('sqlsrvmasterfile')->table('payroll.dbo.agent_activities')
+            $deletedActivities = DB::connection('sqlsrvpayroll')->table('agent_activities')
             ->where('year', $this->year)
             ->where('month', $this->month)
             ->where('q', $this->q)
@@ -232,7 +235,7 @@ class Prenomina
 
 
             // Insert Agent Activities
-            DB::connection('sqlsrvmasterfile')->insert("INSERT INTO payroll.dbo.agent_activities
+            DB::connection('sqlsrvpayroll')->insert("INSERT INTO agent_activities
             SELECT agent_activities.id as agent_activity_id, 
                 users.national_id,
                 activities.name AS activity ,
@@ -246,13 +249,13 @@ class Prenomina
             INNER JOIN [10.238.68.66\CP360].nexus360.dbo.activities ON agent_activities.activity_id = activities.id
             INNER JOIN [10.238.68.66\CP360].nexus360.dbo.users ON agent_activities.user_id = users.id
             INNER JOIN (SELECT national_id
-                FROM payroll.dbo.employees
+                FROM employees
                 WHERE year = ? AND month = ? AND q = ?) as employees
                 ON  users.national_id = employees.national_id
             WHERE convert(date,agent_activities.created_at) BETWEEN ? AND ?",
             [$this->year, $this->month, $this->q, $this->startDate, $this->endDate]);
 
-            $insertedActivities = DB::connection('sqlsrvmasterfile')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
+            $insertedActivities = DB::connection('sqlsrvpayroll')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
             \Log::info('Prenomina -> Inserted agent_activities: '.$insertedActivities);
 
@@ -261,7 +264,7 @@ class Prenomina
         // NOVELTIES
 
         // Delete novelties
-        $deletedNovelties = DB::connection('sqlsrvmasterfile')->table('payroll.dbo.novelties')
+        $deletedNovelties = DB::connection('sqlsrvpayroll')->table('novelties')
         ->where('year', $this->year)
         ->where('month', $this->month)
         ->where('q', $this->q)
@@ -270,7 +273,7 @@ class Prenomina
         \Log::info('Prenomina -> Deleted novelties: '.$deletedNovelties);
 
         // Insert Novelties
-        DB::connection('sqlsrvmasterfile')->insert("INSERT INTO payroll.dbo.novelties
+        DB::connection('sqlsrvpayroll')->insert("INSERT INTO novelties
         SELECT novelties.[id] as novelty_id,
             employee_id,
             contingency ,
@@ -282,7 +285,7 @@ class Prenomina
             '$this->q' AS [q]
         FROM [10.238.68.66\CP360].nexus360.dbo.payroll_novelties as novelties
         INNER JOIN (SELECT id
-            FROM payroll.dbo.employees
+            FROM employees
             WHERE year = ? AND month = ? AND q = ?) as employees
             ON employee_id = employees.id
         WHERE ([start_date] BETWEEN ? AND ?
@@ -290,7 +293,7 @@ class Prenomina
             OR([start_date] < ? AND [end_date] >?))",
         [$this->year, $this->month, $this->q, $this->startDate, $this->endDate, $this->startDate, $this->endDate, $this->startDate, $this->endDate]);
         
-        $insertedNovelties = DB::connection('sqlsrvmasterfile')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
+        $insertedNovelties = DB::connection('sqlsrvpayroll')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
         \Log::info('Prenomina -> Inserted novelties: '.$insertedNovelties);        
 
@@ -427,7 +430,7 @@ class Prenomina
 
     public function getEmployees($filterEmployees = [])
     {
-        $query = DB::connection('sqlsrvmasterfile')->table('payroll.dbo.employees')
+        $query = DB::connection('sqlsrvpayroll')->table('employees')
         ->where('year', $this->year)
         ->where('month', $this->month)
         ->where('q', $this->q);
@@ -441,7 +444,7 @@ class Prenomina
 
     protected function getSchedules()
     {
-        return DB::connection('sqlsrvmasterfile')->table('payroll.dbo.schedules')
+        return DB::connection('sqlsrvpayroll')->table('schedules')
             ->where('year', $this->year)
             ->where('month', $this->month)
             ->where('q', $this->q)
@@ -454,7 +457,7 @@ class Prenomina
 
     protected function getNovelties()
     {
-        return DB::connection('sqlsrvmasterfile')->table('payroll.dbo.novelties')
+        return DB::connection('sqlsrvpayroll')->table('novelties')
             ->where('year', $this->year)
             ->where('month', $this->month)
             ->where('q', $this->q)
@@ -467,7 +470,7 @@ class Prenomina
 
     protected function getAgentActivities()
     {
-        return DB::connection('sqlsrvmasterfile')->table('payroll.dbo.agent_activities')
+        return DB::connection('sqlsrvpayroll')->table('agent_activities')
             ->where('year', $this->year)
             ->where('month', $this->month)
             ->where('q', $this->q)
