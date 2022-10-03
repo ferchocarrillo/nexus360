@@ -99,9 +99,12 @@ class Prenomina
             'endDate'=>$this->endDate
         ]));
         
-        $masterDB = config('database.connections.sqlsrvmasterfile.database');
-        if(config('database.connections.sqlsrvpayroll.host')!=config('database.connections.sqlsrvmasterfile.host')){
-            $masterDB = '[10.238.68.66\ADMIN].'.$masterDB;
+        $nexusDB = config('database.connections.sqlsrvnexus360.database');
+        $enercareDB = config('database.connections.sqlsrvenercare.database');
+        if(config('database.connections.sqlsrvpayroll.host')!=config('database.connections.sqlsrvnexus360.host')){
+            $nexusHost = '[10.238.68.66\CP360].';
+            $nexusDB = $nexusHost. $nexusDB;
+            $enercareDB = $nexusHost. $enercareDB;
         }
         
         // Validar si la nomina no está cerrada
@@ -111,62 +114,62 @@ class Prenomina
 
             // Delete Employees
             $deletedEmployees = DB::connection('sqlsrvpayroll')->table('employees')
-            ->leftJoin($masterDB.'.dbo.masterquery','employees.id','=','masterquery.id')
+            ->leftJoin($nexusDB.'.dbo.master_files','employees.id','=','master_files.id')
             ->where('employees.year', $this->year)
             ->where('employees.month', $this->month)
             ->where('employees.q', $this->q)
-            ->whereNull('masterquery.id')
+            ->whereNull('master_files.id')
             ->delete();
 
             \Log::info('Prenomina -> Deleted employees: '.$deletedEmployees);
 
             
             DB::connection('sqlsrvpayroll')->table('employees')
-            ->join($masterDB.'.dbo.masterquery','employees.id','=','masterquery.id')
+            ->join($nexusDB.'.dbo.master_files','employees.id','=','master_files.id')
             ->where('employees.year', $this->year)
             ->where('employees.month', $this->month)
             ->where('employees.q', $this->q)
             ->update([
-                'employees.full_name'=>DB::raw('masterquery.full_name'),
-                'employees.campaign'=>DB::raw('masterquery.campaign'),
-                'employees.position'=>DB::raw('masterquery.position'),
-                'employees.lob'=>DB::raw('masterquery.lob'),
-                'employees.supervisor'=>DB::raw('masterquery.supervisor'),
-                'employees.payroll_manager'=>DB::raw('masterquery.payroll_manager'),
-                'employees.hrs_per_week'=>DB::raw('masterquery.hrs_per_week'),
-                'employees.mandatory_rest_day'=>DB::raw('masterquery.mandatory_rest_day'),
-                'employees.compensation_day'=>DB::raw('masterquery.compensation_day'),
-                'employees.termination_date'=>DB::raw('masterquery.termination_date'),
+                'employees.full_name'=>DB::raw('master_files.full_name'),
+                'employees.campaign'=>DB::raw('master_files.campaign'),
+                'employees.position'=>DB::raw('master_files.position'),
+                'employees.lob'=>DB::raw('master_files.lob'),
+                'employees.supervisor'=>DB::raw('master_files.supervisor'),
+                'employees.payroll_manager'=>DB::raw('master_files.payroll_manager'),
+                'employees.hrs_per_week'=>DB::raw('master_files.hrs_per_week'),
+                'employees.mandatory_rest_day'=>DB::raw('master_files.mandatory_rest_day'),
+                'employees.compensation_day'=>DB::raw('master_files.compensation_day'),
+                'employees.termination_date'=>DB::raw('master_files.termination_date'),
             ]);
 
-            // Insert into employees from masterquery
+            // Insert into employees from masterfile
 
             DB::connection('sqlsrvpayroll')
             ->insert("INSERT INTO employees
-            SELECT masterquery.[id]
-                , masterquery.[national_id]
-                , masterquery.[full_name]
-                , masterquery.[campaign]
-                , masterquery.[position]
-                , masterquery.[lob]
-                , masterquery.[supervisor]
-                , masterquery.[payroll_manager]
-                , masterquery.[date_of_hire]
-                , masterquery.[hrs_per_week]
-                , masterquery.[mandatory_rest_day]
-                , masterquery.[compensation_day]
-                , masterquery.[termination_date]
+            SELECT master_files.[id]
+                , master_files.[national_id]
+                , master_files.[full_name]
+                , master_files.[campaign]
+                , master_files.[position]
+                , master_files.[lob]
+                , master_files.[supervisor]
+                , master_files.[payroll_manager]
+                , master_files.[joining_date] as [date_of_hire]
+                , master_files.[hrs_per_week]
+                , master_files.[mandatory_rest_day]
+                , master_files.[compensation_day]
+                , master_files.[termination_date]
                 , '$this->year' AS [year]
                 , '$this->month' AS [month]
                 , '$this->q' AS [q]
-            FROM $masterDB.dbo.masterquery
+            FROM $nexusDB.dbo.master_files
             LEFT JOIN (SELECT id
                 FROM employees
                 WHERE year = ? AND month = ? AND q = ?) as employees
-                ON masterquery.id = employees.id
-            WHERE masterquery.[date_of_hire] <= ?
-                AND (masterquery.[termination_date] IS NULL OR masterquery.[termination_date] >= ?)
-                AND masterquery.[position] = ?
+                ON master_files.id = employees.id
+            WHERE master_files.[joining_date] <= ?
+                AND (master_files.[termination_date] IS NULL OR master_files.[termination_date] >= ?)
+                AND master_files.[position] = ?
                 AND employees.id is null",
                 [$this->year, $this->month, $this->q,$this->endDateQ, $this->startDateQ, 'Agent']
             );
@@ -209,7 +212,7 @@ class Prenomina
                 '$this->year' AS [year],
                 '$this->month' AS [month],
                 '$this->q' AS [q]
-            FROM [10.238.68.66\CP360].enercare.dbo.Tbschedulescontactpoint as schedules
+            FROM $enercareDB.dbo.Tbschedulescontactpoint as schedules
             INNER JOIN (SELECT national_id
                 FROM employees
                 WHERE year = ? AND month = ? AND q = ?) as employees
@@ -245,9 +248,9 @@ class Prenomina
                 '$this->year' AS [year],
                 '$this->month' AS [month],
                 '$this->q' AS [q]
-            FROM [10.238.68.66\CP360].nexus360.dbo.agent_activities
-            INNER JOIN [10.238.68.66\CP360].nexus360.dbo.activities ON agent_activities.activity_id = activities.id
-            INNER JOIN [10.238.68.66\CP360].nexus360.dbo.users ON agent_activities.user_id = users.id
+            FROM $nexusDB.dbo.agent_activities
+            INNER JOIN $nexusDB.dbo.activities ON agent_activities.activity_id = activities.id
+            INNER JOIN $nexusDB.dbo.users ON agent_activities.user_id = users.id
             INNER JOIN (SELECT national_id
                 FROM employees
                 WHERE year = ? AND month = ? AND q = ?) as employees
@@ -283,7 +286,7 @@ class Prenomina
             '$this->year' AS [year],
             '$this->month' AS [month],
             '$this->q' AS [q]
-        FROM [10.238.68.66\CP360].nexus360.dbo.payroll_novelties as novelties
+        FROM $nexusDB.dbo.payroll_novelties as novelties
         INNER JOIN (SELECT id
             FROM employees
             WHERE year = ? AND month = ? AND q = ?) as employees
