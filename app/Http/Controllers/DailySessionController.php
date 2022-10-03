@@ -65,12 +65,9 @@ class DailySessionController extends Controller
     public function create(Request $request)
     {
         $agent = MasterFile::findOrFail($request->agent_id);
-        $lists = DailySessionList::pluck('list', 'name');
-        $lists['root_cause'] = array_unique(array_column($lists['root_causes'], 'root_cause'));
+        $lists = DailySessionList::whereNotIn('name',['documented','root_causes'])->pluck('list', 'name');
         foreach ($lists as $key => $value) {
-            if (!in_array($key, ['root_causes'])) {
-                $lists[$key] = array_combine($lists[$key], $lists[$key]);
-            }
+            $lists[$key] = array_combine($lists[$key], $lists[$key]);
         }
 
         return view('DailySession.create', compact('agent', 'lists'));
@@ -93,9 +90,6 @@ class DailySessionController extends Controller
             "behaviour" => $request->behaviour,
             "metric" => $request->metric,
             "score" => $request->score,
-            "documented" => $request->documented,
-            "root_cause" => $request->root_cause,
-            "educational_tool" => $request->educational_tool,
             "comments" => $request->comments,
             "created_by" => auth()->user()->id
         ];

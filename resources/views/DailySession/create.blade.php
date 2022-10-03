@@ -29,18 +29,6 @@
                 {!! Form::label('score', 'Score (If Apply)') !!}
                 {!! Form::number('score', null, ['placeholder' => 'Score', 'class' => 'form-control']) !!}
             </div>
-            <div class="form-group col-md-6 col-lg-4">
-                {!! Form::label('documented', 'Documented', ['class' => 'required']) !!}
-                {!! Form::select('documented', $lists['documented'], null, ['placeholder' => 'Select Documented', 'class' => 'custom-select', 'required']) !!}
-            </div>
-            <div class="form-group col-md-6 col-lg-4">
-                {!! Form::label('root_cause', 'Root Cause', ['class' => 'required']) !!}
-                {!! Form::select('root_cause', $lists['root_cause'], null, ['placeholder' => 'Select Root Cause', 'class' => 'custom-select', 'required']) !!}
-            </div>
-            <div class="form-group col-md-6 col-lg-4">
-                {!! Form::label('educational_tool', 'Educational Tool', ['class' => 'required']) !!}
-                {!! Form::select('educational_tool', [], null, ['placeholder' => 'Select Educational Tool', 'class' => 'custom-select', 'required']) !!}
-            </div>
             <div class="form-group col-12">
                 {!! Form::label('comments', 'Comments', ['class' => 'required']) !!}
                 {!! Form::textarea('comments', null, ['class' => 'form-control','placeholder'=>"Agent Commitment\n\nSupervisor Commitment\n\nObservations", 'required']) !!}
@@ -51,22 +39,3 @@
     </div>
     {!! Form::close() !!}
 </div>
-
-<script>
-    (() => {
-        const root_causes = @json($lists['root_causes']);
-
-        $('#formNewRecord #root_cause').change(e => {
-            let root_cause = $(e.target).val();
-            $('#formNewRecord #educational_tool').empty()
-                .append('<option selected value>Select Educational Tool</option>')
-                .append(root_causes.filter(e => e.root_cause == root_cause)
-                    .map(e => `<option value="${e.educational_tool}">${e.educational_tool}</option>`).join(''))
-        })
-
-        $(".custom-file-input").on("change", function() {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-        })
-    })();
-</script>
