@@ -98,8 +98,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('management/uploadmasterfile','ManagementController@uploadMasterfile')->name('management.uploadMasterfile')->middleware('can:masterfile.upload');
     Route::post('management/uploadmasterfile','ManagementController@uploadMasterfilePost')->name('management.uploadMasterfilePost')->middleware('can:masterfile.upload');
 
-    Route::get('masterfile/wfh','MasterfileController@wfhIndex')->name('masterfile.wfw.index');
-    Route::post('masterfile/wfh','MasterfileController@wfhStore')->name('masterfile.wfw.store');
+    Route::get('masterfile/wfh','MasterfileController@wfhIndex')->name('masterfile.wfh.index');
+    Route::post('masterfile/wfh','MasterfileController@wfhStore')->name('masterfile.wfh.store');
+    Route::post('masterfile/wfh/update','MasterfileController@wfhUpdate')->name('masterfile.wfh.update');
 
     Route::post('kaizen/assign','KaizenController@assign')->name('kaizen.assign');
     Route::post('kaizen/comment','KaizenController@comment')->name('kaizen.comment');
