@@ -364,6 +364,12 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         Permission::firstOrCreate([
+            'name'          => "Daily Sessions Admin",
+            'slug'          => "dailysessions.admin",
+            'description'   => "Daily Sessions Admin"
+        ]);
+
+        Permission::firstOrCreate([
             'name'          => 'Trivias',
             'slug'          => 'trivias',
             'description'   => 'Show and Answer Trivias'

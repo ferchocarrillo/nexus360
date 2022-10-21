@@ -158,6 +158,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Daily Sessions
     Route::post('/dailysessions/download','DailySessionController@download')->name('dailysession.download');
+    Route::get('/dailysessions/admin','DailySessionController@admin')->name('dailysession.admin');
+    Route::post('/dailysessions/admin/savepositions','DailySessionController@savePositions')->name('dailysession.admin.savePositions');
     Route::resource('dailysessions','DailySessionController');
     Route::put('/dailysessions/acknowledge/{dailySession}','DailySessionController@acknowledge')->name('dailysession.acknowledge');
 
