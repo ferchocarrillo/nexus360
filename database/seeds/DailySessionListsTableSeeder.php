@@ -123,5 +123,23 @@ class DailySessionListsTableSeeder extends Seeder
                 ["root_cause" => "Feedback", "educational_tool" => "Positive"],
             ]
         ]);
+
+        DailySessionList::create([
+            'name' => 'positions',
+            'list' => [
+                'Agent',
+                'Agent Booking Specialist',
+                'SFL Customer Support Specialist',
+                'SFL Failed Payments',
+                'Support Facilitator',
+                'Onboarding specialist',
+                'Mentor',
+                'Supervisor',
+                'Supervisor E',
+                'Supervisor Tier 2',
+                'Program Ready Trainer (PRT)',
+                'Program Ready Trainer (PRT) E',
+            ]
+        ]);
     }
 }

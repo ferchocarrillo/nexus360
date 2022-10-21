@@ -497,6 +497,12 @@ return [
                     'can'  => 'roles.index',
                 ],
                 [
+                    'text' => 'Daily Sessions Admin',
+                    'url'  => 'dailysessions/admin',
+                    'icon' => 'nav-icon fab fa-wpforms',
+                    'can'  => 'dailysessions.admin',
+                ],
+                [
                     'text' => 'Upload MasterFile',
                     'url'  => 'management/uploadmasterfile',
                     'icon' => 'nav-icon fa fa-upload',
