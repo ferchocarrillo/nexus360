@@ -174,21 +174,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reporting/links/dashboard','ReportingLinkController@dashboard')->name('links.dashboard');
     Route::resource('reporting/links','ReportingLinkController',['only'=>['index','create','store','edit','update']]);
 
+    // Prenomina
     Route::get('/prenomina','PrenominaController@index')->name('prenomina.index');
     Route::post('/prenomina/getpayroll','PrenominaController@getPayroll')->name('prenomina.getPayroll');
     Route::post('/prenomina/getemployees','PrenominaController@getEmployees')->name('prenomina.getEmployees');
 
     Route::get('/prenomina/adjustments','PrenominaAdjustmentController@index')->name('prenomina.adjustments');
     Route::get('/prenomina/adjustments/pending/','PrenominaAdjustmentController@pending')->name('prenomina.adjustments.pending');
-
     Route::get('/prenomina/adjustments/{adjustment}','PrenominaAdjustmentController@show')->name('prenomina.adjustments.show');
     Route::get('/prenomina/adjustments/create/{activity_code}','PrenominaAdjustmentController@create')->name('prenomina.adjustments.create');
     Route::post('/prenomina/adjustments','PrenominaAdjustmentController@store')->name('prenomina.adjustments.store');
-    
     Route::post('/prenomina/adjustments/approve/{id}','PrenominaAdjustmentController@approve')->name('prenomina.adjustments.approve');
     Route::post('/prenomina/adjustments/approveall','PrenominaAdjustmentController@approveAll')->name('prenomina.adjustments.approveall');
     Route::post('/prenomina/adjustments/offsetholiday','PrenominaAdjustmentController@offsetHoliday')->name('prenomina.adjustments.offsetholiday');
     Route::post('/prenomina/adjustments/justifyabsense','PrenominaAdjustmentController@justifyAbsense')->name('prenomina.adjustments.justifyabsense');
+
+    Route::get('/prenomina/admin','PrenominaAdminController@index')->name('prenomina.admin');
+    Route::post('/prenomina/admin/savepositions','PrenominaAdminController@savePositions')->name('prenomina.admin.savePositions');
+
 });
 
 Auth::routes(['register' => false]);
