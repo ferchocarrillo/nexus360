@@ -433,7 +433,13 @@ return [
                     'text'=>'Adjustments',
                     'url'=>'prenomina/adjustments',
                     'can'=>'payroll.adjustments'
-                ]
+                ],
+                [
+                    'text'=>'Admin',
+                    'icon' => 'nav-icon fa fa-cog',
+                    'can'=>'payroll.admin',
+                    'url'=>'prenomina/admin',
+                ],
             ]
         ],
         [

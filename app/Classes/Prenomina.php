@@ -4,6 +4,7 @@ namespace App\Classes;
 
 use App\Payroll;
 use App\PayrollAdjustment;
+use App\PayrollAdmin;
 use App\PayrollCalendar;
 use App\PayrollDayOffDiscount;
 use Carbon\Carbon;
@@ -143,7 +144,8 @@ class Prenomina
             ]);
 
             // Insert into employees from masterfile
-
+            $positions = PayrollAdmin::where('name','positions')->pluck('value')->first();
+            $bindingsPosition = implode(',', array_fill(0, count($positions), '?'));
             DB::connection('sqlsrvpayroll')
             ->insert("INSERT INTO employees
             SELECT master_files.[id]
@@ -169,9 +171,9 @@ class Prenomina
                 ON master_files.id = employees.id
             WHERE master_files.[joining_date] <= ?
                 AND (master_files.[termination_date] IS NULL OR master_files.[termination_date] >= ?)
-                AND master_files.[position] = ?
+                AND master_files.[position] IN ( $bindingsPosition )
                 AND employees.id is null",
-                [$this->year, $this->month, $this->q,$this->endDateQ, $this->startDateQ, 'Agent']
+                array_merge([$this->year, $this->month, $this->q,$this->endDateQ, $this->startDateQ],$positions)
             );
 
             $insertedEmployees = DB::connection('sqlsrvpayroll')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;

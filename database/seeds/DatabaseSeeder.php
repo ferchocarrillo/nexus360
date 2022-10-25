@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             EnercareCallTrackerNotPitchAndSalesTableSeeder::class,
             PayrollNoveltyCie10sTableSeeder::class,
             PayrollNoveltyListsTableSeeder::class,
-            DailySessionListsTableSeeder::class
+            DailySessionListsTableSeeder::class,
+            PayrollAdminsTableSeeder::class,
             // EnercareCalltrackerReasonsNotPitchAndSalesTableSeeder::class,
             // EnercareCallTrackerNotPitchSalesTableSeeder::class
         ]);
