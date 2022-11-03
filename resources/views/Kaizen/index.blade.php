@@ -1,5 +1,4 @@
 @extends('adminlte::page')
-{{-- @section('title', 'Dashboard' . ' | ' .  config('app.name', 'Laravel')) --}}
 @section('title_postfix', ' | Kaizen')
 
 
@@ -15,37 +14,18 @@
 <h1 class="d-inline">Kaizen <span class="kaizen">改善</span></h1>
 <div class="float-right">
     <a href="/kaizen/create" class="btn btn-primary" type="button" ><i class="fas fa-plus"></i></a>
-    {{-- <div class="input-group">
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-filter"></i>  Filter Status</button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="?">All Kaizens</a>
-                    <a class="dropdown-item" href="?status=Open">Open</a>
-                    <a class="dropdown-item" href="?status=Closed">Closed</a>
-                </div>
-            </div>
-
-        <div class="input-group-append">
-            <a href="/kaizen/create" class="btn btn-primary" type="button" ><i class="fas fa-plus"></i></a>
-        </div>
-    </div> --}}
 </div>
 @stop
 
 @section('content')
-
-{{-- <div class="card">
-    <div class="card-body table-responsive"> --}}
-        <table class="table table-borderless" id="tableKaizens" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th width="35px"></th>
-                </tr>
-            </thead>
-        </table>
-    {{-- </div>
-</div> --}}
+    <table class="table table-borderless" id="tableKaizens" style="width:100%">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th width="35px"></th>
+            </tr>
+        </thead>
+    </table>
 @stop
 
 @push('js')
@@ -54,17 +34,25 @@
     <script type="text/javascript" src="{{ asset('vendor/datatables-plugins/buttons/js/dataTables.buttons.min.js') }} "></script>
     <script type="text/javascript" src="{{ asset('vendor/datatables-plugins/buttons/js/buttons.bootstrap4.min.js') }} "></script>
     <script>
+    const columnsDatatables = {
+        0: "title",
+        1: "id",
+        2: "status",
+        3: "assigned_to",
+        4: "deadline",
+        5: "daysopen",
+        6: "daysleft",
+        7: "group",
+        8: "type",
+    }
+    const groups = @json($groups)
 
     $(document).ready(function(){
         var i = 1;
         var lState = true;
-        var filters={
-            status:{
-                open:false,
-                closed:false
-            },
-            unassigned:false
-        }
+        var status = 'Open'
+        var groupsFilter = []
+        var typesFilter = []
         var sort={
             id:null,
             daysopen:null,
@@ -80,6 +68,36 @@
             'On Hold':'badge-warning',
             'Closed':'badge-danger',
         }
+        let btnGroups = {
+            extend: 'collection',
+            text: 'Group',
+            name: 'groups',
+            buttons: Object.keys(groups).map(group=>{
+                return {
+                    text: group,
+                    name: 'group_'+group,
+                    action: function ( e, dt, node, config ){
+                        let isActive = $(e.currentTarget).toggleClass('active').hasClass('active')
+                        filterGroup(group,isActive)
+                    }
+                }
+            })
+        }
+        let btnTypes = {
+            extend: 'collection',
+            text: 'Type',
+            name: 'types',
+            buttons: [...new Set(Object.values(groups).flat())].map(type=>{
+                return {
+                    text: type,
+                    name: 'type_'+type,
+                    action: function ( e, dt, node, config ){
+                        let isActive = $(e.currentTarget).toggleClass('active').hasClass('active')
+                        filterType(type,isActive)
+                    }
+                }
+            })
+        }
         var table = $('#tableKaizens').DataTable({
             "dom": 'B<"top float-right"f>irt<"bottom"p>',
             // "dom": 'B<"top float-right"f>rt<"bottom"i>',
@@ -88,37 +106,56 @@
             drawCallback: function() {
                 if(lState){
                     lState = false;
-                    var stateSave = this.api().state();
-                    var nodes = $(this.api().buttons().nodes());
+                    var dt = this.api();
+                    var stateParams = dt.state();
 
-                    if(stateSave.columns[2].search.search.includes("Pending|In Progress|Pending Review|On Hold")){
-                        $(nodes[2]).toggleClass('active')
-                        filters.status.open = true;
-                    }
-                    if(stateSave.columns[2].search.search.includes("Closed")){
-                        $(nodes[3]).toggleClass('active')
-                        filters.status.closed = true;
-                    }
-                    if(stateSave.columns[3].search.search.includes("^$")){
-                        $(nodes[4]).toggleClass('active')
-                        filters.unassigned = true;
-                    }
+                    let filters = stateParams.columns.reduce((obj,item,idx)=>{
+                        if(item.search.search){
+                            return Object.assign(obj,{[columnsDatatables[idx]]: item.search.search})
+                        }else{
+                            return obj
+                        }
+                    },{})
 
+                    if(filters.assigned_to){
+                        $(dt.buttons('assigned_to:name').nodes()).toggleClass('active')
+                    }
+                    if(filters.group){
+                        filters.group.split('|').forEach(g=>{
+                            $(dt.buttons('group_'+g+':name').nodes()).toggleClass('active')
+                            typesFilter.push(g)
+                            // debugger
+                        })
+                    }
+                    if(filters.type){
+                        filters.type.split('|').forEach(t=>{
+                            $(dt.buttons('type_'+t+':name').nodes()).toggleClass('active')
+                            typesFilter.push(t)
+                            // debugger
+                        })
+                    }
+                    var nodes = $(this.api().buttons('sortby:name').nodes());
                     for (let o = 1; o <= 6; o++) {
-                        var index = stateSave.order.findIndex((col)=>{return col[0] == o});
+                        var index = stateParams.order.findIndex((col)=>{return col[0] == o});
                         if (index > -1) {
-                            sortCols.push(stateSave.order[index]);
-                            if (stateSave.order[index][1] == 'asc') {
-                                $(nodes[4+o]).append('    <i class="fas fa-sort-down"></i>');
+                            sortCols.push(stateParams.order[index]);
+                            if (stateParams.order[index][1] == 'asc') {
+                                $(nodes[o-1]).append('    <i class="fas fa-sort-down"></i>');
                             }else{
-                                $(nodes[4+o]).append('    <i class="fas fa-sort-up"></i>');
+                                $(nodes[o-1]).append('    <i class="fas fa-sort-up"></i>');
                             }
                         }
                     }
+                    
                 }
-
             },
-            ajax:location.href,
+            ajax: {
+                'type': 'GET',
+                'url': location.href,
+                'data': function(d){
+                    return {status};
+                }
+            },
             buttons: [
                 {
                     extend: 'collection',
@@ -128,43 +165,46 @@
                     buttons: [
                         {
                             text: 'Open',
+                            name: 'open',
+                            className: 'active',
                             action: function ( e, dt, node, config ) {
-                                // $(e.currentTarget).toggleClass('btn-default btn-primary')
-                                $(e.currentTarget).toggleClass('active')
-                                filters.status.open = $(e.currentTarget).hasClass('active')
-                                filterStatus();
+                                changeStatus('Open',dt)    
                             }
                         },
                         {
                             text: 'Closed',
+                            name: 'closed',
                             action: function ( e, dt, node, config ) {
-                                // $(e.currentTarget).toggleClass('btn-default btn-primary')
-                                $(e.currentTarget).toggleClass('active')
-                                filters.status.closed = $(e.currentTarget).hasClass('active')
-                                filterStatus();
+                                changeStatus('Closed',dt)
                             }
                         },
                         {
+                            text:'<hr>',
+                            className:'disabled',
+                            attr: {
+                                style: 'height: 5px;margin-top: -10px;padding: 0;'
+                            },
+                        },
+                        {
                             text: 'Unassigned',
+                            name: 'assigned_to',
                             action: function ( e, dt, node, config ) {
-                                // $(e.currentTarget).toggleClass('btn-default btn-primary')
-                                $(e.currentTarget).toggleClass('active')
-                                filters.unassigned = $(e.currentTarget).hasClass('active')
-                                table.column(3)
-                                .search((filters.unassigned ? '^$':''),true,false)
-                                .draw();
+                                let isActive = $(e.currentTarget).toggleClass('active').hasClass('active')
+                                table.column(3).search((isActive ? '^$':''),true,false).draw();
                             }
-                        }
+                        },
+                        btnGroups,
+                        btnTypes,
                     ]
                 },
                 {
                     extend: 'collection',
                     text: '<i class="fas fa-sort-amount-down"></i> Sort By',
-                    // autoClose: 'true',
                     className: 'btn-sm btn-default',
                     buttons: [
                         {
                             text: 'ID',
+                            name: 'sortby',
                             action: function ( e, dt, node, config ) {
                                 var colID = 1;
                                 var index = sortCols.findIndex((col)=>{return col[0] == colID});
@@ -189,6 +229,7 @@
                         },
                         {
                             text: 'Status',
+                            name: 'sortby',
                             action: function ( e, dt, node, config ) {
                                 var colID = 2;
                                 var index = sortCols.findIndex((col)=>{return col[0] == colID});
@@ -213,6 +254,7 @@
                         },
                         {
                             text: 'Assigned',
+                            name: 'sortby',
                             action: function ( e, dt, node, config ) {
                                 var colID = 3;
                                 var index = sortCols.findIndex((col)=>{return col[0] == colID});
@@ -237,6 +279,7 @@
                         },
                         {
                             text: 'Deadline',
+                            name: 'sortby',
                             action: function ( e, dt, node, config ) {
                                 var colID = 4;
                                 var index = sortCols.findIndex((col)=>{return col[0] == colID});
@@ -261,6 +304,7 @@
                         },
                         {
                             text: 'Days Open',
+                            name: 'sortby',
                             action: function ( e, dt, node, config ) {
                                 var colID = 5;
                                 var index = sortCols.findIndex((col)=>{return col[0] == colID});
@@ -285,6 +329,7 @@
                         },
                         {
                             text: 'Days Left',
+                            name: 'sortby',
                             action: function ( e, dt, node, config ) {
                                 var colID = 6;
                                 var index = sortCols.findIndex((col)=>{return col[0] == colID});
@@ -308,7 +353,7 @@
                             }
                         },
                     ]
-                }
+                },
             ],
             columns:[
                 {"data":"title",
@@ -350,31 +395,56 @@
                 {"data":"deadline", visible:false},
                 {"data":"daysopen", visible:false},
                 {"data":"daysleft", visible:false},
-                
+                {"data":"group", visible:false},
+                {"data":"type", visible:false},                
             ],
-            
+            processing: true,
             language: {
                 search: "_INPUT_",
-                searchPlaceholder: "Search Kaizen"
+                searchPlaceholder: "Search Kaizen",
+                processing: `<span class='fa-stack fa-lg'>\n\
+                            <i class='fa fa-spinner fa-spin fa-stack-2x fa-fw'></i>\n\
+                       </span>&emsp;Loading ...` 
             },
             // "paging": false,
             // order:[[0,"asc"]]
         });
 
-        function filterStatus(){
-            var search = [];
+        function changeStatus(s, dt){
+            if(s==status) return;
+            let btnOpen = $(dt.buttons('open:name')[0].node)
+            let btnClosed = $(dt.buttons('closed:name')[0].node)
 
-            if(filters.status.open){
-                search.push('Pending','In Progress','Pending Review','On Hold')
-            }
-            if(filters.status.closed){
-                search.push('Closed')
+            if(s=='Open'){
+                btnOpen.addClass('active')
+                btnClosed.removeClass('active')
+                status = 'Open'
+            }else{
+                btnClosed.addClass('active')
+                btnOpen.removeClass('active')
+                status = 'Closed'
             }
 
-            table.column(2)
-                .search(search.join('|'),true,false)
-                .draw();
-            
+            dt.ajax.reload()
+        }
+
+        function filterGroup(group, isActive){
+            if(isActive){
+                groupsFilter.push(group)
+            }else(
+                groupsFilter = groupsFilter.filter(e=>e!=group)
+            )
+            // debugger
+            table.column(7).search(groupsFilter.join('|'),true, false).draw()
+        }
+        function filterType(type, isActive){
+            if(isActive){
+                typesFilter.push(type)
+            }else(
+                typesFilter = typesFilter.filter(e=>e!=type)
+            )
+            // debugger
+            table.column(8).search(typesFilter.join('|'),true, false).draw()
         }
     })
 </script>
