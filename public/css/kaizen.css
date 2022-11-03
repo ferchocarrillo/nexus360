@@ -8,3 +8,11 @@
 #tableKaizens thead {
     display:none;
 }
+
+div.dataTables_processing {
+    z-index: 1;
+}
+
+.dt-button-collection .btn-group{
+    width: 100%;
+}
