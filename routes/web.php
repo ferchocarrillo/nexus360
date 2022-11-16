@@ -184,6 +184,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/prenomina/adjustments/approveall','PrenominaAdjustmentController@approveAll')->name('prenomina.adjustments.approveall');
     Route::post('/prenomina/adjustments/offsetholiday','PrenominaAdjustmentController@offsetHoliday')->name('prenomina.adjustments.offsetholiday');
     Route::post('/prenomina/adjustments/justifyabsense','PrenominaAdjustmentController@justifyAbsense')->name('prenomina.adjustments.justifyabsense');
+    Route::post('/prenomina/adjustments/exception','PrenominaAdjustmentController@exception')->name('prenomina.adjustments.exception');
 
     Route::get('/prenomina/admin','PrenominaAdminController@index')->name('prenomina.admin');
     Route::post('/prenomina/admin/savepositions','PrenominaAdminController@savePositions')->name('prenomina.admin.savePositions');

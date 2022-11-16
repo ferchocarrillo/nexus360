@@ -38,4 +38,7 @@ class Payroll extends Model
         return $this->belongsTo('App\PayrollCalendar','date','date');
     }
     
+    public function adjustment_exception(){
+        return $this->hasOne('App\PayrollAdjustmentException');
+    }
 }

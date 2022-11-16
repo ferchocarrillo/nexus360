@@ -7,6 +7,7 @@ use App\MasterFile;
 use App\Payroll;
 use App\PayrollActivity;
 use App\PayrollAdjustment;
+use App\PayrollAdjustmentException;
 use App\PayrollAdjustmentType;
 use App\PayrollDayOffDiscount;
 use App\User;
@@ -18,7 +19,7 @@ class PrenominaAdjustmentController extends Controller
     function __construct()
     {
         $this->middleware('can:payroll')->only(['show','create','store','offsetHoliday','justifyAbsense']);
-        $this->middleware('can:payroll.adjustments')->only(['index','pending']);
+        $this->middleware('can:payroll.adjustments')->only(['index','pending','exception']);
         $this->middleware('can:payroll.om')->only(['approveAll']);
     }
         protected function pending(Request $request){
@@ -383,5 +384,22 @@ class PrenominaAdjustmentController extends Controller
         }
 
         abort(401);  
+    }
+
+    public function exception(Request $request){
+        $payroll = Payroll::findOrFail($request->id);
+        $user = auth()->user();
+
+        // Validar si el Employee ID logueado es igual al del Payroll
+        if($user->national_id == $payroll->national_id) abort(401);
+        
+        $payrollAdjustmentException =  PayrollAdjustmentException::firstOrCreate([
+            "employee_id" => $payroll->employee_id,
+            "payroll_id" => $payroll->id,
+            "date" => $payroll->date,
+            "created_by" => $user->id,
+        ]);
+
+        return response()->json($payrollAdjustmentException);
     }
 }
