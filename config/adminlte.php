@@ -235,7 +235,7 @@ return [
 
             ]
         ],
-        
+
         [
             'text' => 'Enercare',
             'icon' => 'nav-icon icon-enercare',
@@ -269,6 +269,14 @@ return [
                         ],
                     ]
                 ],
+
+                [
+                    'text' => 'BO Tracker',
+                    'icon' => 'nav-icon fas fa-paw',
+                    'url' => 'enercare/botracker',
+                    'can' => 'enercare.botracker'
+                ],
+
                 [
                     'text' => 'Uploads',
                     'icon' => 'nav-icon fa fa-upload',
@@ -295,7 +303,7 @@ return [
                     'can' => 'serviceexperts.files'
                 ],
             ]
-        ],     
+        ],
         [
             'text' => 'Amerian Water',
             'icon' => 'nav-icon fa fa-cubes',
@@ -319,7 +327,7 @@ return [
                     ]
                 ],
             ]
-        ],     
+        ],
         [
             'text' => 'Reports',
             'icon' => 'nav-icon fas fa-chart-line',
