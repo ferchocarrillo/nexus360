@@ -65,6 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('enercare/reports/kpis','EnercareController@reportkpisPOST')->name('enercare.reportkpisPOST')->middleware('can:enercare.reportkpis');
 
 
+    //Enercare Bo Tracker
+
+    Route::resource('enercare/botracker','EnercareBoTrackerController');
+
     //Uploads
     Route::get('enercare/uploads/agentperformance','EnercareController@uploadAgentPerformance')->name('enercare.uploadAgentPerformance')->middleware('can:enercare.uploadAgentPerformance');
     Route::post('enercare/uploads/agentperformance','EnercareController@uploadAgentPerformancePost')->name('enercare.uploadAgentPerformancePost')->middleware('can:enercare.uploadAgentPerformance');
