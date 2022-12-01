@@ -3,6 +3,11 @@
 @section('title_postfix', ' | Prenomina Admin')
 
 @section('css')
+<style>
+    #table-configs th{
+        text-transform: capitalize;
+    }
+</style>
 @stop
 
 @section('content_header')
@@ -24,6 +29,21 @@
                 </div>
             </div>
 
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow" id="configs">
+                <div class="card-header bg-info aling-middle">
+                    <h1 class="card-title">Configs</h1>
+                    <button class="btn btn-sm btn-info rounded-circle float-right" id="btnSaveConfigs" disabled>
+                        <i class="fas fa-save"></i>
+                    </button>
+                </div>
+                <div class="card-body p-2">
+                    <table class="table table-borderless" id="table-configs">
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -59,6 +79,8 @@
     <script>
         $(document).ready(e => {
             let positions = @json($positions);
+            const configs = @json($configs);
+            let configsUpdates = [];
 
             function listPositions() {
                 positions.sort()
@@ -71,13 +93,12 @@
                 $('#positions').html(positionsHTML)
             }
 
-            function save() {
-                console.log(positions);
+            function savePositions() {
                 axios.post('/prenomina/admin/savepositions', {
                         positions
                     })
                     .then(res => {
-                        console.log(res);
+                        
                     })
             }
             $('#modalPosition').on('shown.bs.modal', function() {
@@ -95,9 +116,9 @@
                 listPositions()
                 e.target.elements['position'].value = ''
                 $('#modalPosition').modal('hide')
-                save()
+                savePositions()
             })
-            $(document).on('click', '.delete', function(e) {
+            $(document).on('click', '#positions .delete', function(e) {
                 let id = e.currentTarget.dataset.id
                 let position = positions[id]
                 swal.fire({
@@ -117,10 +138,90 @@
                             `The "${position}" position has been deleted.`,
                             'success'
                         )
-                        save()
+                        savePositions()
                     }
                 })
             })
+
+            function listConfigs(){
+                
+                let configsHTML = configs.map((c, idx) => {
+                    return `<tr>
+                        <th>${c.name.replace('_',' ')}</th>
+                        <td>
+                            <input type="text" class="form-control form-control-sm config" data-id="${c.id}" value="${c.value}">
+                        </td>
+                    </tr>`
+                })
+                $('#table-configs tbody').html(configsHTML)
+            }
+
+            $(document).on('keyup', '#table-configs .config', function(e) {
+                let id = e.currentTarget.dataset.id
+                let configVal = $(e.currentTarget).val()
+                let config = configs.find(c=>c.id==id);
+                if(config){
+                    let configIdx = configsUpdates.findIndex(c=>c.id==id)
+                    if(config.value != configVal){                    
+                        config = {...config}
+                        config.value = configVal
+
+                        if(configIdx>=0){
+                            configsUpdates[configIdx] = config
+                        }else{
+                            configsUpdates.push(config)
+                        }
+                    }else if(configIdx>=0){
+                        configsUpdates.splice(configIdx,1)
+                    }
+                }
+                if(configsUpdates.length){
+                    $('#btnSaveConfigs').prop('disabled',false)
+                }else{
+                    $('#btnSaveConfigs').prop('disabled',true)
+                }
+            })
+
+            $('#btnSaveConfigs').click(e=>{
+                if(configsUpdates.length){
+                    swal.fire({
+                        title: 'Do you want to save the changes?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes',
+                        showLoaderOnConfirm: true,
+                        preConfirm: () => {
+                            return axios.post('/prenomina/admin/saveconfigs', {configsUpdates})
+                            .then(res => {
+                                swal.fire('Saved!', '', 'success')
+                                configs.forEach(c=>{
+                                    let config = configsUpdates.find(cu=>cu.id==c.id)
+                                    if(config){
+                                        c.value = config.value
+                                    }
+                                })
+                                configsUpdates = [];
+                                $('#btnSaveConfigs').prop('disabled',true)
+                                return res
+                            }).catch(error => {
+                                swal.showValidationMessage(
+                                `Request failed: ${error}`
+                                )
+                            })
+                        },
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.value) {
+                            swal.fire('Saved!', '', 'success')
+                        }
+                    })
+                }
+            })
+            
+
+            listConfigs()
             listPositions()
         })
     </script>

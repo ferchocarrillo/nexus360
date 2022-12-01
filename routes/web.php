@@ -188,6 +188,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/prenomina/admin','PrenominaAdminController@index')->name('prenomina.admin');
     Route::post('/prenomina/admin/savepositions','PrenominaAdminController@savePositions')->name('prenomina.admin.savePositions');
+    Route::post('/prenomina/admin/saveconfigs','PrenominaAdminController@saveConfigs')->name('prenomina.admin.saveConfigs');
 
 });
 
