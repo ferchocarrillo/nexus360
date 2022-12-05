@@ -228,9 +228,25 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         Permission::firstOrCreate([
-            'name'          => 'Reminders',
-            'slug'          => 'reminders',
+            'name'          => 'Reminder Admin',
+            'slug'          => 'reminder.admin',
+            'description'   => 'Reminder Admin'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Reminder',
+            'slug'          => 'reminder',
+            'description'   => 'Show Personal Reminders'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Reminder Create',
+            'slug'          => 'reminder.create',
             'description'   => 'Create Reminders'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Reminder Outbox',
+            'slug'          => 'reminder.outbox',
+            'description'   => 'Outbox Reminders'
         ]);
 
         Permission::firstOrCreate([

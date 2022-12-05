@@ -106,8 +106,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('kaizen/{id}/downloadfile/{comment_id?}','KaizenController@downloadfile')->name('kaizen.downloadfile');
     Route::resource('kaizen','KaizenController');
 
-    Route::get('reminders','ReminderController@index')->name('reminder.index');
-    Route::get('reminders/popup','ReminderController@popup')->name('reminder.popup');
+    // Reminders
+
+    Route::get('reminder/popup/{reminderUserId}','ReminderController@popup')->name('reminder.popup');
+    Route::post('reminder/popup/{reminderUserId}','ReminderController@acknowledge')->name('reminder.acknowledge');
+    Route::get('reminder/outbox','ReminderController@outbox')->name('reminder.outbox');
+    Route::resource('reminder', 'ReminderController');
 
     // Pandora's Box
     Route::get('pandorasbox','PandorasBoxController@index')->name('pandorasbox.index');
