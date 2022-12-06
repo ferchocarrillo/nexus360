@@ -380,6 +380,12 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         Permission::firstOrCreate([
+            'name'          => "Daily Sessions Admin",
+            'slug'          => "dailysessions.admin",
+            'description'   => "Daily Sessions Admin"
+        ]);
+
+        Permission::firstOrCreate([
             'name'          => 'Trivias',
             'slug'          => 'trivias',
             'description'   => 'Show and Answer Trivias'
@@ -420,5 +426,50 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => 'reporting.links.admin',
             'description'   => 'Reporting Links Admin, List, Create, Edit'
         ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Payroll',
+            'slug'          => 'payroll',
+            'description'   => 'Payroll'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Payroll Adjustments',
+            'slug'          => 'payroll.adjustments',
+            'description'          => 'Payroll Adjustments'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Payroll OM',
+            'slug'          => 'payroll.om',
+            'description'          => 'Payroll OM'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Payroll Supervisor',
+            'slug'          => 'payroll.supervisor',
+            'description'          => 'Payroll Supervisor'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Payroll Admin',
+            'slug'          => 'payroll.admin',
+            'description'          => 'Payroll Admin'
+        ]);
+
+
+        Permission::firstOrCreate([
+            'name'          => 'Enercare Bo Tracker',
+            'slug'          => 'enercare.botracker',
+            'description'          => 'Enercare Bo Tracker'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Enercare Bo Tracker Leader',
+            'slug'          => 'enercare.botracker.leader',
+            'description'          => 'Enercare Bo Tracker Leader'
+        ]);
+
+
+
     }
 }

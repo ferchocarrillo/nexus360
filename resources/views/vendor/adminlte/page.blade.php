@@ -215,6 +215,9 @@
                             </div>
                         </div>
                     </div>
+                    @cannot('login.withoutmf')
+                    <wfm-update-popup-component></wfm-update-popup-component>
+                    @endcannot
                     <iframe style="display: none;" src="{{'http://'. request()->getHost().':3000/popups'}}" frameborder="0" id="ifm_reminder"></iframe>
                     @yield('content')
                 </div>

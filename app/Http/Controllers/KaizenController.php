@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Jobs\KaizenSendMailJob;
 use App\Kaizen;
+use App\KaizenList;
 use App\MasterFile;
 use App\User;
 use Caffeinated\Shinobi\Models\Permission;
 use Caffeinated\Shinobi\Models\Role;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -36,14 +38,15 @@ class KaizenController extends Controller
     }
 
     private function defineVars(){
-        $this->groups=['Reporting','Workforce','Schedules','Development'];
+        $lists = KaizenList::pluck('list', 'name');
+        $this->groups=$lists['groups'];
         $this->campaigns= MasterFile::whereNull('termination_date')->select('campaign')->groupBy('campaign')->pluck('campaign');
-        $this->types=['Create','Modify','Check','Remove'];
-        $this->schedules=['Schedule change','Paid License','Unpaid Leave','Holidays'];
-        $this->status=['Pending','In Progress','Pending Review','On Hold','Closed'];
-        $national_ids = MasterFile::whereNull('termination_date')->where('position','Agent')->select('national_id')->groupBy('national_id')->pluck('national_id');
+        $this->types=$lists['types'];
+        $this->schedules=$lists['schedules_types'];
+        $this->status=$lists['statuses'];
+        $national_ids = MasterFile::whereNull('termination_date')->whereIn('position',$lists['positions'])->select('national_id')->groupBy('national_id')->pluck('national_id');
         $this->agents =User::whereIn('national_id',$national_ids)->get();
-        $this->approved=['Approved','Not Approved','Approved by Ops'];
+        $this->approved=$lists['approved'];
     }
 
     private function permission(){
@@ -75,19 +78,30 @@ class KaizenController extends Controller
                 }
                 
             }
-            $kaizens = $kaizens->select(DB::raw("*,IIF(
-                    [status] = 'Closed',
-                    DATEDIFF(DAY,convert(date,created_at),convert(date,created_at)), 
-                    DATEDIFF(DAY,convert(date,created_at),convert(date,GETDATE()))
-                ) as daysopen
-                ,CASE WHEN deadline is null or status = 'Closed' THEN ''
-                ELSE DATEDIFF(DAY,convert(date,GETDATE()),convert(date,deadline))
-                END as daysleft"));
-            $arr["data"] = $kaizens->get();
+            $kaizens = $kaizens->get();
+            $kaizens= $kaizens->map(function($kaizen){
+                $kaizen->daysopen = Carbon::parse($kaizen->created_at)->copy()->startOfDay()->diffInDays($kaizen->status == 'Closed' ? Carbon::parse($kaizen->updated_at) : Carbon::today());
+                $kaizen->daysleft = (!$kaizen->deadline || $kaizen->status == 'Closed') ? '' : Carbon::parse(Carbon::today())->diffInDays($kaizen->deadline, false) ;
+                return $kaizen;
+            });
+            $arr["data"] = $kaizens;
             return $arr;
         }
-        
-        return view('Kaizen.index');
+        $lists = KaizenList::pluck('list', 'name');
+        $groups=$lists['groups'];
+        $types=$lists['types'];
+        $schedules=$lists['schedules_types'];
+
+        $groups = collect($groups)->mapWithKeys(function($group, $key)use($schedules, $types){
+            if($group == 'Schedules'){
+                $group = [$group=>$schedules];
+            }else{
+                $group = [$group=>$types];
+            }
+
+            return $group;
+        });
+        return view('Kaizen.index', compact('groups'));
     }
 
     /**

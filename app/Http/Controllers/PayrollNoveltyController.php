@@ -131,17 +131,18 @@ class PayrollNoveltyController extends Controller
         $tags = $lists[2]->list;
         $smlvs = PayrollNoveltySmlv::get()->pluck('daily_salary','year')->toArray();
 
-        $employess = DB::connection('sqlsrvmasterfile')->select("
-        select a.id,a.national_id + ' - ' + full_name as text
-        from masterquery as a 
-        inner join ( 
-            select national_id,
-            MAX(date_of_hire) date_of_hire 
-            from masterquery 
-            where national_id is not null and national_id <> 'null'
-            group by national_id 
-        ) as b on a.national_id = b.national_id 
-        and a.date_of_hire = b.date_of_hire");
+        $employess = DB::connection('sqlsrvmasterfile')
+            ->table('masterquery')
+            ->select('id','national_id', 'full_name')
+            ->whereNotNull('national_id')
+            ->get();
+        $employess = $employess->groupBy('national_id')->map(function($contracts, $national_id){
+            if($contracts->count()>1){
+                $contracts = $contracts->where('id',$contracts->max('id'));
+            }
+            $contract = $contracts->first();
+            return ['id'=>$contract->id,'text'=>$contract->national_id.' - '.$contract->full_name];
+        })->values();
 
         return view('payrollnovelty.index',compact('contingencies','statuses','tags','employess','smlvs','novelty'));
     }

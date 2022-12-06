@@ -64,4 +64,25 @@ class MasterfileController extends Controller
 
         return response()->json(['result' => 'Employee Not Found']);
     }
+
+    public function wfhUpdate(Request $request){
+        $request->validate([
+            'location' => ['required','in:home,site'],
+        ]);
+        $user = auth()->user();
+        $wfh =  $request->location == 'home';
+
+        $masterfile = $user->masterfile();
+
+        if(!$masterfile){
+            abort(500,'Employee Not Found');
+        }
+        $employee_id = $masterfile->id;
+
+        MasterfileWfh::create([
+            'employee_id' => $employee_id,'wfh'=>$wfh,'created_by'=>$user->id
+        ]);
+
+        return response()->json(['result'=> true]);
+    }
 }

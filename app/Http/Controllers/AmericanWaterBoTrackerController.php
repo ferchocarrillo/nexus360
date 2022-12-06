@@ -19,35 +19,27 @@ class AmericanWaterBoTrackerController extends Controller
 
     public function store(Request $request){
         $lists = $this->getLists();
-        $queue =(($request->queue)?!$lists['queues'][$request->queue]['endForm']&&!$lists['queues'][$request->queue]['onlyCusID']:null);
-        $onlyCusID =(($request->queue)?$lists['queues'][$request->queue]['onlyCusID']:null);
-        $status =(($request->status)?$lists['statuses'][$request->status]['gotoENR']:null);
+        $queueFields =(($request->queue)? array_keys(array_filter($lists['queues'][$request->queue]['fields'])):[]);
+        if($request->status && !$lists['statuses'][$request->status]['gotoENR']){
+            $queueFields = array_diff($queueFields,["enr_number","agreement_classification"]);
+        }
 
         $request->validate([
             "queue"=>['required'],
             "started_at"=>['required'],
-            "cus_id"=> [($queue||$onlyCusID?'required':'nullable'),'max:50'],
-            "customer_name"=> [($queue?'required':'nullable'),'max:50'],
-            "spreadsheet"=> [($queue?'required':'nullable'),'max:10'],
-            "status"=> [($queue?'required':'nullable'),'max:50'],
-            "enr_number"=> [($status?'required':'nullable'),'max:200'],
-            "agreement_classification"=> [($status?'required':'nullable'),'max:50'],
-            "additional_notes"=> [($queue?'required':'nullable')],
-
+            "cus_id"=> [(in_array("cus_id",$queueFields)?'required':'nullable'),'max:50'],
+            "customer_name"=> [(in_array("customer_name",$queueFields)?'required':'nullable'),'max:50'],
+            "spreadsheet"=> [(in_array("spreadsheet",$queueFields)?'required':'nullable'),'max:50'],
+            "status"=> [(in_array("status",$queueFields)?'required':'nullable'),'max:50'],
+            "enr_number"=> [(in_array("enr_number",$queueFields)?'required':'nullable'),'max:200'],
+            "agreement_classification"=> [(in_array("agreement_classification",$queueFields)?'required':'nullable'),'max:50'],
+            "additional_notes"=> [(in_array("additional_notes",$queueFields)?'required':'nullable')],
+            "view"=> [(in_array("view",$queueFields)?'required':'nullable'),'max:100'],
         ]);
 
         $request = $request->merge(['username'=>auth()->user()->username]);
 
-        if(!$queue){
-            $botracker = $request->only(['queue','started_at','username']);
-        }else{
-            if($status){
-                $botracker = $request->only(["queue","started_at","username","cus_id","customer_name","spreadsheet","status","additional_notes","enr_number","agreement_classification"]);
-            }else{
-                $botracker = $request->only(["queue","started_at","username","cus_id","customer_name","spreadsheet","status","additional_notes"]);
-            }
-        }
-        
+        $botracker = $request->only(array_merge($queueFields, ['queue','started_at','username']));
         AmericanWaterBoTracker::create($botracker);
 
         return back()->with('info','Record Saved Successfully');

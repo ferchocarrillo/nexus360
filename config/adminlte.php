@@ -269,6 +269,14 @@ return [
                         ],
                     ]
                 ],
+
+                [
+                    'text' => 'BO Tracker',
+                    'icon' => 'nav-icon fas fa-paw',
+                    'url' => 'enercare/botracker',
+                    'can' => 'enercare.botracker'
+                ],
+
                 [
                     'text' => 'Uploads',
                     'icon' => 'nav-icon fa fa-upload',
@@ -439,6 +447,29 @@ return [
             ]
         ],
         [
+            'text'=>'Payroll',
+            'icon'=>'nav-icon fas fa-dollar-sign',
+            'can'=>'payroll',
+            'submenu'=>[
+                [
+                    'text'=>'Prenomina',
+                    'url'=>'prenomina',
+                    'can'=>'payroll'
+                ],
+                [
+                    'text'=>'Adjustments',
+                    'url'=>'prenomina/adjustments',
+                    'can'=>'payroll.adjustments'
+                ],
+                [
+                    'text'=>'Admin',
+                    'icon' => 'nav-icon fa fa-cog',
+                    'can'=>'payroll.admin',
+                    'url'=>'prenomina/admin',
+                ],
+            ]
+        ],
+        [
             'text'=>'Trivias',
             'icon'=>'nav-icon fas fa-question-circle',
             'can'=>'trivias',
@@ -497,6 +528,12 @@ return [
                     'active' => ['roles', 'roles/*'],
                     'icon' => 'nav-icon fas fa-tags',
                     'can'  => 'roles.index',
+                ],
+                [
+                    'text' => 'Daily Sessions Admin',
+                    'url'  => 'dailysessions/admin',
+                    'icon' => 'nav-icon fab fa-wpforms',
+                    'can'  => 'dailysessions.admin',
                 ],
                 [
                     'text' => 'Upload MasterFile',

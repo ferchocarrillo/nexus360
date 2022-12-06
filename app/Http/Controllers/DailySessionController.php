@@ -24,6 +24,9 @@ class DailySessionController extends Controller
         $this->middleware('can:dailysessions.download')->only(
             ['download']
         );
+        $this->middleware('can:dailysessions.admin')->only(
+            ['admin','savePositions']
+        );
     }
 
     public function index(Request $request)
@@ -45,10 +48,10 @@ class DailySessionController extends Controller
             $html = view('DailySession.list', compact('dailySessions'))->render();
             return response()->json(['html' => $html, 'lastPage' => $lastPage]);
         }
-
+        $positions = DailySessionList::where('name','positions')->pluck('list')->first();
         $employess = MasterFile::select('id', 'national_id', 'full_name', 'supervisor', 'campaign', 'lob')
             ->whereNull('termination_date')
-            ->whereIn('position', ['Agent'])
+            ->whereIn('position', $positions)
             ->get();
 
         $campaigns = array_unique(array_column($employess->toArray(), 'campaign'));
@@ -65,12 +68,9 @@ class DailySessionController extends Controller
     public function create(Request $request)
     {
         $agent = MasterFile::findOrFail($request->agent_id);
-        $lists = DailySessionList::pluck('list', 'name');
-        $lists['root_cause'] = array_unique(array_column($lists['root_causes'], 'root_cause'));
+        $lists = DailySessionList::whereNotIn('name',['documented','root_causes'])->pluck('list', 'name');
         foreach ($lists as $key => $value) {
-            if (!in_array($key, ['root_causes'])) {
-                $lists[$key] = array_combine($lists[$key], $lists[$key]);
-            }
+            $lists[$key] = array_combine($lists[$key], $lists[$key]);
         }
 
         return view('DailySession.create', compact('agent', 'lists'));
@@ -93,9 +93,6 @@ class DailySessionController extends Controller
             "behaviour" => $request->behaviour,
             "metric" => $request->metric,
             "score" => $request->score,
-            "documented" => $request->documented,
-            "root_cause" => $request->root_cause,
-            "educational_tool" => $request->educational_tool,
             "comments" => $request->comments,
             "created_by" => auth()->user()->id
         ];
@@ -133,5 +130,16 @@ class DailySessionController extends Controller
         if ($request->end_date) $dailySessions = $dailySessions->where('created_at', '<=', Carbon::parse($request->end_date)->endOfDay()->format('Y-m-d H:i:s'));
 
         return Excel::download(new DailySessionReportExport($dailySessions->get()), "DailySessionsReport.xlsx");
+    }
+
+    public function admin(){
+        $positions = DailySessionList::where('name','positions')->pluck('list')->first();
+        return view('DailySession.admin',compact('positions'));
+    }
+
+    public function savePositions(Request $request){
+        $dailySessionList = DailySessionList::where('name','positions')->firstOrFail();
+        $dailySessionList->list = $request->positions;
+        $dailySessionList->save();
     }
 }

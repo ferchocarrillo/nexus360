@@ -25,8 +25,33 @@
               </option>
             </select>
           </div>
-          <template v-if="form.queue && !lists.queues[form.queue].endForm">
-            <div class="form-group">
+          <template v-if="form.queue">
+            <div class="form-group" v-if="lists.queues[form.queue].fields.view">
+              <label for="view"
+                  >View</label
+                >
+                <select
+                  name="view"
+                  id="view"
+                  class="form-control"
+                  v-model="form.view"
+                  required
+                >
+                  <option value="" selected disabled>
+                    Select View
+                  </option>
+                  <option
+                    v-for="(
+                      view, index
+                    ) in lists.views"
+                    :key="index"
+                    :value="view"
+                  >
+                    {{ view }}
+                  </option>
+                </select>
+            </div>
+            <div class="form-group" v-if="lists.queues[form.queue].fields.cus_id">
               <label for="cus_id">CUS ID</label>
               <input
                 type="text"
@@ -37,8 +62,7 @@
                 required
               />
             </div>
-            <template v-if="!lists.queues[form.queue].onlyCusID">
-            <div class="form-group">
+            <div class="form-group" v-if="lists.queues[form.queue].fields.customer_name">
               <label for="customer_name">Customer Name</label>
               <input
                 type="text"
@@ -49,7 +73,7 @@
                 required
               />
             </div>
-            <div class="form-group">
+            <div class="form-group" v-if="lists.queues[form.queue].fields.spreadsheet">
               <label for="spreadsheet">Spreadsheet</label>
               <input
                 type="text"
@@ -60,7 +84,7 @@
                 required
               />
             </div>
-            <div class="form-group">
+            <div class="form-group" v-if="lists.queues[form.queue].fields.status">
               <label for="status">Status</label>
               <select
                 name="status"
@@ -80,7 +104,7 @@
               </select>
             </div>
             <template v-if="form.status && lists.statuses[form.status].gotoENR">
-              <div class="form-group">
+              <div class="form-group" v-if="lists.queues[form.queue].fields.enr_number">
                 <label for="enr_number">ENR Number</label>
                 <input
                   type="text"
@@ -91,7 +115,7 @@
                   required
                 />
               </div>
-              <div class="form-group">
+              <div class="form-group" v-if="lists.queues[form.queue].fields.agreement_classification">
                 <label for="agreement_classification"
                   >Agreement Classification</label
                 >
@@ -117,7 +141,7 @@
                 </select>
               </div>
             </template>
-            <div class="form-group">
+            <div class="form-group" v-if="lists.queues[form.queue].fields.additional_notes">
               <label for="additional_notes">Additional Notes</label>
               <textarea
                 name="additional_notes"
@@ -127,7 +151,6 @@
                 required
               />
             </div>
-            </template>
           </template>
           <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i> Save
@@ -158,6 +181,7 @@ export default {
         agreement_classification: "",
         additional_notes: "",
         started_at: "",
+        view: "",
       },
     };
   },
