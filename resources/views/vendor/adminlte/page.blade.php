@@ -9,7 +9,7 @@
     (config('adminlte.sidebar_mini', true) === true ?
         'sidebar-mini ' :
         (config('adminlte.sidebar_mini', true) == 'md' ?
-         'sidebar-mini sidebar-mini-md ' : '')
+        'sidebar-mini sidebar-mini-md ' : '')
     ) .
     (config('adminlte.layout_topnav') || View::getSection('layout_topnav') ? 'layout-top-nav ' : '') .
     (config('adminlte.layout_boxed') ? 'layout-boxed ' : '') .
@@ -51,7 +51,6 @@
     @php( $logout_url = $logout_url ? url($logout_url) : '' )
     @php( $dashboard_url = $dashboard_url ? url($dashboard_url) : '' )
 @endif
-
 @section('body')
     <div class="wrapper">
         @if(config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
@@ -70,11 +69,9 @@
                         </span>
                     </a>
                 @endif
-
                 <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
                 <div class="collapse navbar-collapse order-3" id="navbarCollapse">
                     <ul class="nav navbar-nav">
                         @each('adminlte::partials.menu-item-top-nav', $adminlte->menu(), 'item')
@@ -96,18 +93,40 @@
                 <ul class="navbar-nav ml-auto @if(config('adminlte.layout_topnav') || View::getSection('layout_topnav'))order-1 order-md-3 navbar-no-expand @endif">
                     @yield('content_top_nav_right')
                     @if(Auth::user())
-                        
+                    @if($reminders_pend = reminders_pend())
+                    {{''}}
+                    @endif
+                    <!-- Notifications Dropdown Menu -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" data-toggle="dropdown" href="#">
+                            @if ($reminders_pend['count'] != 0)
+                            <i class="far fa-bell shake"></i>
+                            @else
+                            <i class="far fa-bell"></i>
+                            @endif
+                            <span class="badge badge-warning navbar-badge">{{$reminders_pend['count']}}</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                            <span class="dropdown-header">Notifications</span>
+                            <div class="dropdown-divider"></div>
+                            @if ($reminders_pend['count'] != 0)
+                            <a href="{{url('reminder') }}" class="dropdown-item">
+                                <i class="fas fa-parachute-box mr-2 shake"></i>{{$reminders_pend['count']}} new reminders
+                                <span class="float-right text-muted text-sm">{{$reminders_pend['last_creation']}}</span>
+                            </a>
+                            @endif
+                        </div>
+                    </li>
                     <li class="nav-item dropdown user-menu">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 <img src="/img/user.jpg" class="user-image img-circle elevation-2" alt="User Image">
                                 <span class="d-none d-md-inline">{{Auth::user()->name}}</span>
                             </a>
-
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault();
-                                                 document.getElementById('logout-form').submit();">
-                                     <i class="fa fa-fw fa-power-off"></i> {{ __('adminlte::adminlte.log_out') }}
+                                    onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-fw fa-power-off"></i> {{ __('adminlte::adminlte.log_out') }}
                                 </a>
                                 <form id="logout-form" action="{{ $logout_url }}" method="POST" style="display: none;">
                                         @if(config('adminlte.logout_method'))
@@ -117,23 +136,6 @@
                                     </form>
                             </div>
                         </li>
-
-
-
-
-                        {{-- <li class="nav-item">
-                            <a class="nav-link" href="#"
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                            >
-                                <i class="fa fa-fw fa-power-off"></i> {{ __('adminlte::adminlte.log_out') }}
-                            </a>
-                            <form id="logout-form" action="{{ $logout_url }}" method="POST" style="display: none;">
-                                @if(config('adminlte.logout_method'))
-                                    {{ method_field(config('adminlte.logout_method')) }}
-                                @endif
-                                {{ csrf_field() }}
-                            </form>
-                        </li> --}}
                     @endif
                     @if(config('adminlte.right_sidebar'))
                         <li class="nav-item">
@@ -171,23 +173,18 @@
             </div>
         </aside>
         @endif
-
         <div class="content-wrapper">
-                
             @if(config('adminlte.layout_topnav') || View::getSection('layout_topnav'))
             <div class="container">
             @endif
-
             <div class="content-header">
                 <div class="{{config('adminlte.classes_content_header', 'container-fluid')}}">
                     @yield('content_header')
                 </div>
             </div>
-            
             <div class="content">
                 <div class="{{config('adminlte.classes_content', 'container-fluid')}}">
                     <hr class="mt-0">
-                        
                     @if(session('info'))
                                 <div class="alert alert-success alertinfo">
                                     {{ session('info') }}
@@ -204,9 +201,6 @@
                                     </button>
                                 </div>
                     @endif
-
-                 
-
                     <div class="modal fade" id="logoLoading" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
                     data-keyboard="false" data-backdrop="static" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -224,7 +218,6 @@
                     @cannot('login.withoutmf')
                     <wfm-update-popup-component></wfm-update-popup-component>
                     @endcannot
-
                     <iframe style="display: none;" src="{{'http://'. request()->getHost().':3000/popups'}}" frameborder="0" id="ifm_reminder"></iframe>
                     @yield('content')
                 </div>
@@ -233,24 +226,16 @@
             </div>
             @endif
         </div>
-
-        {{-- @hasSection('footer') --}}
         <footer class="main-footer">
-
                 <strong>Copyright &copy; 2019 <a href="">Contact Point 360</a>.</strong> All rights reserved.
-            {{-- @yield('footer') --}}
         </footer>
-        {{-- @endif --}}
-
         @if(config('adminlte.right_sidebar'))
             <aside class="control-sidebar control-sidebar-{{config('adminlte.right_sidebar_theme')}}">
                 @yield('right-sidebar')
             </aside>
         @endif
-
     </div>
 @stop
-
 @section('adminlte_js')
     @stack('js')
     @yield('js')
@@ -263,26 +248,24 @@
             const systemZoom = width / window.screen.availWidth;
             const left = (width - w) / 2 / systemZoom + dualScreenLeft
             const top = (height - h) / 2 / systemZoom + dualScreenTop
-            const newWindow = window.open(url, '', 
+            const newWindow = window.open(url, '',
             `
             postwindow,
             scrollbars=yes,
-            width=${w / systemZoom}, 
-            height=${h / systemZoom}, 
-            top=${top}, 
+            width=${w / systemZoom},
+            height=${h / systemZoom},
+            top=${top},
             left=${left}
             `
             )
             if (window.focus) newWindow.focus();
             return newWindow
         }
-
         function PopupBlocked() {
             var PUtest = window.open(null,"","width=100,height=100");
             try {PUtest.close();localStorage.setItem("pop-up",new Date());return false;}
             catch(e) {alert('Pop-ups blocked.\n\n¡¡Please Enable It!!'); return true; }
         }
-
         if(localStorage.getItem("pop-up")){
             var datePopup = new Date(localStorage.getItem("pop-up"));
             var dateToday = new Date();
@@ -295,16 +278,13 @@
         }else{
             PopupBlocked();
         }
-
         window.addEventListener("message", receiveReminder, false);
         function receiveReminder(event){
             let data = event.data;
             if(data.reminder && data.users){
-                if(data.users.includes(window.userId)){
-                    var popWindow = popupCenter({url: '/reminders/popup',  w: 900, h: 500}); 
-                    popWindow.onload = function() {
-                        popWindow.postMessage({msg:data.reminder});
-                    };
+                reminder = data.users.find(u=>parseInt(u.user) ===parseInt(window.userId))
+                if(reminder){
+                    var popWindow = popupCenter({url: '/reminder/popup/'+ reminder.reminder_user_id,  w: 900, h: 500});
                 }
             }
         }
