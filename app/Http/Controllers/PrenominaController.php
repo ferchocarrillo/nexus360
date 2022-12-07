@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Classes\Prenomina;
 use App\Payroll;
 use App\PayrollAdjustment;
+use App\PayrollAdmin;
 
 class PrenominaController extends Controller
 {
@@ -94,6 +95,11 @@ class PrenominaController extends Controller
 
         $today = date('Y-m-d');
         $payroll->supervisorCanCreateAdjustments = ($today == $prenomina->endDateQ || $today == $prenomina->endDate);
+        
+        $days_before = PayrollAdmin::where('name','days_before')->firstOrFail()->value;
+        $payroll->enableAdjustments = $payroll->date >= date('Y-m-d', strtotime("-$days_before days")) || $payroll->adjustment_exception;
+        unset($payroll->adjustment_exception);
+        $payroll->availableAdjustmentException = !$payroll->enableAdjustments;
 
         $payroll->payroll_activities = $payroll->payroll_activities->map(function($activity)use($payroll) {
             if($payroll->adjustment && $payroll->adjustment->status == PayrollAdjustment::APPROVED_STATUS 

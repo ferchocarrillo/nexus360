@@ -7,6 +7,7 @@ use App\MasterFile;
 use App\Payroll;
 use App\PayrollActivity;
 use App\PayrollAdjustment;
+use App\PayrollAdjustmentException;
 use App\PayrollAdjustmentType;
 use App\PayrollDayOffDiscount;
 use App\User;
@@ -18,7 +19,7 @@ class PrenominaAdjustmentController extends Controller
     function __construct()
     {
         $this->middleware('can:payroll')->only(['show','create','store','offsetHoliday','justifyAbsense']);
-        $this->middleware('can:payroll.adjustments')->only(['index','pending']);
+        $this->middleware('can:payroll.adjustments')->only(['index','pending','exception']);
         $this->middleware('can:payroll.om')->only(['approveAll']);
     }
         protected function pending(Request $request){
@@ -150,6 +151,7 @@ class PrenominaAdjustmentController extends Controller
             $national_id = $payroll->national_id;
         }else{
             $payroll_activity = PayrollActivity::withoutAppends()->where('code', $adjustment->activity_code)->firstOrFail();
+            $adjustment->payroll_activity = $payroll_activity;
             $national_id = $payroll_activity->payroll->national_id;
         }
         // Validar si el Employee ID logueado es igual al del PayrollActivity
@@ -219,7 +221,9 @@ class PrenominaAdjustmentController extends Controller
             'activity_code' => $payroll_activity->code,
             'employee_id' => $payroll_activity->employee_id,
             'supervisor_approval_required' => 1,
-            'om_approval_required' => $adjustmentType->approve_by_om
+            'om_approval_required' => $adjustmentType->approve_by_om,
+            'status' => 'Pendiente',
+            'date' => $payroll_activity->date,
             ])->all()
         );
 
@@ -236,7 +240,14 @@ class PrenominaAdjustmentController extends Controller
         ]);
 
         $adjustment = PayrollAdjustment::findOrFail($id);
+        $payroll_activity = $adjustment->payroll_activity;
 
+        if($payroll_activity && $request->approved_time > $payroll_activity->total_time_in_seconds){
+            $request->approved_time = $payroll_activity->total_time_in_seconds;
+        }
+        if($payroll_activity && $request->adjustment_approval_status == PayrollAdjustment::APPROVED_STATUS && !$adjustment->approved_time){
+            $adjustment->approved_time = $request->approved_time;
+        }
         $user = auth()->user();
 
         if (
@@ -248,6 +259,7 @@ class PrenominaAdjustmentController extends Controller
             $adjustment->om_approval_date = now();
             $adjustment->om_approval_user_id = $user->id;
             $adjustment->om_approval_comment = $request->adjustment_comments;
+            $adjustment->status = $request->adjustment_approval_status;
             $adjustment->save();
             if($adjustment->adjustment_type == "Inasistencia Justificada" && $adjustment->status == PayrollAdjustment::APPROVED_STATUS ){
                 $payroll= Payroll::where('id',$adjustment->activity_code)->first();
@@ -262,6 +274,7 @@ class PrenominaAdjustmentController extends Controller
             $adjustment->supervisor_approval_date = now();
             $adjustment->supervisor_approval_user_id = $user->id;
             $adjustment->supervisor_approval_comment = $request->adjustment_comments;
+            $adjustment->status = $adjustment->om_approval_required && $request->adjustment_approval_status == PayrollAdjustment::APPROVED_STATUS  ? 'Pendiente' :  $request->adjustment_approval_status;
             $adjustment->save();
         } else {
             return abort(401);
@@ -289,7 +302,8 @@ class PrenominaAdjustmentController extends Controller
             'om_approval_status' => PayrollAdjustment::APPROVED_STATUS,
             'om_approval_date' => now(),
             'om_approval_user_id' => auth()->user()->id,
-            'om_approval_comment' => 'Aprobado automáticamente'
+            'om_approval_comment' => 'Aprobado automáticamente',
+            'status' => PayrollAdjustment::APPROVED_STATUS,
         ]);
 
         return response()->json(['success' => true]);
@@ -324,7 +338,10 @@ class PrenominaAdjustmentController extends Controller
                     'supervisor_approval_date' => now(),
                     'supervisor_approval_user_id' => $user->id,
                     'supervisor_approval_comment' => $request->observations,
-                    'om_approval_required' => 1
+                    'om_approval_required' => 1,
+                    'payroll_id' => $payroll->id,
+                    'date' => $payroll->date,
+                    'status' => 'Pendiente',
                 ]);
             }
 
@@ -358,11 +375,31 @@ class PrenominaAdjustmentController extends Controller
                 'supervisor_approval_date' => now(),
                 'supervisor_approval_user_id' => $user->id,
                 'supervisor_approval_comment' => $request->observations,
-                'om_approval_required' => 1
+                'om_approval_required' => 1,
+                'payroll_id' => $payroll->id,
+                'date' => $payroll->date,
+                'status' => 'Pendiente',
             ]);
             return response()->json(['success' => true]);
         }
 
         abort(401);  
+    }
+
+    public function exception(Request $request){
+        $payroll = Payroll::findOrFail($request->id);
+        $user = auth()->user();
+
+        // Validar si el Employee ID logueado es igual al del Payroll
+        if($user->national_id == $payroll->national_id) abort(401);
+        
+        $payrollAdjustmentException =  PayrollAdjustmentException::firstOrCreate([
+            "employee_id" => $payroll->employee_id,
+            "payroll_id" => $payroll->id,
+            "date" => $payroll->date,
+            "created_by" => $user->id,
+        ]);
+
+        return response()->json($payrollAdjustmentException);
     }
 }

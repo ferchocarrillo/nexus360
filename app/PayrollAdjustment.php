@@ -8,7 +8,7 @@ class PayrollAdjustment extends Model
 {
     protected $connection = 'sqlsrvpayroll';
 
-    protected $appends = ['status','icon_status'];
+    protected $appends = ['icon_status'];
 
     // APPROVAL_STATUSES
     const APPROVAL_STATUSES = [
@@ -41,7 +41,11 @@ class PayrollAdjustment extends Model
         'om_approval_date',
         'om_approval_user_id',
         'om_approval_comment',
-        'created_by'
+        'created_by',
+        'payroll_id',
+        'date',
+        'status',
+        'approved_time',
     ];
 
     protected $casts = [
@@ -49,21 +53,9 @@ class PayrollAdjustment extends Model
         'om_approval_required' => 'boolean',
     ];
 
-    // is approved attribute
-    public function getStatusAttribute()
-    {
-        if(!$this->supervisor_approval_status || ($this->om_approval_required && !$this->om_approval_status && $this->supervisor_approval_status == self::APPROVED_STATUS )){
-            return 'Pendiente';
-        }else if($this->supervisor_approval_status == self::APPROVED_STATUS && (!$this->om_approval_required || $this->om_approval_status == self::APPROVED_STATUS)){
-            return array_values(self::APPROVAL_STATUSES)[0];
-        }else{
-            return array_values(self::APPROVAL_STATUSES)[1];
-        }
-    }
-
     public function getIconStatusAttribute()
     {
-        return self::ICON_STATUS[$this->status];
+        return ($this->status ? self::ICON_STATUS[$this->status] : '');
     }
 
     public function payroll_activity(){

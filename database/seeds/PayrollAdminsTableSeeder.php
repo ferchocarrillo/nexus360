@@ -24,5 +24,9 @@ class PayrollAdminsTableSeeder extends Seeder
                 'Onboarding specialist',
             ]
         ]);
+        PayrollAdmin::create([
+            'name' => 'days_before',
+            'value' => 3
+        ]);
     }
 }
