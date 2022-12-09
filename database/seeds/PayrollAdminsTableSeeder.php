@@ -22,6 +22,7 @@ class PayrollAdminsTableSeeder extends Seeder
                 'SFL Failed Payments',
                 'Support Facilitator',
                 'Onboarding specialist',
+                'Agent Outbound Sale',
             ]
         ]);
         PayrollAdmin::create([
