@@ -326,6 +326,13 @@ return [
                         ],
                     ]
                 ],
+                [
+                    'text' => 'Field Support',
+                    'icon' => 'nav-icon fas fa-hand-point-up',
+                    'url' => 'americanwater/fieldsupport',
+                    'can' => 'americanwater.fieldsupport',
+                    'active' => ['americanwater/fieldsupport','americanwater/fieldsupport/*/edit','americanwater/fieldsupport/*','americanwater/fieldsupport/create']
+                ],
             ]
         ],
         [
