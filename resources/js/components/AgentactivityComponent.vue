@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <div class="row mt-4" v-if="lunchValidate && showButtons">
+      <div class="row mt-4" v-if="showButtons && !savingActivity">
         <div
           v-for="activity in activities"
           :key="activity.id"
@@ -71,16 +71,18 @@ export default {
   },
   data(){
     return {
-      lunchValidate: true,
       showButtons: true,
+      savingActivity: false,
     }
   },
   methods: {
     changeTime(time) {
-      if(this.useractivity.name == 'Lunch' && time.hours == 0 && time.minutes < 50){
-        this.lunchValidate = false;
-      }else{
-        this.lunchValidate = true;
+      if(this.useractivity.time_limit){
+        if(((time.hours *60)+time.minutes) < this.useractivity.time_limit){
+          this.showButtons = false;
+        }else{
+          this.showButtons = true;
+        }
       }
     },
     changeActivity(id) {
@@ -99,7 +101,7 @@ export default {
                   idActivity: id
                 })
                 .then(response => {
-                  this.showButtons = false;
+                  this.savingActivity = true;
                   this.sendEventActivity({
                     userID: my_userID,
                     idActivity: id
@@ -112,7 +114,8 @@ export default {
               console.log('OK');
             }
           });
-          if(id==7) swal.showValidationMessage("You will not be able to change this activity before 58 minutes")
+          let activity = this.activities.find(a=>a.id==id)
+          if(activity.time_limit) swal.showValidationMessage(`You will not be able to change this activity before ${activity.time_limit} minutes`)
     },
     sendEventActivity(data) {
       let iframe = document.getElementById("ifm_activity");
