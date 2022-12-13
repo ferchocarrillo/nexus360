@@ -469,7 +469,21 @@ class PermissionsTableSeeder extends Seeder
             'description'          => 'Enercare Bo Tracker Leader'
         ]);
 
-
+        Permission::firstOrCreate([
+            'name'          => "American Water Field Support",
+            'slug'          => "americanwater.fieldsupport",
+            'description'   => "American Water Field Support",
+        ]);
+        Permission::firstOrCreate([
+            'name'          => "American Water Field Support Leader",
+            'slug'          => "americanwater.fieldsupport.leader",
+            'description'   => "American Water Field Support Leader",
+        ]);
+        Permission::firstOrCreate([
+            'name'          => "American Water Field Support Reports",
+            'slug'          => "americanwater.fieldsupport.reports.general",
+            'description'   => "American Water Field Support Reports",
+        ]);
 
     }
 }

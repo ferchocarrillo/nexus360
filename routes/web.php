@@ -160,6 +160,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('americanwater/botracker/reports/general','AmericanWaterBoTrackerReportsController@general')->name('americanwater.botracker.reportsGeneral');
     Route::post('americanwater/botracker/reports/general','AmericanWaterBoTrackerReportsController@generalDownload')->name('americanwater.botracker.reportsGeneralDownload');
 
+    // American water filed support tracker
+
+    Route::get('americanwater/fieldsupport/reports/general','AmericanWaterFieldSupportTrackerController@general')->name('americanwater.fieldsupport.reportsGeneral');
+    Route::post('americanwater/fieldsupport/reports/general','AmericanWaterFieldSupportTrackerController@generalDownload')->name('americanwater.fieldsupport.reportsGeneralDownload');
+    Route::resource('americanwater/fieldsupport', 'AmericanWaterFieldSupportTrackerController');
+
+
     Route::get('/getdatenow',function(){
         return date('Y-m-d H:i:s');
     });
