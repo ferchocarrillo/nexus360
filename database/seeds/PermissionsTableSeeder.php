@@ -420,37 +420,42 @@ class PermissionsTableSeeder extends Seeder
         Permission::firstOrCreate([
             'name'          => 'Payroll Adjustments',
             'slug'          => 'payroll.adjustments',
-            'description'          => 'Payroll Adjustments'
+            'description'   => 'Payroll Adjustments'
         ]);
 
         Permission::firstOrCreate([
             'name'          => 'Payroll OM',
             'slug'          => 'payroll.om',
-            'description'          => 'Payroll OM'
+            'description'   => 'Payroll OM'
         ]);
 
         Permission::firstOrCreate([
             'name'          => 'Payroll Supervisor',
             'slug'          => 'payroll.supervisor',
-            'description'          => 'Payroll Supervisor'
+            'description'   => 'Payroll Supervisor'
         ]);
 
         Permission::firstOrCreate([
             'name'          => 'Payroll Admin',
             'slug'          => 'payroll.admin',
-            'description'          => 'Payroll Admin'
+            'description'   => 'Payroll Admin'
         ]);
 
 
         Permission::firstOrCreate([
             'name'          => 'Enercare Bo Tracker',
             'slug'          => 'enercare.botracker',
-            'description'          => 'Enercare Bo Tracker'
+            'description'   => 'Enercare Bo Tracker'
         ]);
         Permission::firstOrCreate([
             'name'          => 'Enercare Bo Tracker Leader',
             'slug'          => 'enercare.botracker.leader',
-            'description'          => 'Enercare Bo Tracker Leader'
+            'description'   => 'Enercare Bo Tracker Leader'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => "Enercare Bo Tracker Reports",
+            'slug'          => "enercare.botracker.reports.general",
+            'description'   => "Enercare Bo Tracker Reports",
         ]);
 
 

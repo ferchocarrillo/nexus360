@@ -15,13 +15,13 @@ class CreateEnercareBoTrackersTable extends Migration
     {
         Schema::create('enercare_bo_trackers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('queue_tracker');
+            $table->string('queue_tracker',30);
             $table->bigInteger('case')->unique();
             $table->dateTime('case_actioned');
             $table->dateTime('created');
             $table->dateTime('modified');
             $table->unsignedBigInteger('created_by')->nullable();
-            $table->string('call_centre');
+            $table->string('call_centre',30);
 
         });
     }

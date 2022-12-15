@@ -1,49 +1,20 @@
 @extends('adminlte::page')
 @section('title_postfix', ' | Enercare BO Tracker Edit')
 @section('css')
-<style>
-    .card-tracker {
-        margin-inline: 1rem;
-        transition: all 0.2s ease-in-out;
-        transform-origin: top left;
-        width: 170px !important;
-        height: 70px !important;
-        overflow: hidden;
-        -webkit-box-shadow: 7px 7px 15px 2px #aaa1a1;
-        box-shadow: 7px 7px 15px 2px #aaa1a1;
-        padding: 10px;
-        border: none;
-        font-family: 'Roboto Flex', sans-serif;
-    }
-    .card-tracker:hover {
-        transform: scale(1.2);
-        z-index: 999;
-        height: 110px !important;
-    }
-    label{
-        color: black;
-    }
-    .card-data{
-
-    }
-    .card-data label{
-        text-align: center;
-        margin-top: 3em;
-
-    }
-</style>
+<link rel="stylesheet" href="{{asset('css/enercare.css')}}">
 @stop
 @section('content_header')
-<h1 class="d-inline"> Enercare BO Tracker Edit</h1>
-<div class="float-right">
-    <a href="/enercare/botracker" class="btn btn-info" type="button" title="return" ><i class="fas fa-undo"></i></a>
-</div>
+<img alt="logo" class="logo" src="\img\EnercareTracker\enercare-seeklogo.com.svg" />
+<a href="/enercare/botracker" class="btn btn-info float-right" type="button" title="return" ><i class="fas fa-undo"></i></a>
+<h1 class="title_h1"> Enercare BO Tracker</h1>
 @stop
 @section('content')
 <div class="row">
-    <div class="col-md-4">
-        <div class="card">
+    <div class="col-md-12">
+        <div class="card_first">
             <div class="card-body">
+                <div class="card col-md-12">
+                    <div class="card-body">
                 {!! Form::model($trkEdit, ['route' => ['botracker.update', $trkEdit->id], 'method' => 'PATCH']) !!}
                 <div class="form-group">
                     <div class="form-group col-md-8">
@@ -70,5 +41,7 @@
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 @stop
