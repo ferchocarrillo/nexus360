@@ -96,3 +96,9 @@ td {
     position: absolute;
     margin-left: calc(95% - 80px);
 }
+.title2{
+
+    color: grey;
+    font-weight:lighter;
+
+}

@@ -30,14 +30,11 @@ class EnercareBoTrackerController extends Controller
     public function index()
     {
 
-        $hoy = Carbon::now();
-        $semana =  $hoy->subDays(7)->format('Y-m-d');
-        $quincena =  $hoy->subDays(15)->format('Y-m-d');
-        $meses =  $hoy->subDays(30)->format('Y-m-d');
+        $hoy = Carbon::now()->format('Y-m-d');
         if (auth()->user()->can('enercare.botracker.leader')) {
-            $trackers_lists = EnercareBoTracker::where('created', '>=', $semana)->orderBy('created', 'desc')->get();
+            $trackers_lists = EnercareBoTracker::where('created', '>=', $hoy)->orderBy('created', 'desc')->get();
         } elseif ((auth()->user()->can('enercare.botracker'))) {
-            $trackers_lists = EnercareBoTracker::where('created', '>=', $meses)->orderBy('created', 'desc')->where('created_by', auth()->user()->id)->get();
+            $trackers_lists = EnercareBoTracker::where('created', '>=', $hoy)->orderBy('created', 'desc')->where('created_by', auth()->user()->id)->get();
         } else {
             'you dont have a permission to view this page';
         }
