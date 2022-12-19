@@ -26,8 +26,9 @@ class EnercareBoTrackerReporGeneralExport implements FromCollection, WithHeading
         ->whereDate('created','<=',$this->end_date)
         ->selectraw("
             enercare_bo_trackers.id,
+            enercare_bo_trackers.lob,
             enercare_bo_trackers.queue_tracker,
-            enercare_bo_trackers.case,
+            enercare_bo_trackers.[case],
             enercare_bo_trackers.case_actioned,
             enercare_bo_trackers.created,
             enercare_bo_trackers.modified,
@@ -40,6 +41,7 @@ class EnercareBoTrackerReporGeneralExport implements FromCollection, WithHeading
     {
         return [
             'id',
+            'lob',
             'queue_tracker',
             'case',
             'case_actioned',

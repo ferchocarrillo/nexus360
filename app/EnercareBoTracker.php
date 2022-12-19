@@ -9,6 +9,7 @@ class EnercareBoTracker extends Model
     protected $table = 'enercare_bo_trackers';
 
     protected $fillable = [
+        'lob',
         'queue_tracker',
         'case',
         'case_actioned',
@@ -26,4 +27,5 @@ class EnercareBoTracker extends Model
     public function creador(){
         return $this->belongsTo('App\User','created_by');
     }
+
 }
