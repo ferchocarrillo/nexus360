@@ -14,7 +14,8 @@
         <a href="{{ route('botracker.create') }}" class="btn btn-sm btn-primary float-right"><i
                 class="fas fa-feather-alt"></i> Create a New Register</a>
     @endif
-    <h1 class="title_h1"> Enercare BO Tracker</h1>
+
+    <h1 class="title_h1"> Enercare BO Tracker <span class="title2">(Today's Cases)</span></h1>
 @stop
 @section('content')
     <div class="card">
