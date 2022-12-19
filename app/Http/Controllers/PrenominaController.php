@@ -98,8 +98,8 @@ class PrenominaController extends Controller
         
         $days_before = PayrollAdmin::where('name','days_before')->firstOrFail()->value;
         $payroll->enableAdjustments = $payroll->date >= date('Y-m-d', strtotime("-$days_before days")) || $payroll->adjustment_exception;
-        unset($payroll->adjustment_exception);
         $payroll->availableAdjustmentException = !$payroll->enableAdjustments;
+        unset($payroll->adjustment_exception);
 
         $payroll->payroll_activities = $payroll->payroll_activities->map(function($activity)use($payroll) {
             if($payroll->adjustment && $payroll->adjustment->status == PayrollAdjustment::APPROVED_STATUS 

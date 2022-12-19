@@ -2,7 +2,11 @@ $(function() {
     const scheduleElement = document.getElementById("schedule");
     const payrollActivitiesElement = document.getElementById("payrollActivities");
 
-    let noveltiesEditables = ["Tiempo pendiente aprobar", "Inasistencia Hrs"];
+    const noveltiesEditables = [
+        {"novelty":"Tiempo pendiente aprobar"}, 
+        {"novelty":"Inasistencia Hrs"},
+        {"novelty":"Tiempo injustificado", "surcharge":[ 'Festivo', 'Nocturno Festivo', 'Festivo Compensado' ]}
+    ];
     let payroll = {};
 
     let employees = [];
@@ -285,9 +289,10 @@ $(function() {
                     let activitiesRows = payroll.payroll_activities
                         .map(activity => {
                             let buttons = "";
-                            let noveltyEditable = noveltiesEditables.includes(
-                                activity.activity_type
-                            );
+                            let noveltyEditable = noveltiesEditables.filter(n =>
+                                        n.novelty == activity.activity_type &&
+                                        (!n.surcharge || n.surcharge.includes(activity.surcharge))
+                                ).length > 0;
                             if (noveltyEditable) {
                                 // dropdown items
                                 if (
