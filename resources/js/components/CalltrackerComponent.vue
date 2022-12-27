@@ -135,6 +135,14 @@
         <span class="invalid-feedback" v-if="validation('sales')" role="alert">{{ validationErrors.sales[0] }}</span>
     </div>
 
+    <div class="form-group">
+      <label for="observations">Observations</label>
+      <text-area-counter-component name="observations" id="observations" max="255" :classtextarea="'form-control ' + (validation('observations') ? 'is-invalid' : '')"
+        classcounter="badge bg-primary float-right" v-model="observations">
+        <span class="invalid-feedback" v-if="validation('observations')" role="alert">{{ validationErrors.observations[0] }}</span>
+      </text-area-counter-component>
+    </div>
+
     <div class="alert alert-danger" role="alert" v-if="otherError != null" v-html="otherError"></div>
     <div class="form-group">
             <button class="btn btn-primary" @click="submitData">Submit</button>
@@ -197,6 +205,7 @@ export default {
       sales:[],
       validationErrors:[],
       otherError: null,
+      observations: null,
     };
   },
   methods: {
@@ -280,7 +289,8 @@ export default {
           checkPitch:this.checkPitch,
           pitch: this.pitch,
           checkSale: this.checkSale,
-          sales: (this.checkSale ? this.sales : this.reasonNotSale)
+          sales: (this.checkSale ? this.sales : this.reasonNotSale),
+          observations: this.observations,
         };
       axios
         .post("/enercare/calltracker",data)

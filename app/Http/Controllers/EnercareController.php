@@ -54,6 +54,7 @@ class EnercareController extends Controller
             'subcategory' => ['required'],
             'pitch' => ['required'],
             'sales' => [($request->checkPitch ? 'required' : 'nullable')],
+            'observations' => ['nullable','max:255' ]
         ]);
 
         $id = EnercareCalltracker::create(
@@ -61,7 +62,7 @@ class EnercareController extends Controller
                 'username' => auth()->user()->username,
                 'reason_not_pitch' => ($request->checkPitch ? null : $request->pitch),
                 'reason_not_sale' => ($request->checkSale ? null : $request->sales)
-            ])->only(['site_id','lob','service_call','username', 'category', 'subcategory', 'reason_not_pitch', 'reason_not_sale'])
+            ])->only(['site_id','lob','service_call','username', 'category', 'subcategory', 'reason_not_pitch', 'reason_not_sale','observations'])
         )->id;
 
 
@@ -239,6 +240,7 @@ class EnercareController extends Controller
                 ,'enercare_calltrackers.reason_not_pitch'
                 ,'enercare_calltrackers.reason_not_sale'
                 ,'enercare_calltrackers.created_at'
+                ,'enercare_calltrackers.observations'
                 ,'enercare_calltracker_pitch_and_sales.type'
                 ,'enercare_calltracker_pitch_and_sales.plan'
                 ,'enercare_calltracker_pitch_and_sales.contract_id'
