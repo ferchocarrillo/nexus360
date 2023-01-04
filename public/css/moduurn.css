@@ -1,0 +1,110 @@
+.card-tracker {
+    margin-inline: 1rem;
+    transition: all 0.2s ease-in-out;
+    transform-origin: top left;
+    width: 170px !important;
+    height: 70px !important;
+    overflow: hidden;
+    -webkit-box-shadow: 7px 7px 15px 2px #aaa1a1;
+    box-shadow: 7px 7px 15px 2px #aaa1a1;
+    padding: 10px;
+    border: none;
+    font-family: "Roboto Flex", sans-serif;
+}
+.card-tracker:hover {
+    transform: scale(1.2);
+    z-index: 999;
+    height: 110px !important;
+}
+label {
+    color: black;
+}
+.title {
+    color: black;
+    text-align: center;
+}
+.logo {
+    width: 18%;
+}
+
+.card_first {
+    color: aliceblue;
+    background: linear-gradient(rgb(158,42,42), rgb(212,167,172));
+    padding-top: 1rem;
+}
+.span_label {
+    color: red;
+    font-size: medium;
+}
+
+.label_text {
+    color: black;
+}
+.card-data label {
+    text-align: center;
+    margin-top: 3em;
+}
+.span_item {
+    color: black;
+    font-size: medium;
+    text-align: right !important;
+}
+
+th {
+    text-align: center;
+}
+
+td {
+    text-align: center;
+}
+.title_h1 {
+    display: inline !important;
+    padding: 0 0 0 20%;
+    text-align: center;
+}
+.table-info {
+    background-color: #d4a7ac !important;
+    color: black;
+}
+
+.table-info:hover {
+    background-color: #9e2a2a !important;
+    color: aliceblue;
+
+}
+.card-rest {
+    display: inline-block;
+    width: 10%;
+    height: 10%;
+    text-align: center;
+    background: #f4c7ce;
+    border-radius: 0.75em;
+    color: red;
+}
+.card-rest:hover {
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    background: #f498a2;
+}
+.logo-img {
+    width: 80%;
+    height: 85%;
+}
+.logo-img:hover {
+    width: 80%;
+    height: 50%;
+}
+.card-bot {
+    float: inline-end;
+}
+.card-rest {
+    position: absolute;
+    margin-left: calc(95% - 80px);
+}
+.logotipo{
+    width: 8%
+}
+.botones{
+    background: #9e2a2a;
+    color: aliceblue;
+}
