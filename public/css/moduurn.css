@@ -29,7 +29,7 @@ label {
 
 .card_first {
     color: aliceblue;
-    background: linear-gradient(rgb(158,42,42), rgb(212,167,172));
+    background: linear-gradient(rgb(158, 42, 42), rgb(212, 167, 172));
     padding-top: 1rem;
 }
 .span_label {
@@ -70,7 +70,6 @@ td {
 .table-info:hover {
     background-color: #9e2a2a !important;
     color: aliceblue;
-
 }
 .card-rest {
     display: inline-block;
@@ -101,10 +100,50 @@ td {
     position: absolute;
     margin-left: calc(95% - 80px);
 }
-.logotipo{
-    width: 8%
+.logotipo {
+    width: 8%;
 }
-.botones{
+.botones {
     background: #9e2a2a;
     color: aliceblue;
+}
+.alert_moduurn {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    background: #a13030;
+    background-image: linear-gradient(
+        to right,
+        rgb(180, 95, 97, 0.4),
+        rgb(208, 156, 160, 0.5)
+    );
+    color: #f4c7ce;
+}
+.alert_moduurn:hover {
+    animation-name: background;
+    animation-duration: 4s;
+}
+@keyframes background {
+    0% {
+        background-color: #200319;
+        color: rgb(247, 247, 247);
+    }
+    25% {
+        background-color: #200319;
+        color: rgb(247, 247, 247);
+    }
+    50% {
+        background-color: #a31c83;
+        color: rgb(0, 0, 0);
+    }
+    75% {
+        background-color: #200319;
+        color: rgb(247, 247, 247);
+    }
+    100% {
+        background-color: #200319;
+        color: rgb(247, 247, 247);
+    }
 }
