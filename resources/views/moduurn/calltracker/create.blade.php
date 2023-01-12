@@ -138,7 +138,7 @@
                                         ]) !!}
                                     </div>
                                 </div>
-                                <button id="boton" type="submit" onclick="validar()"
+                                <button id="boton" type="submit"
                                     class="btn btn-primary botones"><i class="fas fa-save"></i>&nbspSave</button>
                             </div>
                         </div>
