@@ -200,12 +200,9 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-    Route::get('moduurn/calltracker/region', 'ModuurnCalltrackerController@region')->name('moduurn.calltracker.region');
-    //Route::post('moduurn/calltracker/region', 'ModuurnCalltrackerController@region')->name('moduurn.calltracker.region');
-    Route::post('moduurn/calltracker/states', 'ModuurnCalltrackerController@states')->name('moduurn.calltracker.states');
     Route::get('moduurn/calltracker/reports/general','ModuurnCalltrackerController@general')->name('moduurn.calltracker.reportsGeneral');
     Route::post('moduurn/calltracker/reports/general','ModuurnCalltrackerController@generalDownload')->name('moduurn.calltracker.reportsGeneralDownload');
-    Route::resource('moduurn/calltracker', 'ModuurnCalltrackerController');
+    Route::resource('moduurn/calltracker', 'ModuurnCalltrackerController',['as'=>'moduurn']);
 
 });
 

@@ -21,9 +21,9 @@ class ModuurnCalltrackerReporGeneralExport implements FromCollection, WithHeadin
     */
     public function collection()
     {
-        return ModuurnTracker::whereDate('created','>=',$this->start_date)
+        return ModuurnTracker::whereDate('moduurn_calltrackers.created_at','>=',$this->start_date)
+        ->whereDate('moduurn_calltrackers.created_at','<=',$this->end_date)
         ->leftJoin("users", "users.id", "=", "moduurn_calltrackers.created_by")
-        ->whereDate('created','<=',$this->end_date)
         ->selectraw("
             moduurn_calltrackers.id,
             moduurn_calltrackers.phone_number1,
@@ -33,14 +33,14 @@ class ModuurnCalltrackerReporGeneralExport implements FromCollection, WithHeadin
             moduurn_calltrackers.is_schedule,
             moduurn_calltrackers.reason_not_schedule,
             moduurn_calltrackers.type,
-            moduurn_calltrackers.transferCall,
+            moduurn_calltrackers.transfer_call,
             moduurn_calltrackers.date_schedule,
             moduurn_calltrackers.country,
             moduurn_calltrackers.region,
             moduurn_calltrackers.state,
             moduurn_calltrackers.expert,
-            moduurn_calltrackers.created,
-            moduurn_calltrackers.modified,
+            moduurn_calltrackers.created_at,
+            moduurn_calltrackers.updated_at,
             users.name
         ")->get();
     }
@@ -56,14 +56,14 @@ class ModuurnCalltrackerReporGeneralExport implements FromCollection, WithHeadin
             'is_schedule',
             'reason_not_schedule',
             'type',
-            'transferCall',
+            'transfer_call',
             'date_schedule',
             'country',
             'region',
             'state',
             'expert',
-            'created',
-            'modified',
+            'created_at',
+            'updated_at',
             'created_by'
         ];
     }

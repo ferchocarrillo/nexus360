@@ -1,10 +1,12 @@
 @extends('adminlte::page')
-@section('title_postfix', ' | Moduurn Call Tracker')
+@section('title_postfix', ' | Moduurn Call Tracker Report')
 @section('content_header')
-    <img alt="logo" class="logo" src="\img\moduurn\ModuurnLogo2.svg" />
-    <h1 class="title_h1"> Report Moduurn Call Tracker</h1>
-    <div class="float-right">
-        <a href="/moduurn/calltracker" class="btn btn-info" type="button" title="return"><i class="fas fa-undo"></i></a>
+    <div class="d-flex justify-content-between align-items-center">
+        <img alt="logo" class="logo" src="\img\moduurn\ModuurnLogo2.svg" />
+        <h1> Call Tracker Report</h1>  
+        <a href="{{route('moduurn.calltracker.index')}}" class="btn btn-moduurn" type="button" title="return">
+            <i class="fas fa-undo"></i>
+        </a>
     </div>
 @stop
 @section('css')
@@ -13,19 +15,16 @@
 @endsection
 @section('content')
     <div class="container-fluid">
-        <div class="col-md-12">
-            <div class="card_first">
-                <div class="card-body">
-                    <form action="{{ route('moduurn.calltracker.reportsGeneralDownload') }}" method="POST">
-                        @csrf
-                        <div class="card col-md-12">
-                            <div class="card-body">
-                                <input type="text" class="form-control form-control-lg" name="daterange"
-                                    value="" />
-                                <button class="btn mt-3 btn-primary"><i class="fas fa-download"></i> Download</button>
-                            </div>
-                        </div>
-                    </form>
+        <div class="card card_first">
+            <div class="card-body">
+                <div class="card mb-0">
+                    <div class="card-body">
+                        <form action="{{ route('moduurn.calltracker.reportsGeneralDownload') }}" method="POST">
+                            @csrf
+                            <input type="text" class="form-control form-control-lg" name="daterange" value="" />
+                            <button class="btn mt-3 btn-moduurn"><i class="fas fa-download"></i> Download</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

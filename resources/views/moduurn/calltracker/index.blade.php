@@ -1,111 +1,87 @@
 @extends('adminlte::page')
-@section('title_postfix', ' | Call Tracker')
+@section('title_postfix', ' | Moduurn Call Tracker')
 @section('css')
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/select2/css/select2.min.css') }}" />
-@section('css')
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
     <link rel="stylesheet" type="text/css"
         href="{{ asset('vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/moduurn.css') }}">
 @endsection
 @section('content_header')
-    <img alt="logo" class="logo" src="\img\moduurn\ModuurnLogo2.svg" />
-    @if (Auth::user()->can('moduurn/calltracker.create'))
-        <a href="{{ route('calltracker.create') }}" class="btn btn-sm btn-primary float-right botones"><i
-                class="fas fa-feather-alt"></i> Create a New Register</a>
-    @endif
-    <h1 class="title_h1"> Moduurn Tracker </h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <img alt="logo" class="logo" src="\img\moduurn\ModuurnLogo2.svg" />
+        <h1> Call Tracker </h1>
+        @can('moduurn.calltracker')    
+            <a href="{{ route('moduurn.calltracker.create') }}" class="btn btn-sm float-right btn-moduurn">
+                <i class="fas fa-plus"></i> New Record
+            </a>
+        @endcan
+    </div>
 @stop
 @section('content')
     <div class="card">
+        @can('moduurn.calltracker.reports.general')
+            <div class="card-header border-0">
+                <a href="{{ route('moduurn.calltracker.reportsGeneral') }}" class="btn btn-report">
+                    Export to Excel <i class="far fa-file-excel ml-2"></i>
+                </a>
+            </div>
+        @endcan
         <div class="card-body">
-            <table class="table table-hover" id="moduurmTrackerTable">
-                <thead class="table-info">
-                    <tr>
-                        <td>Principal Number</td>
-                        <td>Secundary Number</td>
-                        <td>list Id</td>
-                        <td>Not Show</td>
-                        <td>Is Schedule</td>
-                        <td>Reason</td>
-                        <td>Type</td>
-                        <td>Transfer Call</td>
-                        <td>Date</td>
-                        <td>Country/Region/State</td>
-                        <td>Expert</td>
-                        <td>Created By</td>
-                        <td>Create at</td>
-                        <td></td>
-                    </tr>
-                <tbody>
-                    @foreach ($trackers as $track)
+            <div class="table-responsive">
+                <table class="table table-hover" id="moduurmTrackerTable">
+                    <thead>
                         <tr>
-                            <td>{{ $track->phone_number1 }}</td>
-                            <td>{{ $track->phone_number2 }}</td>
-                            <td>{{ $track->list_id }}</td>
-                            <td>{{ $track->not_show }}</td>
-                            <td>{{ $track->is_schedule }}</td>
-                            <td>{{ $track->reason_not_schedule }}</td>
-                            <td>{{ $track->type }}</td>
-                            <td>{{ $track->transferCall }}</td>
-                            <td>{{ $track->date_schedule }}</td>
-                            <td>{{ $track->country }} - {{ $track->region }} - {{ $track->state }}</td>
-                            <td>{{ $track->expert }}</td>
-                            <td>{{ $track->creador->name }}</td>
-                            <td>{{ $track->created }}</td>
-                            <td>
-                                <a href="{{ url('/moduurn/calltracker/' . $track->id) }}" class="btn btn-info btn-sm"
-                                    role="button" aria-pressed="true" title="See Case">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                @can('moduurn.calltracker.leader')
-                                    <a href="{{ url('/moduurn/calltracker/' . $track->id . '/edit') }}"
-                                        class="btn btn-warning btn-sm" role="button" aria-pressed="true" title="Edit Case">
-                                        <i class="fas fa-eye-dropper"></i>
-                                    </a>
-                                @endcan
-                            </td>
+                            <th>#</th>
+                            <th>Phone Number</th>
+                            <th>List ID</th>
+                            <th>Not Show</th>
+                            <th>Schedule</th>
+                            <th>Created By</th>
+                            <th>Created At</th>
+                            <th></th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($trackers as $record)
+                            <tr>
+                                <td>{{ $record->id }}</td>
+                                <td>{{ $record->phone_number1 }}</td>
+                                <td>{{ $record->list_id }}</td>
+                                <td>{{ $record->not_show }}</td>
+                                <td>{{ $record->date_schedule }}</td>
+                                <td>{{ $record->creator->name }}</td>
+                                <td>{{ $record->created_at }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ route('moduurn.calltracker.show', $record->id) }}"
+                                            class="btn btn-info btn-sm" role="button" aria-pressed="true" title="See Case">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+
+                                        @can('moduurn.calltracker.leader')
+                                            <a href="{{ route('moduurn.calltracker.edit', $record->id) }}"
+                                                class="btn btn-warning btn-sm" role="button" aria-pressed="true"
+                                                title="Edit Case">
+                                                <i class="fas fa-eye-dropper"></i>
+                                            </a>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    @can('moduurn.calltracker.reports.general')
-        <a href="{{ route('moduurn.calltracker.reportsGeneral') }}">
-            <img src="/img/moduurn/excel_logo.png" alt="HTML tutorial" style="width:70px;height:42px;">
-        </a>
-    @endcan
 @stop
 @push('js')
     <script type="text/javascript" src="{{ asset('vendor/datatables/js/jquery.dataTables.min.js') }} "></script>
     <script type="text/javascript" src="{{ asset('vendor/datatables/js/dataTables.bootstrap4.min.js') }} "></script>
     <script>
         $(document).ready(function() {
-            $('#moduurmTrackerTable').DataTable({
-                language: {
-                    "processing": "Processing...",
-                    "lengthMenu": "Show _MENU_ records",
-                    "zeroRecords": "No results found",
-                    "emptyTable": "No data available in this table",
-                    "infoEmpty": "Showing records from 0 to 0 of a total of 0 records",
-                    "infoFiltered": "(filtering a total of _MAX_ records)",
-                    search: `<div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                        </div>`,
-                    searchPlaceholder: 'Search...',
-                    "infoThousands": ",",
-                    "loadingRecords": "Loading...",
-                    "paginate": {
-                        "first": "First",
-                        "last": "Last",
-                        "next": "Next",
-                        "previous": "Previous"
-                    },
-                    "info": "Showing _START_ to _END_ of _TOTAL_ records"
-                }
-            });
+            $('#moduurmTrackerTable').DataTable();
         })
     </script>
 @endpush

@@ -16,25 +16,19 @@ class ModuurnTracker extends Model
         'is_schedule',
         'reason_not_schedule',
         'type',
-        'transferCall',
+        'transfer_call',
         'date_schedule',
         'region',
         'country',
         'state',
         'expert',
         'created_by',
-        'created',
-        'modified',
-
-
-
     ];
 
-    const CREATED_AT = 'created';
-    const UPDATED_AT = 'modified';
+    protected $dates = ['date_schedule'];
 
 
-    public function creador(){
+    public function creator(){
         return $this->belongsTo('App\User','created_by');
     }
 }

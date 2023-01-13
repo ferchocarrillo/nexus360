@@ -334,7 +334,7 @@ return [
             'icon'=>'nav-icon fab fa-mastodon',
             'url'=>'moduurn/calltracker',
             'active' => ['moduurn/calltracker','moduurn/calltracker/*'],
-            'can'=>'moduurn',
+            'can'=>'moduurn.calltracker',
             'icon_color'=>'info',
             'label'=>'New',
             'label_color'=>'danger'

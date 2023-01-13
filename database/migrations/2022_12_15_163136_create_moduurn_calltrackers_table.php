@@ -16,22 +16,21 @@ class CreateModuurnCalltrackersTable extends Migration
     {
         Schema::create('moduurn_calltrackers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('phone_number1');
-            $table->bigInteger('phone_number2')->nullable();
+            $table->string('phone_number1',10);
+            $table->string('phone_number2',10)->nullable();
             $table->string('list_id', 20);
             $table->string('not_show', 3);
             $table->string('is_schedule', 20)->nullable();
             $table->string('reason_not_schedule', 55)->nullable();
             $table->string('type', 20)->nullable();
-            $table->string('transferCall', 3)->nullable();
+            $table->string('transfer_call', 3)->nullable();
             $table->dateTime('date_schedule')->nullable();
             $table->string('region', 35);
             $table->string('country', 35);
             $table->string('state', 35);
             $table->string('expert', 50);
-            $table->dateTime('created');
-            $table->dateTime('modified');
             $table->unsignedBigInteger('created_by');
+            $table->timestamps();
 
         });
     }

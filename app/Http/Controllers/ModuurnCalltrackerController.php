@@ -27,7 +27,12 @@ class ModuurnCalltrackerController extends Controller
      */
     public function index()
     {
-        $trackers = ModuurnTracker::get();
+        $user = auth()->user();
+        if($user->can('moduurn.calltracker.leader')){
+            $trackers = ModuurnTracker::get();
+        }else{
+            $trackers = ModuurnTracker::where('created_by',$user->id)->get();
+        }
         return view('moduurn.calltracker.index', compact('trackers'));
     }
 
@@ -63,47 +68,40 @@ class ModuurnCalltrackerController extends Controller
      */
     public function store(Request $request)
     {
-        $not_show = $request->not_show;
-        $schedule = $request->is_schedule;
-
-        $rules = array(
-            'not_show' => 'required','max:3',
-            'is_schedule' => [($not_show == 'no' ? 'required' : 'nullable')],
-            'reason_not_schedule' => [($schedule == 'no' ? 'required' : 'nullable')],
-            'type' => [($schedule == 'yes' ? 'required' : 'nullable')],
-            'transfer_call' => [($schedule == 'yes' ? 'required' : 'nullable')],
-            'date_schedule' => [($schedule == 'yes' ? 'required' : 'nullable')],
+        $this->validate(
+            $request,
+            [
+                'phone_number1' => ['required', 'numeric', 'digits_between:7,10'],
+                'phone_number2' => ['nullable', 'numeric', 'digits_between:7,10'],
+                'list_id' => ['required', 'numeric', 'digits_between:5,20'],
+                'not_show' => ['required', 'max:3'],
+                'is_schedule' => [($request->not_show == 'no' ? 'required' : 'nullable')],
+                'reason_not_schedule' => [($request->is_schedule == 'no' ? 'required' : 'nullable')],
+                'type' => [($request->is_schedule == 'yes' ? 'required' : 'nullable')],
+                'transfer_call' => [($request->is_schedule == 'yes' ? 'required' : 'nullable')],
+                'date_schedule' => [($request->is_schedule == 'yes' ? 'required' : 'nullable')],
+            ],
+            [],
+            [
+                'phone_number1' => 'Phone Number',
+                'phone_number2' => 'Secundary Phone',
+                'list_id' => 'List ID',
+                'not_show' => 'Not Show',
+                'is_schedule' => 'Is Schedule',
+                'reason_not_schedule' => 'Reason Not Schedule',
+                'type' => 'Type',
+                'transfer_call' => 'Transfer Call',
+                'date_schedule' => 'Date Schedule',
+            ]
         );
-        $messages = [
-            'not_show.required' => 'the field Not Show is required',
-            'is_schedule.required' => 'the field Is Schedule is required',
-            'reason_not_schedule.required' => 'the field Reason Not Schedule is required',
-            'type.required' => 'the field Type is required',
-            'transfer_call.required' => 'the field Transfer Call is required',
-            'date_schedule.required' => 'the field Date Schedule is required',
-        ];
-        $this->validate($request, $rules, $messages);
-        ModuurnTracker::create($request->merge([
+
+        $mergeData= [
+            'date_schedule'=>($request->date_schedule ? str_replace('T',' ',$request->date_schedule) : null),
             'created_by' => Auth::user()->id,
-        ])->all());
+        ];
+        ModuurnTracker::create($request->merge($mergeData)->all());
         return redirect('moduurn/calltracker')->with('info', 'Record Saved Successfully');
     }
-
-    /**
-     * Configure the validator instance.
-     *
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return void
-     */
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            if ($this->somethingElseIsInvalid()) {
-                $validator->errors()->add('field', 'Something is wrong with this field!');
-            }
-        });
-    }
-
 
     /**
      * Display the specified resource.
@@ -113,7 +111,13 @@ class ModuurnCalltrackerController extends Controller
      */
     public function show($id)
     {
+
         $trkEdit = ModuurnTracker::findOrFail($id);
+        
+        $user = auth()->user();
+        if(!$user->can('moduurn.calltracker.leader') && $trkEdit->created_by != $user->id){
+            abort(403);
+        }
 
         return view('moduurn.callTracker.show', compact('trkEdit'));
     }
@@ -126,20 +130,26 @@ class ModuurnCalltrackerController extends Controller
      */
     public function edit($id)
     {
-        $trkEdit = ModuurnTracker::findOrFail($id);
-        $reason = ModuurnTrackerList::where('name', 'ReasonNotSchedule')->pluck('list', 'name')->first();
-        $reason = array_combine($reason, $reason);
-        $type = ModuurnTrackerList::where('name', 'Type')->pluck('list', 'name')->first();
-        $type = array_combine($type, $type);
-        $expert = ModuurnTrackerList::where('name', 'Expert')->pluck('list', 'name')->first();
-        $expert = array_combine($expert, $expert);
 
+        $trkEdit = ModuurnTracker::findOrFail($id);
+        $lists = ModuurnTrackerList::pluck('list', 'name');
+        foreach ($lists as $key => $list) {
+            if ($key != 'Country') {
+                $lists[$key] = array_combine($lists[$key], $lists[$key]);
+            }
+        }
+        $reason = $lists['ReasonNotSchedule'];
+        $type = $lists['Type'];
+        $expert =  $lists['Expert'];
+        $Countries = $lists['Country'];
         return view('moduurn/calltracker.edit', compact(
+            'trkEdit',
+            'Countries',
             'reason',
             'type',
-            'expert',
-            'trkEdit',
+            'expert'
         ));
+
     }
     /**
      * Update the specified resource in storage.
@@ -150,7 +160,39 @@ class ModuurnCalltrackerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $datosTrackers = request()->except(['_token', '_method']);
+        $this->validate(
+            $request,
+            [
+                'phone_number1' => ['required', 'numeric', 'digits_between:7,10'],
+                'phone_number2' => ['nullable', 'numeric', 'digits_between:7,10'],
+                'list_id' => ['required', 'numeric', 'digits_between:5,20'],
+                'not_show' => ['required', 'max:3'],
+                'is_schedule' => [($request->not_show == 'no' ? 'required' : 'nullable')],
+                'reason_not_schedule' => [($request->is_schedule == 'no' ? 'required' : 'nullable')],
+                'type' => [($request->is_schedule == 'yes' ? 'required' : 'nullable')],
+                'transfer_call' => [($request->is_schedule == 'yes' ? 'required' : 'nullable')],
+                'date_schedule' => [($request->is_schedule == 'yes' ? 'required' : 'nullable')],
+            ],
+            [],
+            [
+                'phone_number1' => 'Phone Number',
+                'phone_number2' => 'Secundary Phone',
+                'list_id' => 'List ID',
+                'not_show' => 'Not Show',
+                'is_schedule' => 'Is Schedule',
+                'reason_not_schedule' => 'Reason Not Schedule',
+                'type' => 'Type',
+                'transfer_call' => 'Transfer Call',
+                'date_schedule' => 'Date Schedule',
+            ]
+        );
+
+        $mergeData= [
+            'date_schedule'=>($request->date_schedule ? str_replace('T',' ',$request->date_schedule) : null),
+        ];
+
+
+        $datosTrackers = request()->merge($mergeData)->except(['_token', '_method']);
         ModuurnTracker::where('id', '=', $id)->update($datosTrackers);
         return redirect('moduurn/calltracker')->with('info', 'Record Modify Successfully');
     }
