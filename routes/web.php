@@ -211,6 +211,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/prenomina/admin/savepositions','PrenominaAdminController@savePositions')->name('prenomina.admin.savePositions');
     Route::post('/prenomina/admin/saveconfigs','PrenominaAdminController@saveConfigs')->name('prenomina.admin.saveConfigs');
 
+
+
+    Route::get('moduurn/calltracker/reports/general','ModuurnCalltrackerController@general')->name('moduurn.calltracker.reportsGeneral');
+    Route::post('moduurn/calltracker/reports/general','ModuurnCalltrackerController@generalDownload')->name('moduurn.calltracker.reportsGeneralDownload');
+    Route::resource('moduurn/calltracker', 'ModuurnCalltrackerController',['as'=>'moduurn']);
+
 });
 
 Auth::routes(['register' => false]);

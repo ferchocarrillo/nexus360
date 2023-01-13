@@ -336,6 +336,17 @@ return [
             ]
         ],
         [
+            'text'=>"Moduurn",
+
+            'icon'=>'nav-icon fab fa-mastodon',
+            'url'=>'moduurn/calltracker',
+            'active' => ['moduurn/calltracker','moduurn/calltracker/*'],
+            'can'=>'moduurn.calltracker',
+            'icon_color'=>'info',
+            'label'=>'New',
+            'label_color'=>'danger'
+        ],
+        [
             'text' => 'Reports',
             'icon' => 'nav-icon fas fa-chart-line',
             'can' => 'agentactivity.report',

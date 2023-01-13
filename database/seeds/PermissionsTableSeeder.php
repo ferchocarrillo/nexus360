@@ -489,6 +489,22 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "americanwater.fieldsupport.reports.general",
             'description'   => "American Water Field Support Reports",
         ]);
+        
+        Permission::firstOrCreate([
+            'name'          => 'Moduurn Calltracker',
+            'slug'          => 'moduurn.calltracker',
+            'description'   => 'Moduurn Calltracker'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Moduurn Calltracker Leader',
+            'slug'          => 'moduurn.calltracker.leader',
+            'description'   => 'Moduurn Calltracker Leader'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => "Moduurn Calltracker Reports",
+            'slug'          => "moduurn.calltracker.reports.general",
+            'description'   => "Moduurn Calltracker Reports",
+        ]);
 
     }
 }
