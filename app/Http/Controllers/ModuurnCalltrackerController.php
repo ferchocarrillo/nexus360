@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ModuurnCalltrackerReporGeneralExport;
+use Carbon\Carbon;
 
 class ModuurnCalltrackerController extends Controller
 {
@@ -73,7 +74,7 @@ class ModuurnCalltrackerController extends Controller
             [
                 'phone_number1' => ['required', 'numeric', 'digits_between:7,10'],
                 'phone_number2' => ['nullable', 'numeric', 'digits_between:7,10'],
-                'list_id' => ['required', 'numeric', 'digits_between:5,20'],
+                'list_id' => ['required','min:5', 'max:20'],
                 'not_show' => ['required', 'max:3'],
                 'is_schedule' => [($request->not_show == 'no' ? 'required' : 'nullable')],
                 'reason_not_schedule' => [($request->is_schedule == 'no' ? 'required' : 'nullable')],
@@ -96,7 +97,7 @@ class ModuurnCalltrackerController extends Controller
         );
 
         $mergeData= [
-            'date_schedule'=>($request->date_schedule ? str_replace('T',' ',$request->date_schedule) : null),
+            'date_schedule'=>($request->date_schedule ? Carbon::parse($request->date_schedule) : null),
             'created_by' => Auth::user()->id,
         ];
         ModuurnTracker::create($request->merge($mergeData)->all());
@@ -165,7 +166,7 @@ class ModuurnCalltrackerController extends Controller
             [
                 'phone_number1' => ['required', 'numeric', 'digits_between:7,10'],
                 'phone_number2' => ['nullable', 'numeric', 'digits_between:7,10'],
-                'list_id' => ['required', 'numeric', 'digits_between:5,20'],
+                'list_id' => ['required','min:5', 'max:20'],
                 'not_show' => ['required', 'max:3'],
                 'is_schedule' => [($request->not_show == 'no' ? 'required' : 'nullable')],
                 'reason_not_schedule' => [($request->is_schedule == 'no' ? 'required' : 'nullable')],
@@ -188,7 +189,7 @@ class ModuurnCalltrackerController extends Controller
         );
 
         $mergeData= [
-            'date_schedule'=>($request->date_schedule ? str_replace('T',' ',$request->date_schedule) : null),
+            'date_schedule'=>($request->date_schedule ? Carbon::parse($request->date_schedule) : null),
         ];
 
 
