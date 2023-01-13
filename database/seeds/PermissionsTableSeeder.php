@@ -228,9 +228,25 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         Permission::firstOrCreate([
-            'name'          => 'Reminders',
-            'slug'          => 'reminders',
+            'name'          => 'Reminder Admin',
+            'slug'          => 'reminder.admin',
+            'description'   => 'Reminder Admin'
+        ]);
+
+        Permission::firstOrCreate([
+            'name'          => 'Reminder',
+            'slug'          => 'reminder',
+            'description'   => 'Show Personal Reminders'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Reminder Create',
+            'slug'          => 'reminder.create',
             'description'   => 'Create Reminders'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => 'Reminder Outbox',
+            'slug'          => 'reminder.outbox',
+            'description'   => 'Outbox Reminders'
         ]);
 
         Permission::firstOrCreate([
@@ -458,7 +474,22 @@ class PermissionsTableSeeder extends Seeder
             'description'   => "Enercare Bo Tracker Reports",
         ]);
 
-
+        Permission::firstOrCreate([
+            'name'          => "American Water Field Support",
+            'slug'          => "americanwater.fieldsupport",
+            'description'   => "American Water Field Support",
+        ]);
+        Permission::firstOrCreate([
+            'name'          => "American Water Field Support Leader",
+            'slug'          => "americanwater.fieldsupport.leader",
+            'description'   => "American Water Field Support Leader",
+        ]);
+        Permission::firstOrCreate([
+            'name'          => "American Water Field Support Reports",
+            'slug'          => "americanwater.fieldsupport.reports.general",
+            'description'   => "American Water Field Support Reports",
+        ]);
+        
         Permission::firstOrCreate([
             'name'          => 'Moduurn Calltracker',
             'slug'          => 'moduurn.calltracker',
@@ -474,7 +505,6 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "moduurn.calltracker.reports.general",
             'description'   => "Moduurn Calltracker Reports",
         ]);
-
 
     }
 }

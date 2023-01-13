@@ -25,6 +25,6 @@ class EnercareCallTrackerReportExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['id','site_id','username','supervisor','lob','service_call','category','subcategory','reason_not_pitch','reason_not_sale','created_at','type','plan','contract_id','upgrade','rwh','bogo','repairplan','typesale'];
+        return ['id','site_id','username','supervisor','lob','service_call','category','subcategory','reason_not_pitch','reason_not_sale','created_at','observations','type','plan','contract_id','upgrade','rwh','bogo','repairplan','typesale'];
     }
 }

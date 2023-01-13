@@ -72,13 +72,26 @@ class PayrollAdjustmentTypesTableSeeder extends Seeder
                         ],
                     ],
                 ]
+            ],
+            "Tiempo injustificado" => [
+                "adjustment_types" => [
+                    "Error del sistema" => [
+                        "approve_by_om" => False,
+                        "justifications" => [
+                            "Conectividad a internet",
+                            "Aplicativos del cliente",
+                            "Aplicativos de CP360",
+                            "Problema fisico del computador"
+                        ],
+                    ],
+                ]
             ]
         ];
 
         foreach ($adjustmentTypes as $activityType => $activityTypeData) {
             foreach ($activityTypeData['adjustment_types'] as $adjustmentType => $adjustmentTypeData) {
                 foreach ($adjustmentTypeData['justifications'] as $justification) {
-                    PayrollAdjustmentType::create([
+                    PayrollAdjustmentType::firstOrCreate([
                         "activity_type" => $activityType,
                         "adjustment_type" => $adjustmentType,
                         "approve_by_om" => $adjustmentTypeData['approve_by_om'],

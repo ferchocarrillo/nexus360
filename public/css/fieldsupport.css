@@ -1,0 +1,64 @@
+.logo{
+
+    width: 13%;
+}
+.card_first{
+    color:aliceblue;
+    background: linear-gradient(rgb(19,90,145),rgb(194,208,222));
+    padding-top: 1rem;
+}
+.span_label{
+    color:red;
+}
+
+.label_text{
+    color:black;
+}
+.card-tracker {
+    margin-inline: 1rem;
+    transition: all 0.2s ease-in-out;
+    transform-origin: top left;
+    width: 170px !important;
+    height: 70px !important;
+    overflow: hidden;
+    -webkit-box-shadow: 7px 7px 15px 2px #aaa1a1;
+    box-shadow: 7px 7px 15px 2px #aaa1a1;
+    padding: 10px;
+    border: none;
+    font-family: 'Roboto Flex', sans-serif;
+}
+.card-tracker:hover {
+    transform: scale(1.2);
+    z-index: 999;
+    height: 110px !important;
+}
+label{
+    color: black;
+}
+
+.card-data label{
+    text-align: center;
+    margin-top: 3em;
+
+}
+.span_item{
+    color: black;
+    text-align: right;
+    font-size: medium;
+}
+
+th{
+    text-align: center;
+}
+
+td{
+    text-align: center;
+}
+.title_h1{
+    display: inline !important;
+    padding: 0 0 0 30%;
+    text-align: center;
+
+}
+
+

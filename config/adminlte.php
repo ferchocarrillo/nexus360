@@ -326,6 +326,13 @@ return [
                         ],
                     ]
                 ],
+                [
+                    'text' => 'Field Support',
+                    'icon' => 'nav-icon fas fa-hand-point-up',
+                    'url' => 'americanwater/fieldsupport',
+                    'can' => 'americanwater.fieldsupport',
+                    'active' => ['americanwater/fieldsupport','americanwater/fieldsupport/*/edit','americanwater/fieldsupport/*','americanwater/fieldsupport/create']
+                ],
             ]
         ],
         [
@@ -380,12 +387,31 @@ return [
                 ]
             ]
         ],
-        [
-            'text'=>'Reminders',
-            'icon'=>'nav-icon fas fa-bell',
-            'url'=>'reminders',
-            'can'=>'reminders'
 
+        [
+            'text' => 'Reminders',
+            'icon'=>'nav-icon fas fa-bell',
+            'can'=>'reminder',
+            'submenu' => [
+                [
+                    'text' => 'See Reminders',
+                    'icon'=>'fas fa-eye',
+                    'url' => 'reminder',
+                    'can' => 'reminder'
+                ],
+                [
+                    'text' => 'New Reminders',
+                    'icon'=>'far fa-paper-plane',
+                    'url' => 'reminder/create',
+                    'can' => 'reminder.create'
+                ],
+                [
+                    'text' => 'Reminders History',
+                    'icon'=>'fas fa-landmark',
+                    'url' => 'reminder/outbox',
+                    'can' => 'reminder.outbox'
+                ]
+            ]
         ],
         [
             'text'=>'Kaizen',

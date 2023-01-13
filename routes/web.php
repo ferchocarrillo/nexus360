@@ -113,8 +113,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('kaizen/{id}/downloadfile/{comment_id?}','KaizenController@downloadfile')->name('kaizen.downloadfile');
     Route::resource('kaizen','KaizenController');
 
-    Route::get('reminders','ReminderController@index')->name('reminder.index');
-    Route::get('reminders/popup','ReminderController@popup')->name('reminder.popup');
+    // Reminders
+
+    Route::get('reminder/popup/{reminderUserId}','ReminderController@popup')->name('reminder.popup');
+    Route::post('reminder/popup/{reminderUserId}','ReminderController@acknowledge')->name('reminder.acknowledge');
+    Route::get('reminder/outbox','ReminderController@outbox')->name('reminder.outbox');
+    Route::resource('reminder', 'ReminderController');
 
     // Pandora's Box
     Route::get('pandorasbox','PandorasBoxController@index')->name('pandorasbox.index');
@@ -158,6 +162,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('americanwater/botracker/reports/general','AmericanWaterBoTrackerReportsController@general')->name('americanwater.botracker.reportsGeneral');
     Route::post('americanwater/botracker/reports/general','AmericanWaterBoTrackerReportsController@generalDownload')->name('americanwater.botracker.reportsGeneralDownload');
 
+    // American water filed support tracker
+
+    Route::get('americanwater/fieldsupport/reports/general','AmericanWaterFieldSupportTrackerController@general')->name('americanwater.fieldsupport.reportsGeneral');
+    Route::post('americanwater/fieldsupport/reports/general','AmericanWaterFieldSupportTrackerController@generalDownload')->name('americanwater.fieldsupport.reportsGeneralDownload');
+    Route::resource('americanwater/fieldsupport', 'AmericanWaterFieldSupportTrackerController');
+
+
     Route::get('/getdatenow',function(){
         return date('Y-m-d H:i:s');
     });
@@ -194,9 +205,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/prenomina/adjustments/approveall','PrenominaAdjustmentController@approveAll')->name('prenomina.adjustments.approveall');
     Route::post('/prenomina/adjustments/offsetholiday','PrenominaAdjustmentController@offsetHoliday')->name('prenomina.adjustments.offsetholiday');
     Route::post('/prenomina/adjustments/justifyabsense','PrenominaAdjustmentController@justifyAbsense')->name('prenomina.adjustments.justifyabsense');
+    Route::post('/prenomina/adjustments/exception','PrenominaAdjustmentController@exception')->name('prenomina.adjustments.exception');
 
     Route::get('/prenomina/admin','PrenominaAdminController@index')->name('prenomina.admin');
     Route::post('/prenomina/admin/savepositions','PrenominaAdminController@savePositions')->name('prenomina.admin.savePositions');
+    Route::post('/prenomina/admin/saveconfigs','PrenominaAdminController@saveConfigs')->name('prenomina.admin.saveConfigs');
 
 
 

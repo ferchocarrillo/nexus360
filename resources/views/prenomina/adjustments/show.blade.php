@@ -56,6 +56,11 @@
         -o-transform-origin: 0 0;
         transform-origin: 0 0;
     }
+    #adjustment-activity #adjustment-approved-time{
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--danger);
+    }
 
     
 
@@ -69,7 +74,7 @@
                 @if($adjustment->created_by)
                 <li class="list-group-item">
                     <strong>Creator</strong>
-                    <span id="adjustment-created-by">{{ $adjustment->creator->name }}</span>
+                    <span id="adjustment-created-by">{{ $adjustment->creator ? $adjustment->creator->name : '' }}</span>
                 </li>
                 @endif
                 <li class="list-group-item">
@@ -113,6 +118,12 @@
                     <li class="list-group-item">
                         <strong>OM Comments</strong>
                         <span id="adjustment-om-approval-comment">{{ $adjustment->om_approval_comment }}</span>
+                    </li>
+                @endif
+                @if ($adjustment->approved_time)
+                    <li class="list-group-item">
+                        <strong>Approved Time</strong>
+                        <span id="adjustment-approved-time">{{ gmdate('H:i:s',$adjustment->approved_time) }}</span>
                     </li>
                 @endif
             </ul>
@@ -176,6 +187,22 @@
                                 {{-- approval_statuses --}}
                                 {{ Form::select('adjustment_approval_status', $approval_statuses, null, ['class' => 'form-control', 'id' => 'adjustment-approval-status', 'placeholder' => 'Select Approval Status', 'required']) }}
                             </div>
+                            {{-- Approved Time --}}
+                            @if ($adjustment->payroll_activity && !$adjustment->approved_time)
+                                <div class="form-group">
+                                    <label for="approved_time"></label>
+                                    <input 
+                                        type="range" 
+                                        class="custom-range" 
+                                        id="approved_time" 
+                                        value="{{$adjustment->payroll_activity->total_time_in_seconds}}" 
+                                        min="1" 
+                                        max="{{$adjustment->payroll_activity->total_time_in_seconds}}"
+                                        name="approved_time"
+                                        required
+                                        >
+                                </div>
+                            @endif
                             {{-- Comments --}}
                             <div class="form-group">
                                 <textarea class="form-control" name="adjustment_comments" id="adjustment-comments" rows="3" placeholder="Comments"
@@ -192,6 +219,14 @@
     @endif
 </div>
 <script>
+$(function() {
+    const approvedTime = $('#adjustmentForm #approved_time');
+    const approvedTimeLabel = $('#adjustmentForm label[for=approved_time]');
+    const secondsToTime= (seconds)=>{
+        return new Date(parseInt(seconds)*1000).toISOString().slice(11,19)
+    }
+    const maxTime = approvedTime.val()
+
     $("#adjustmentForm").on("submit", function(e) {
         e.preventDefault();
         var form = $(this);
@@ -225,4 +260,20 @@
                 console.log(error);
             });
     });
+    
+    if(approvedTime.length){
+        approvedTimeLabel.text(secondsToTime(approvedTime.val()))
+        approvedTime.on({
+            input: function(e){
+                // if($(this).val() > maxTime){
+                //     $(this).val(maxTime)
+                //     $(this).attr('max',maxTime)
+                // }
+                approvedTimeLabel.text(secondsToTime($(this).val()))
+            }
+        })
+    }
+
+
+})
 </script>

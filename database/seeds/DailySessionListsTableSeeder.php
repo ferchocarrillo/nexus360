@@ -82,6 +82,11 @@ class DailySessionListsTableSeeder extends Seeder
                 "Occupancy",
                 "Proposals",
                 "Booking Conversion",
+                "Payroll",
+                "Coaching Compliance",
+                "Engagement",
+                "Performance Awareness",
+                "Adherence",
             ]
         ]);
 

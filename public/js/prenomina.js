@@ -2,7 +2,11 @@ $(function() {
     const scheduleElement = document.getElementById("schedule");
     const payrollActivitiesElement = document.getElementById("payrollActivities");
 
-    let noveltiesEditables = ["Tiempo pendiente aprobar", "Inasistencia Hrs"];
+    const noveltiesEditables = [
+        {"novelty":"Tiempo pendiente aprobar"}, 
+        {"novelty":"Inasistencia Hrs"},
+        {"novelty":"Tiempo injustificado", "surcharge":[ 'Festivo', 'Nocturno Festivo', 'Festivo Compensado' ]}
+    ];
     let payroll = {};
 
     let employees = [];
@@ -129,6 +133,7 @@ $(function() {
             .html("")
             .hide();
         $('#timeScheduledPerWeek').html("").hide();
+        $('#adjustmentException').html("").hide();
 
         if (!employee_id || !date || !period) {
             return;
@@ -159,6 +164,40 @@ $(function() {
                     .show();
                 }
                 if (payroll.schedule) {
+                    if(payroll.availableAdjustmentException && payroll.employee_id != master_id && payroll.payroll_activities.length
+                        && !payroll.calendar.closed){
+                        $(`<button class="btn btn-info"> <i class="fas fa-unlock"></i> Enable Adjustments</button>`)
+                        .on({
+                            click: function(){
+                                swal.fire({                                    
+                                    title: "Enable Adjustments!",
+                                    text: 'Are you sure?',
+                                    icon: 'question',
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: 'Yes',
+                                    focusConfirm: false,
+                                }).then((result) => {
+                                    if (result.value) {
+                                        $("#logoLoading").modal("show");
+                                        axios
+                                            .post(
+                                                "/prenomina/adjustments/exception",
+                                                {
+                                                    'id':payroll.id
+                                                }
+                                            )
+                                            .then(function(response) {
+                                                getPayroll();
+                                            });
+                                    }
+                                })
+                            }
+                        })
+                        .appendTo("#adjustmentException");
+                        $("#adjustmentException").show();
+                    }
                     if (payroll.availableOffsetHoliday && payroll.employee_id != master_id && payroll.payroll_activities.length
                         && !payroll.calendar.closed) {
                         $(
@@ -250,9 +289,10 @@ $(function() {
                     let activitiesRows = payroll.payroll_activities
                         .map(activity => {
                             let buttons = "";
-                            let noveltyEditable = noveltiesEditables.includes(
-                                activity.activity_type
-                            );
+                            let noveltyEditable = noveltiesEditables.filter(n =>
+                                        n.novelty == activity.activity_type &&
+                                        (!n.surcharge || n.surcharge.includes(activity.surcharge))
+                                ).length > 0;
                             if (noveltyEditable) {
                                 // dropdown items
                                 if (
@@ -260,7 +300,7 @@ $(function() {
                                     activity.adjustments[
                                         activity.adjustments.length - 1
                                     ].status == "Rechazado") && (activity.employee_id == master_id || payroll.supervisorCanCreateAdjustments)
-                                    && !payroll.calendar.closed
+                                    && !payroll.calendar.closed &&  payroll.enableAdjustments
                                 ) {
                                     // Create
                                     buttons += `

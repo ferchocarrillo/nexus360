@@ -54,6 +54,7 @@ class EnercareController extends Controller
             'subcategory' => ['required'],
             'pitch' => ['required'],
             'sales' => [($request->checkPitch ? 'required' : 'nullable')],
+            'observations' => ['nullable','max:255' ]
         ]);
 
         $id = EnercareCalltracker::create(
@@ -61,7 +62,7 @@ class EnercareController extends Controller
                 'username' => auth()->user()->username,
                 'reason_not_pitch' => ($request->checkPitch ? null : $request->pitch),
                 'reason_not_sale' => ($request->checkSale ? null : $request->sales)
-            ])->only(['site_id','lob','service_call','username', 'category', 'subcategory', 'reason_not_pitch', 'reason_not_sale'])
+            ])->only(['site_id','lob','service_call','username', 'category', 'subcategory', 'reason_not_pitch', 'reason_not_sale','observations'])
         )->id;
 
 
@@ -85,7 +86,7 @@ class EnercareController extends Controller
         SELECT b.full_name teamleader, c.username userteamleader
         FROM (
         SELECT supervisor FROM master_files 
-        WHERE [status] = 'Active' AND campaign like 'Enercare%' AND position = 'Agent'
+        WHERE [status] = 'Active' AND campaign like 'Enercare%' AND position like 'Agent%'
         GROUP BY supervisor) a
         LEFT JOIN (SELECT * FROM master_files 
                     WHERE [status] = 'Active' )b ON b.full_name = a.supervisor
@@ -99,10 +100,10 @@ class EnercareController extends Controller
 
         $query = DB::table('enercare_calltracker_pitch_and_sales')->leftJoin('enercare_calltrackers', 'enercare_calltracker_pitch_and_sales.call_id','=','enercare_calltrackers.id')
         ->leftjoin('enercare_calltracker_plans', 'enercare_calltracker_pitch_and_sales.plan', 'enercare_calltracker_plans.name')
-        ->leftJoin('enercare.dbo.tbrosterenercare2 as b',function($join){
+        ->leftJoin('enercare.dbo.VwTbrosterUnionHistorico as b',function($join){
             $join->on('enercare_calltrackers.username','=','b.UserWeb');
             $join->on(DB::raw('CONVERT(date,enercare_calltrackers.created_at,103)'),'>=','b.startdate');
-            $join->on(DB::raw('CONVERT(date,enercare_calltrackers.created_at,103)'),'<=',DB::raw('isnull(b.enddate,getdate())'));
+            $join->on(DB::raw('CONVERT(date,enercare_calltrackers.created_at,103)'),'<',DB::raw('isnull(b.enddate,getdate())'));
         })
         ->select(   DB::raw('CONVERT(date,enercare_calltrackers.created_at,103) AS created_at')
                     ,'enercare_calltrackers.username AS agent'
@@ -223,10 +224,10 @@ class EnercareController extends Controller
 
         $query = DB::table('enercare_calltrackers')
         ->leftJoin('enercare_calltracker_pitch_and_sales','enercare_calltrackers.id','=','enercare_calltracker_pitch_and_sales.call_id')
-        ->leftJoin('enercare.dbo.tbrosterenercare2 as b',function($join){
+        ->leftJoin('enercare.dbo.VwTbrosterUnionHistorico as b',function($join){
             $join->on('enercare_calltrackers.username','=','b.UserWeb');
             $join->on(DB::raw('CONVERT(date,enercare_calltrackers.created_at,103)'),'>=','b.startdate');
-            $join->on(DB::raw('CONVERT(date,enercare_calltrackers.created_at,103)'),'<=',DB::raw('isnull(b.enddate,getdate())'));
+            $join->on(DB::raw('CONVERT(date,enercare_calltrackers.created_at,103)'),'<',DB::raw('isnull(b.enddate,getdate())'));
         })
         ->select('enercare_calltrackers.id'
                 ,'enercare_calltrackers.site_id'
@@ -239,6 +240,7 @@ class EnercareController extends Controller
                 ,'enercare_calltrackers.reason_not_pitch'
                 ,'enercare_calltrackers.reason_not_sale'
                 ,'enercare_calltrackers.created_at'
+                ,'enercare_calltrackers.observations'
                 ,'enercare_calltracker_pitch_and_sales.type'
                 ,'enercare_calltracker_pitch_and_sales.plan'
                 ,'enercare_calltracker_pitch_and_sales.contract_id'
@@ -280,7 +282,7 @@ class EnercareController extends Controller
 
     public function reportkpis(){
 
-    $waves = DB::table('enercare.dbo.tbrosterenercare2')
+    $waves = DB::table('enercare.dbo.VwTbrosterUnionHistorico')
             ->whereNull('EndDate')
             ->whereNotNull('Wave')
             ->where('wave','<>','')
