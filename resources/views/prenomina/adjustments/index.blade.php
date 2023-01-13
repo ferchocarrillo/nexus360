@@ -171,7 +171,7 @@
             var rows = d.adjustments.map(function(adjustment) {
                 return `
                 <tr>
-                    <td>${adjustment.payroll_activity ? adjustment.payroll_activity.date : adjustment.payroll_date}</td>
+                    <td>${adjustment.date}</td>
                     <td>${adjustment.adjustment_type}</td>
                     <td>${adjustment.justification}</td>
                     <td>

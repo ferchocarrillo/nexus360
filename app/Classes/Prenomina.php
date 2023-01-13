@@ -321,11 +321,20 @@ class Prenomina
             $this->deletePayrollActivities();       
             $this->savePayrolls();
             $this->savePayrollActivities();
+            $this->deleteInvalidAdjustments();
         }
 
         if($closePayroll &&  $this->endDateQ < date("Y-m-d") && date('Y-m-d H:i:s') >= $this->endDate.' 10:00:00'){
             $this->closedPayrollActual();
         }
+    }
+
+    protected function deleteInvalidAdjustments(){
+        //Eliminar ajustes no validos
+        PayrollAdjustment::doesntHave('payroll_activity')
+        ->where('status','Pendiente')
+        ->whereNull('payroll_id')
+        ->delete();
     }
 
     protected function closedPayrollActual(){
@@ -341,9 +350,9 @@ class Prenomina
             ->update(['active'=>1]);
 
         // Rechazar los ajustes que los supervisores no dieron respuesta
-        PayrollAdjustment::whereHas('payroll_activity', function($query)use($dataEndDate){
-            return $query->where('date','<',$dataEndDate->date);
-        })->where('supervisor_approval_required',1)
+        PayrollAdjustment::where('date','<',$dataEndDate->date)
+        ->where('status','Pendiente')
+        ->where('supervisor_approval_required',1)
         ->whereNull('supervisor_approval_status')
         ->update([
             'supervisor_approval_status' => 'Rechazado',
@@ -352,17 +361,17 @@ class Prenomina
         ]);
 
         // Rechazar los ajustes que los oms no dieron respuesta
-        PayrollAdjustment::whereHas('payroll_activity', function($query)use($dataEndDate){
-            return $query->where('date','<',$dataEndDate->date);
-        })->where('supervisor_approval_required',1)
-        ->where('supervisor_approval_status','Aprobado')
-        ->where('om_approval_required',1)
-        ->whereNull('om_approval_status')
-        ->update([
-            'om_approval_status' => 'Rechazado',
-            'om_approval_date' => date('Y-m-d H:i:s'),
-            'om_approval_comment' => 'Rechazo automático. No cuenta con flujo de aprobacion/rechazo'
-        ]);
+        PayrollAdjustment::where('date','<',$dataEndDate->date)
+            ->where('status','Pendiente')
+            ->whereNotNull('supervisor_approval_status')
+            ->where('supervisor_approval_status','Aprobado')
+            ->where('om_approval_required',1)
+            ->whereNull('om_approval_status')
+            ->update([
+                'om_approval_status' => 'Rechazado',
+                'om_approval_date' => date('Y-m-d H:i:s'),
+                'om_approval_comment' => 'Rechazo automático. No cuenta con flujo de aprobacion/rechazo'
+            ]);
         
     }
 

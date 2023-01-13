@@ -40,10 +40,9 @@ class PrenominaAdjustmentController extends Controller
                         $query->select('id','full_name','supervisor','payroll_manager')
                         ->whereNull('termination_date');
                     }, 
-                    'payroll_activity'=>function($query){
-                        $query->withoutAppends()->select('code','date');
-                    }
-                ])->where(function($query)use($permissionSupervisor,$permissionOM,$permissionAdmin){
+                ])
+                ->where('status','Pendiente')
+                ->where(function($query)use($permissionSupervisor,$permissionOM,$permissionAdmin){
                     if($permissionSupervisor || $permissionAdmin){
                         $query->where(function($query){
                             $query->where('supervisor_approval_required', true)
@@ -58,7 +57,6 @@ class PrenominaAdjustmentController extends Controller
                         });
                     }
                 })
-                ->leftJoin('payrolls',DB::raw('CAST(payrolls.id as varchar)'), '=', 'payroll_adjustments.activity_code')
                 ->select(
                     'payroll_adjustments.id',
                     'payroll_adjustments.activity_code',
@@ -66,7 +64,7 @@ class PrenominaAdjustmentController extends Controller
                     'payroll_adjustments.adjustment_type',
                     'payroll_adjustments.justification',
                     DB::raw("IIF([payroll_adjustments].[supervisor_approval_status] is null,'Supervisor','OM') as pending_for"),
-                    'payrolls.date as payroll_date'
+                    'payroll_adjustments.date'
                     )
                 ->get();
 
@@ -136,7 +134,7 @@ class PrenominaAdjustmentController extends Controller
     public function show( $adjustment)
     {
         $adjustment = PayrollAdjustment::withoutAppends()->where('payroll_adjustments.id', $adjustment)
-        ->leftJoin('payrolls',DB::raw('CAST(payrolls.id as varchar)'), '=', 'payroll_adjustments.activity_code')
+        ->leftJoin('payrolls','payrolls.id', '=', 'payroll_adjustments.payroll_id')
         ->select('payroll_adjustments.*','payrolls.date as payroll_date')
         ->firstOrFail();
 
