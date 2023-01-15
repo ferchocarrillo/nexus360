@@ -16,15 +16,22 @@ class PrenominaAdminController extends Controller
     {
         $payrollAdmin = PayrollAdmin::all();
         $positions = $payrollAdmin->where('name','positions')->pluck('value')->first();
+        $emailsReportAdjustmentsPending = $payrollAdmin->where('name','emails_reportadjustmentspending')->pluck('value')->first();
         $configs = [
             $payrollAdmin->where('name','days_before')->first(),
         ];
-        return view('prenomina.admin.index', compact('positions','configs'));
+        return view('prenomina.admin.index', compact('positions','configs','emailsReportAdjustmentsPending'));
     }
 
     public function savePositions(Request $request){
         $payrollAdminList = PayrollAdmin::where('name','positions')->firstOrFail();
         $payrollAdminList->value = $request->positions;
+        $payrollAdminList->save();
+    }
+
+    public function saveEmailsReportAdjustmentsPending(Request $request){
+        $payrollAdminList = PayrollAdmin::where('name','emails_reportadjustmentspending')->firstOrFail();
+        $payrollAdminList->value = $request->emailsReportAdjustmentsPending;
         $payrollAdminList->save();
     }
 
