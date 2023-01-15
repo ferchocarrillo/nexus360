@@ -31,6 +31,21 @@
 
         </div>
         <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-info aling-middle">
+                    <h1 class="card-title">Emails Report Adjustments Pending</h1>
+                    <button class="btn btn-sm btn-info rounded-circle float-right" data-toggle="modal"
+                        data-target="#modalEmailsReportAdjustmentsPending">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="card-body p-2">
+                    <ul id="emailsReportAdjustmentsPending" class="list-group list-group-flush"></ul>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6">
             <div class="card shadow" id="configs">
                 <div class="card-header bg-info aling-middle">
                     <h1 class="card-title">Configs</h1>
@@ -74,11 +89,38 @@
     </div>
     {{-- End Modal Positions --}}
 
+    {{-- Start Modal Emails Report Adjustments Pending --}}
+    <div class="modal fade" id="modalEmailsReportAdjustmentsPending" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title">Add Email to Report Adjustments Pending</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formAddEmailsReportAdjustmentsPending">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="emailReportAdjustmentsPending">Email</label>
+                            <input type="email" class="form-control" id="emailReportAdjustmentsPending" name="emailReportAdjustmentsPending" autofocus required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="subbmit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal Emails Report Adjustments Pending --}}
+
 @stop
 @push('js')
     <script>
         $(document).ready(e => {
             let positions = @json($positions);
+            let emailsReportAdjustmentsPending = @json($emailsReportAdjustmentsPending);
             const configs = @json($configs);
             let configsUpdates = [];
 
@@ -139,6 +181,68 @@
                             'success'
                         )
                         savePositions()
+                    }
+                })
+            })
+
+            // Report Email Adjustments Pending
+            function listEmailsReportAdjustmentsPending() {
+                emailsReportAdjustmentsPending.sort()
+                let emailsReportAdjustmentsPendingHTML = emailsReportAdjustmentsPending.map((p, idx) => {
+                    return `<li class='list-group-item'>
+                     <span>${p}</span>
+                     <button class="btn btn-sm btn-outline-danger rounded-circle float-right delete" data-id="${idx}"><i class="fas fa-trash-alt"></i></button>
+                     </li>`
+                })
+                $('#emailsReportAdjustmentsPending').html(emailsReportAdjustmentsPendingHTML)
+            }
+
+            function saveEmailsReportAdjustmentsPending() {
+                axios.post('/prenomina/admin/saveemailsreportadjustmentspending', {
+                        emailsReportAdjustmentsPending
+                    })
+                    .then(res => {
+                        
+                    })
+            }
+            $('#modalEmailsReportAdjustmentsPending').on('shown.bs.modal', function() {
+                $('#emailReportAdjustmentsPending').focus();
+            })
+            $('#formAddEmailsReportAdjustmentsPending').submit(e => {
+                e.preventDefault()
+                let emailReportAdjustmentsPending = e.target.elements['emailReportAdjustmentsPending'].value;
+                emailReportAdjustmentsPending = emailReportAdjustmentsPending.trim()
+                if (!emailReportAdjustmentsPending || emailsReportAdjustmentsPending.includes(emailReportAdjustmentsPending)) {
+                    alert('Invalid Position')
+                    return
+                }
+                emailsReportAdjustmentsPending.push(emailReportAdjustmentsPending);
+                listEmailsReportAdjustmentsPending()
+                e.target.elements['emailReportAdjustmentsPending'].value = ''
+                $('#modalEmailsReportAdjustmentsPending').modal('hide')
+                saveEmailsReportAdjustmentsPending()
+            })
+            $(document).on('click', '#emailsReportAdjustmentsPending .delete', function(e) {
+                let id = e.currentTarget.dataset.id
+                let emailReportAdjustmentsPending = emailsReportAdjustmentsPending[id]
+                swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.value) {
+                        emailsReportAdjustmentsPending.splice(id, 1)
+                        listEmailsReportAdjustmentsPending()
+                        swal.fire(
+                            'Deleted!',
+                            `The "${emailReportAdjustmentsPending}" Email has been deleted.`,
+                            'success'
+                        )
+                        saveEmailsReportAdjustmentsPending()
                     }
                 })
             })
@@ -223,6 +327,7 @@
 
             listConfigs()
             listPositions()
+            listEmailsReportAdjustmentsPending()
         })
     </script>
 @endpush

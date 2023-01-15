@@ -9,6 +9,7 @@ use App\PayrollCalendar;
 use App\PayrollDayOffDiscount;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use stdClass;
 
@@ -322,6 +323,7 @@ class Prenomina
             $this->savePayrolls();
             $this->savePayrollActivities();
             $this->deleteInvalidAdjustments();
+            $this->sendEmailPayrollAdjustmentPending();
         }
 
         if($closePayroll &&  $this->endDateQ < date("Y-m-d") && date('Y-m-d H:i:s') >= $this->endDate.' 10:00:00'){
@@ -335,6 +337,10 @@ class Prenomina
         ->where('status','Pendiente')
         ->whereNull('payroll_id')
         ->delete();
+    }
+
+    protected function sendEmailPayrollAdjustmentPending(){
+        Mail::send(new \App\Mail\PayrollAdjustmentPendingMail());
     }
 
     protected function closedPayrollActual(){

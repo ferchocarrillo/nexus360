@@ -13,4 +13,9 @@ class PayrollAdmin extends Model
     protected $casts = [
         'value' => 'array'
     ];
+
+    protected $fillable = [
+        'name',
+        'value',
+    ];
 }
