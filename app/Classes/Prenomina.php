@@ -340,7 +340,7 @@ class Prenomina
     }
 
     protected function sendEmailPayrollAdjustmentPending(){
-        Mail::send(new \App\Mail\PayrollAdjustmentPendingMail());
+        Mail::queue(new \App\Mail\PayrollAdjustmentPendingMail());
     }
 
     protected function closedPayrollActual(){
