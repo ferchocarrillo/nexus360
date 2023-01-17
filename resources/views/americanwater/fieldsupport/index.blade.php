@@ -21,18 +21,24 @@
         <table class="table table-hover" id="fieldsupportTable">
             <thead class="table-info">
                     <tr>
-                    <th>Claim Number</th>
+                    <th>CPH</th>
+                        <th>Claim Number</th>
                     <th>Threshold</th>
                     <th>Status</th>
+                    <th>Type</th>
+                    <th>Observations</th>
                     <th>Created Date</th>
                     <th></th>
                     </tr>
                 <tbody>
                 @foreach ($fields_lists as $field)
                 <tr>
+                    <td>{{$field->cph}}</td>
                     <td>{{ $field->claim_number }}</td>
                     <td>{{ $field->threshold }}</td>
                     <td>{{ $field->status }}</td>
+                    <td>{{$field->type}}</td>
+                    <td>{{$field->observations}}</td>
                     <td>{{$field->created->format('d-m-Y')}}</td>
                     <td>
                         <a  href="{{ url('/americanwater/fieldsupport/'. $field->id)}}" class="btn btn-info btn-sm" role="button" aria-pressed="true" title="See Case">
