@@ -70,6 +70,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('enercare/botracker/reports/general','EnercareBoTrackerController@generalDownload')->name('enercare.botracker.reportsGeneralDownload');
     Route::resource('enercare/botracker','EnercareBoTrackerController');
 
+    //Enercare Support facilitator tracker
+    Route::get('enercare/supportfacilitator/reports/general','EnercareTrackerSupportFacilitatorController@general')->name('enercare.supportfacilitator.reportsGeneral');
+    Route::post('enercare/supportfacilitator/reports/general','EnercareTrackerSupportFacilitatorController@generalDownload')->name('enercare.supportfacilitator.reportsGeneralDownload');
+    Route::resource('enercare/supportfacilitator','EnercareTrackerSupportFacilitatorController');
 
     //Uploads
     Route::get('enercare/uploads/agentperformance','EnercareController@uploadAgentPerformance')->name('enercare.uploadAgentPerformance')->middleware('can:enercare.uploadAgentPerformance');
