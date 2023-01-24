@@ -9,10 +9,12 @@ class AmericanWaterFieldSupportTracker extends Model
     protected $table = 'american_water_field_support_trackers';
 
     protected $fillable = [
+        'cph',
         'claim_number',
         'threshold',
         'status',
         'observations',
+        'type',
         'case_actioned',
         'created',
         'modified',

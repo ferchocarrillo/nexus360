@@ -27,9 +27,11 @@ class AmericanWaterFieldSupportExport implements FromCollection, WithHeadings
         ->whereDate('created','<=',$this->end_date)
         ->selectraw("
             american_water_field_support_trackers.id,
+            american_water_field_support_trackers.cph,
             american_water_field_support_trackers.claim_number,
             american_water_field_support_trackers.threshold,
             american_water_field_support_trackers.status,
+            american_water_field_support_trackers.type,
             american_water_field_support_trackers.observations,
             american_water_field_support_trackers.case_actioned,
             american_water_field_support_trackers.created,
@@ -42,9 +44,11 @@ class AmericanWaterFieldSupportExport implements FromCollection, WithHeadings
     {
         return [
             'id',
+            'cph',
             'claim_number',
             'threshold',
             'status',
+            'type',
             'observations',
             'case_actioned',
             'created',
