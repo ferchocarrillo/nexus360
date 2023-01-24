@@ -18,103 +18,105 @@
     <h1 class="title_h1">Field Support List</h1>
 @stop
 @section('content')
-    <div class="card-group card">
-        <div class="card_star">
-            <div class="col-md-4">
-                <input type="button" class="boton" id="inicio" value="Start &#9658;" onclick="inicio();">
-                <div></div>
-                <div class="reloj" id="Horas">00</div>
-                <div class="reloj" id="Minutos">:00</div>
-                <div class="reloj" id="Segundos">:00</div>
-                <div class="reloj" id="Centesimas">:00</div>
-            </div>
-        </div>
-        <div class="card" id="div_options" style="display: none">
-            <div class="card_button">
-                <button class="card-tracker" id="but_pro" onclick="processing()">
-                    Processing</button>
-                <button class="card-tracker" id="but_index" onclick="indexing()">
-                    Indexing
-                </button>
-                <button class="card-rest" style="display:none" id="rest" onclick="restaurar()">Reset &#8635;</button>
+<div class="card-group cards-header mb-3">
+    <div class="card ">
+        <div class="card-body card_start text-center ">
+            <input type="button" class="boton" id="inicio" value="Start &#9658;" onclick="inicio();">
+            <div id="timer">
+                <span class="reloj" id="Horas">00</span>
+                <span class="reloj" id="Minutos">:00</span>
+                <span class="reloj" id="Segundos">:00</span>
+                <span class="reloj" id="Centesimas">:00</span>
             </div>
         </div>
     </div>
-    <div class="container-fluid px-12 ">
-        <div class="card-column">
-            <div class="card border-info ">
-                <div class="row principal_card" id="div_form" style="display: none">
-                    <div class="col-md-12">
-                        <div class="card_first">
-                            <div class="card-body">
-                                {!! Form::open(['route' => 'fieldsupport.store', 'method' => 'POST']) !!}
-                                <input type="hidden" id="cph" name="cph">
-                                <div class="card col-md-12" id="options">
-                                    <div class="card-body">
-                                        <div class="form-group col-sm-12">
-                                            <label class="label_text" for="claim">Claim Number <span
-                                                    class="span_label">*</span> </label>
-                                            {{ Form::text('claim', null, ['placeholder' => 'Claim', 'class' => 'form-control ' . ($errors->has('claim') ? 'is-invalid' : ''), 'minlength' => '7', 'maxlength' => '7 ', 'required']) }}
+    <div class="card" id="div_options" style="display: none">
+        <div class="card-body">
+            <div class="card_button">
+                <button class="card-tracker shadow" id="but_pro" onclick="processing()">
+                    Processing</button>
+                <button class="card-tracker shadow" id="but_index" onclick="indexing()">
+                    Indexing
+                </button>
+                <button class="boton card-rest" style="display:none" id="rest" onclick="restaurar()">Reset &#8635;</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid px-12 ">
+    <div class="card-column">
+        <div class="card border-info ">
+            <div class="row principal_card" id="div_form" style="display: none">
+                <div class="col-md-12">
+                    <div class="card_first">
+                        <div class="card-body">
+                            {!! Form::open(['route' => 'fieldsupport.store', 'method' => 'POST']) !!}
+                            <input type="hidden" id="cph" name="cph">
+                            <div class="card col-md-12" id="options">
+                                <div class="card-body">
+                                    <div class="form-group col-sm-12">
+                                        <label class="label_text" for="claim">Claim Number <span
+                                                class="span_label">*</span> </label>
+                                        {{ Form::text('claim', null, ['placeholder' => 'Claim', 'class' => 'form-control ' . ($errors->has('claim') ? 'is-invalid' : ''), 'minlength' => '7', 'maxlength' => '7 ', 'required']) }}
+                                        <br>
+                                        <div id="div_thereshold" style="display: none">
+                                            <label class="label_text" for="threshold">Threshold <span
+                                                    class="span_label">*</span></label>
+                                            <select id="threshold" name="threshold" class="custom-select">
+                                                <option value="" disabled selected>--Select a option--
+                                                </option>
+                                                @foreach ($thereshold as $th)
+                                                    <option value="{{ $th }}">{{ $th }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                             <br>
-                                            <div id="div_thereshold" style="display: none">
-                                                <label class="label_text" for="threshold">Threshold <span
-                                                        class="span_label">*</span></label>
-                                                <select id="threshold" name="threshold" class="custom-select">
-                                                    <option value="" disabled selected>--Select a option--
-                                                    </option>
-                                                    @foreach ($thereshold as $th)
-                                                        <option value="{{ $th }}">{{ $th }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <br>
-                                            </div>
-                                            <div id="div_status" style="display: none">
-                                                <label class="label_text" for="status">Status <span
-                                                        class="span_label">*</span></label>
-                                                <select id="status" name="status" class="custom-select">
-                                                    <option value="" disabled selected>--Select a option--
-                                                    </option>
-                                                    @foreach ($invoice as $inv)
-                                                        <option value="{{ $inv }}">{{ $inv }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <br>
-                                            </div>
-                                            <div id="div_type" style="display: none">
-                                                <label class="label_text" for="type">Type <span
-                                                        class="span_label">*</span></label>
-                                                <select id="type" name="type" class="custom-select">
-                                                    <option value="" disabled selected>--Select a option--
-                                                    </option>
-                                                    @foreach ($type as $tp)
-                                                        <option value="{{ $tp }}">{{ $tp }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <br>
-                                            </div>
-                                            <label class="label_text" for="observations">Observations</label>
-                                            <textarea class="form-control" placeholder="Observations" id="observations" name="observations" cols="30"
-                                                rows="3" maxlength="150" minlength="10" required></textarea>
-                                            <span class="badge bg-primary float-right" id="characterCount">0/150</span>
-                                            <button type="submit" class="btn btn-primary"><i
-                                                    class="fas fa-save"></i>&nbspSave</button>
-                                            <input type="hidden" id="case_actioned" name="case_actioned"
-                                                value="{{ date('Y-m-d H:i:s') }}">
                                         </div>
+                                        <div id="div_status" style="display: none">
+                                            <label class="label_text" for="status">Status <span
+                                                    class="span_label">*</span></label>
+                                            <select id="status" name="status" class="custom-select">
+                                                <option value="" disabled selected>--Select a option--
+                                                </option>
+                                                @foreach ($invoice as $inv)
+                                                    <option value="{{ $inv }}">{{ $inv }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <br>
+                                        </div>
+                                        <div id="div_type" style="display: none">
+                                            <label class="label_text" for="type">Type <span
+                                                    class="span_label">*</span></label>
+                                            <select id="type" name="type" class="custom-select">
+                                                <option value="" disabled selected>--Select a option--
+                                                </option>
+                                                @foreach ($type as $tp)
+                                                    <option value="{{ $tp }}">{{ $tp }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <br>
+                                        </div>
+                                        <label class="label_text" for="observations">Observations</label>
+                                        <textarea class="form-control" placeholder="Observations" id="observations" name="observations" cols="30"
+                                            rows="3" maxlength="150" minlength="10" required></textarea>
+                                        <span class="badge bg-primary float-right" id="characterCount">0/150</span>
+                                        <button type="submit" class="btn btn-primary"><i
+                                                class="fas fa-save"></i>&nbspSave</button>
+                                        <input type="hidden" id="case_actioned" name="case_actioned"
+                                            value="{{ date('Y-m-d H:i:s') }}">
                                     </div>
                                 </div>
-                                {!! Form::close() !!}
                             </div>
+                            {!! Form::close() !!}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
+</div>
 @stop
 @push('js')
     <script>
@@ -242,8 +244,8 @@
             $('#status option').prop('selected', function() {
                 return this.defaultSelected;
             });
-            document.getElementById("inicio").disabled = false;
-            document.getElementById("reinicio").disabled = true;
+            $("#inicio").prop('disabled', false);
+            $("#reinicio").prop('disabled', true);
         }
         $('textarea').keyup(function() {
             $('#characterCount').text($(this).val().length + "/150")

@@ -17,15 +17,14 @@
     width: 170px !important;
     height: 70px !important;
     overflow: hidden;
-    -webkit-box-shadow: 7px 7px 15px 2px #aaa1a1;
-    box-shadow: 7px 7px 15px 2px #aaa1a1;
     padding: 10px;
     border: none;
     font-family: 'Roboto Flex', sans-serif;
-    background: linear-gradient(rgb(19,90,145),rgb(194,208,222));
+    background: linear-gradient(#005595,#58aded);
     color: azure;
     font-weight: bold;
     font-size: large;
+    border-radius: 6px;
 }
 .card-tracker:hover {
     transform: scale(1.2);
@@ -67,14 +66,13 @@ td{
 	height: 115px;
 }
 .reloj{
-	float: left;
 	font-size: 19px;
 	font-family: Courier,sans-serif;
 	color: #000000;
 }
 .boton{
 	outline: none;
-	border: 1px solid #363431;
+	border: 1px solid #2c6f05;
 	color: white;
 	width: 128px;
 	height: 30px;
@@ -104,37 +102,17 @@ td{
     background: transparent !important;
 
 }
-.card_star{
-    width: 25%;
+.cards-header .card{
     box-shadow: none !important;
     border: none !important;
-
-}
-.card_button{
-    width: 35%;
-    box-shadow: none !important;
-    border: none!important;
 
 }
 .card-rest {
     position: absolute;
     display: inline-block;
-    outline: none;
-	border: 1px solid #363431;
-	color: white;
-	width: 128px;
-	height: 30px;
-	text-shadow: 0px -1px 1px black;
-	font-size: 20px;
-	border-radius: 5px;
-	font-family: Helvetica;
-	cursor: pointer;
-	background-image: linear-gradient(#3aad02,#2c6f05);
 }
 .card_first{
     color:aliceblue;
     background: linear-gradient(rgb(19,90,145),rgb(194,208,222));
-    padding-top: 1rem;
-    height: max-content;
 }
 

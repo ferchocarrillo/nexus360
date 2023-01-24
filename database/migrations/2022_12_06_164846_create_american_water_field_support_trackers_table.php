@@ -15,12 +15,10 @@ class CreateAmericanWaterFieldSupportTrackersTable extends Migration
     {
         Schema::create('american_water_field_support_trackers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('cph', 10);
             $table->string('claim_number', 10);
-            $table->string('threshold', 15)->nullable();
-            $table->string('status', 30)->nullable();
-            $table->string('type', 10)->nullable();
-            $table->string('observations', 150)->nullable();
+            $table->string('threshold', 15);
+            $table->string('status', 30);
+            $table->string('observations', 255)->nullable();
             $table->dateTime('case_actioned');
             $table->dateTime('created');
             $table->dateTime('modified');
