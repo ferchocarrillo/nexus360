@@ -117,7 +117,7 @@
 @push('js')
     <script type="text/javascript" src="{{ asset('vendor/daterangepicker/moment.min.js') }} "></script>
     <script src="{{asset('vendor/flatpickr/flatpickr.js')}}"></script>
-    <script src="{{ asset('js/prenomina.js?v=1.5')}}"></script>
+    <script src="{{ asset('js/prenomina.js?v=1.6')}}"></script>
     <script>
         const master_id = {{auth()->user()->masterfile2[0]->id}}
         $(document).ready(function () {

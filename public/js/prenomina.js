@@ -163,41 +163,43 @@ $(function() {
                     `)
                     .show();
                 }
+
+                if(payroll.availableAdjustmentException && payroll.employee_id != master_id && payroll.payroll_activities.length
+                    && !payroll.calendar.closed){
+                    $(`<button class="btn btn-info"> <i class="fas fa-unlock"></i> Enable Adjustments</button>`)
+                    .on({
+                        click: function(){
+                            swal.fire({                                    
+                                title: "Enable Adjustments!",
+                                text: 'Are you sure?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: 'Yes',
+                                focusConfirm: false,
+                            }).then((result) => {
+                                if (result.value) {
+                                    $("#logoLoading").modal("show");
+                                    axios
+                                        .post(
+                                            "/prenomina/adjustments/exception",
+                                            {
+                                                'id':payroll.id
+                                            }
+                                        )
+                                        .then(function(response) {
+                                            getPayroll();
+                                        });
+                                }
+                            })
+                        }
+                    })
+                    .appendTo("#adjustmentException");
+                    $("#adjustmentException").show();
+                }
+                
                 if (payroll.schedule) {
-                    if(payroll.availableAdjustmentException && payroll.employee_id != master_id && payroll.payroll_activities.length
-                        && !payroll.calendar.closed){
-                        $(`<button class="btn btn-info"> <i class="fas fa-unlock"></i> Enable Adjustments</button>`)
-                        .on({
-                            click: function(){
-                                swal.fire({                                    
-                                    title: "Enable Adjustments!",
-                                    text: 'Are you sure?',
-                                    icon: 'question',
-                                    showCancelButton: true,
-                                    confirmButtonColor: "#3085d6",
-                                    cancelButtonColor: "#d33",
-                                    confirmButtonText: 'Yes',
-                                    focusConfirm: false,
-                                }).then((result) => {
-                                    if (result.value) {
-                                        $("#logoLoading").modal("show");
-                                        axios
-                                            .post(
-                                                "/prenomina/adjustments/exception",
-                                                {
-                                                    'id':payroll.id
-                                                }
-                                            )
-                                            .then(function(response) {
-                                                getPayroll();
-                                            });
-                                    }
-                                })
-                            }
-                        })
-                        .appendTo("#adjustmentException");
-                        $("#adjustmentException").show();
-                    }
                     if (payroll.availableOffsetHoliday && payroll.employee_id != master_id && payroll.payroll_activities.length
                         && !payroll.calendar.closed) {
                         $(
