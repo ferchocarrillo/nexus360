@@ -45,6 +45,9 @@ class PayrollAdjustmentPendingMail extends Mailable
         ->get();
 
 
+        $this->adjustments =  $this->adjustments->filter(function($adjustment){
+            return $adjustment->employee != null;
+        })->values();
 
         $this->countOM = $this->adjustments->where('pending_for','OM')->count();
         $this->countSupervisor = $this->adjustments->where('pending_for','Supervisor')->count();
