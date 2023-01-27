@@ -79,12 +79,10 @@ class PrenominaAdjustmentController extends Controller
                 if($permissionSupervisor || $permissionAdmin){
                     $data['Supervisor']['adjustments'] = $adjustments->where('pending_for','Supervisor')->values();
                     $data['Supervisor']['count'] = $data['Supervisor']['adjustments']->count();
-                    $data['Supervisor']['adjustments'] = $data['Supervisor']['adjustments']->groupBy('employee_id');
                 }
                 if($permissionOM || $permissionAdmin){
                     $data['OM']['adjustments'] = $adjustments->where('pending_for','OM')->values();
                     $data['OM']['count'] = $data['OM']['adjustments']->count();
-                    $data['OM']['adjustments'] = $data['OM']['adjustments']->groupBy('employee_id');
                 }
 
             return response()->json($data); 
