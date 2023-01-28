@@ -28,9 +28,22 @@ class ReminderController extends Controller
 
     public function create(Request $request){
         $filters = ['campaign' => 'Campaign', 'supervisor' => 'Team leader', 'national_id' => 'Employess'];
-        $campaigns = MasterFile::where('position', 'Agent')->where('status', 'Active')->select('campaign')->groupBy('campaign')->pluck('campaign');
-        $team_leaders = MasterFile::where('position', 'Agent')->where('status', 'Active')->select('supervisor')->groupBy('supervisor')->pluck('supervisor');
-        $employess = MasterFile::where('position', 'Agent')->where('status', 'Active')->select('national_id', 'full_name')->get();
+        $filterPositions = [
+            "Agent", 
+            "Agent Booking Specialist", 
+            "Agent Outbound Sale", 
+            "Bilingual Backoffice/Helpdesk support specialist", 
+            "Helpdesk/backend", 
+            "Onboarding specialist", 
+            "Outbound Sales Agent", 
+            "SFL Customer Support Specialist", 
+            "SFL Failed Payments", 
+            "Specialist Agent C+", 
+            "Support Facilitator"
+        ];
+        $campaigns = MasterFile::whereIn('position', $filterPositions)->where('status', 'Active')->select('campaign')->groupBy('campaign')->pluck('campaign');
+        $team_leaders = MasterFile::whereIn('position', $filterPositions)->where('status', 'Active')->select('supervisor')->groupBy('supervisor')->pluck('supervisor');
+        $employess = MasterFile::whereIn('position', $filterPositions)->where('status', 'Active')->select('national_id', 'full_name')->get();
         if ($request->ajax()) {
             $arr = [];
             $arr = DB::table('users')->join('master_files', 'users.national_id', '=', 'master_files.national_id')
