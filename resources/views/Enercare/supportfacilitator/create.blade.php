@@ -97,10 +97,10 @@
 
                                 <div class="form-group col-md-6 col-lg-5">
                                     {!! Form::label('supervisor_assistence', 'Supervisor Assistance?') !!}
-                                    <input type="checkbox" name="supervisor_assistence" id="supervisor_assistence" value="yes">
+                                    <input type="checkbox" name="supervisor_assistence" id="supervisor_assistence" value="1">
                                 </div>
 
-                                <input type="hidden" name="conference_in" id="conference_in" value="no" >
+                                <input type="hidden" name="conference_in" id="conference_in" value="0" >
                                 <input type="hidden" id="excepcion" name="excepcion">
                             </div>
                             {{ Form::submit('Save', ['class' => 'btn btn-sm btn-primary' ,'id'=> 'boton']) }}
@@ -168,9 +168,9 @@
             var interaction = $('#repeated_interaction').val()
 
             if( interaction != "3"){
-                $('#conference_in').val("no");
+                $('#conference_in').val("0");
             } else {
-                $('#conference_in').val("yes");
+                $('#conference_in').val("1");
             }
         });
 

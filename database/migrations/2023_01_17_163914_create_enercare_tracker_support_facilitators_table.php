@@ -22,7 +22,7 @@ class CreateEnercareTrackerSupportFacilitatorsTable extends Migration
             $table->string('behavior_identified', 15)->nullable();
             $table->string('recomendations', 50)->nullable();
             $table->tinyInteger('repeated_interaction',false,false);
-            $table->string('observations',150);
+            $table->string('observations',180);
             $table->boolean('conference_in')->nullable();
             $table->boolean('supervisor_assistence')->nullable();
             $table->unsignedBigInteger('created_by');

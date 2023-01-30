@@ -20,6 +20,10 @@ class EnercareTrackerSupportFacilitator extends Model
         'supervisor_assistence',
         'created_by',
     ];
+    protected $casts = [
+        'conference_in' => 'boolean',
+        'supervisor_assistence' => 'boolean',
+    ];
 
     public function creator(){
         return $this->belongsTo('App\User','created_by');

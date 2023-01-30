@@ -489,7 +489,7 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "americanwater.fieldsupport.reports.general",
             'description'   => "American Water Field Support Reports",
         ]);
-        
+
         Permission::firstOrCreate([
             'name'          => 'Moduurn Calltracker',
             'slug'          => 'moduurn.calltracker',
@@ -505,6 +505,20 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "moduurn.calltracker.reports.general",
             'description'   => "Moduurn Calltracker Reports",
         ]);
+
+
+        Permission::firstOrCreate([
+            'name'          => 'Enercare Support facilitator',
+            'slug'          => 'enercare.supportfacilitator',
+            'description'   => 'Enercare Support facilitator'
+        ]);
+        Permission::firstOrCreate([
+            'name'          => "Enercare Support facilitator Reports",
+            'slug'          => "enercare.supportfacilitator.reports.general",
+            'description'   => "Enercare Support facilitator Reports",
+        ]);
+
+
 
     }
 }
