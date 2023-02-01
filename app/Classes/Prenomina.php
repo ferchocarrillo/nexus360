@@ -333,7 +333,8 @@ class Prenomina
             $this->generatePrenomina();
         }
 
-        if($closePayroll &&  $this->endDateQ < date("Y-m-d") && date('Y-m-d H:i:s') >= $this->endDate.' 10:00:00'){
+        if($closePayroll &&  $this->endDateQ < date("Y-m-d") && date('Y-m-d H:i:s') >= $this->endDate.' 12:00:00'){
+            $this->generatePrenomina();
             $this->closedPayrollActual();
         }
     }
@@ -910,5 +911,10 @@ class Prenomina
                 Mail::queue(new \App\Mail\PayrollReportMail($manager, $mail, $filepath));
             }
         });
+
+        $filepath = 'Prenomina\PrenominaGeneral.xlsx';
+        Excel::store(new PrenominaReportExport($employees),$filepath);
+        $filepath = storage_path('app\\'.$filepath);
+        Mail::queue(new \App\Mail\PayrollReportMail('general', 'diego.pinzon@contactpoint360.com', $filepath));
     }
 }
