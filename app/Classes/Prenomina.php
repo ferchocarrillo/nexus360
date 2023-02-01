@@ -2,15 +2,18 @@
 
 namespace App\Classes;
 
+use App\Exports\PrenominaReportExport;
+use App\MasterFile;
 use App\Payroll;
 use App\PayrollAdjustment;
 use App\PayrollAdmin;
 use App\PayrollCalendar;
 use App\PayrollDayOffDiscount;
+use App\PayrollSummary;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use stdClass;
 
 
@@ -44,7 +47,7 @@ class Prenomina
     /** @var string Fecha Fin Periodo ($endDateQ + 1 day)*/
     public $endDate;
     
-    // public $payroll_activities;
+    protected $payrollSummaries;
 
     function __construct($year = null, $month = null, $q = null)
     {
@@ -326,6 +329,10 @@ class Prenomina
             $this->sendEmailPayrollAdjustmentPending();
         }
 
+        if($closePayroll && $this->endDateQ == date("Y-m-d")){
+            $this->generatePrenomina();
+        }
+
         if($closePayroll &&  $this->endDateQ < date("Y-m-d") && date('Y-m-d H:i:s') >= $this->endDate.' 10:00:00'){
             $this->closedPayrollActual();
         }
@@ -593,6 +600,315 @@ class Prenomina
             $employee->agentActivities = collect();
 
             return $employee;
+        });
+    }
+
+    public function generatePrenomina(){
+        $this->generateSummary();
+        $employees = $this->makePrenomina();
+        $this->sendPrenomina($employees);
+    }
+    
+    public function generateSummary($filterEmployees = [])
+    {
+        PayrollSummary::whereBetween('date',[$this->startDateQ,$this->endDateQ])->delete();
+        echo date('H:i:s') .  " Start generate summary\n";
+
+        $subQueryAdjustment = PayrollAdjustment::select('activity_code', 'adjustment_type','payroll_id','approved_time')
+            ->where('status', 'Aprobado');
+
+        $payrollActivities = DB::connection('sqlsrvpayroll')->table('payroll_activities')
+            ->leftJoinSub($subQueryAdjustment, 'payroll_adjustments', function ($join) {
+                $join->on('payroll_activities.code', '=', 'payroll_adjustments.activity_code');
+            })->select(
+                'payroll_activities.employee_id',
+                DB::raw('convert(date,payroll_activities.[start_date]) as activity_date'),
+                'payroll_activities.payroll_id',
+                'payroll_activities.date as payroll_date',
+                'payroll_activities.activity_type',
+                'payroll_activities.activity_name',
+                'payroll_activities.surcharge',
+                'payroll_activities.start_date',
+                'payroll_activities.end_date',
+                'payroll_activities.total_time_in_seconds',
+                'payroll_adjustments.adjustment_type',
+                'payroll_adjustments.approved_time',
+            )->whereBetween(
+                DB::raw('convert(date,payroll_activities.[start_date])'),
+                [$this->startDateQ, $this->endDateQ]
+            )->whereNotIn(
+                DB::raw('ISNULL(payroll_adjustments.adjustment_type,payroll_activities.activity_type)'),
+                ['Tiempo pendiente aprobar', 'Lunch', 'Tiempo injustificado']
+            )->get()->groupBy('employee_id');
+
+
+
+        $this->novelties = [
+            'Inasistencia' => 'INASISTENCIA DIA',
+            'Inasistencia Justificada' => 'INASISTENCIA JUSTIFICADA',
+            'incapacidad' => 'INCAPACIDAD',
+            'vacaciones' => 'VACACIONES',
+            'licencia_remunerada' => 'LICENCIA REMUNERADA',
+            'licencia_no_remunerada' => 'LICENCIA NO REMUNERADA',
+            'licencia_luto' => 'LICENCIA DE LUTO',
+            'licencia_maternidad' => 'LICENCIA MATERNIDAD/PATERNIDAD',
+            'licencia_paternidad' => 'LICENCIA MATERNIDAD/PATERNIDAD',
+            'suspension' => 'SUSPENSION',
+
+            'Tiempo laborado' => 'TIEMPO LABORADO',
+            'Cumple Horas de Contrato' => 'TIEMPO LABORADO',
+            'Reposicion Hora' => 'TIEMPO LABORADO',
+            'Error del sistema' => 'TIEMPO LABORADO',
+            'Hora Extra' => 'HORA EXTRA',
+            'Inasistencia Hrs' => 'INASISTENCIA HORAS',
+            'Permiso Remunerado' => 'HORA PERMISO REMUNERADO',
+            'Permiso No Remunerado' => 'HORA PERMISO NO REMUNERADO',
+
+        ];
+
+        $payrolls = Payroll::leftJoinSub($subQueryAdjustment, 'payroll_adjustments', function ($join) {
+            $join->on(DB::raw('payrolls.id'), '=', 'payroll_adjustments.payroll_id');
+        })->select(
+            'payrolls.id',
+            'payrolls.employee_id',
+            'payrolls.date',
+            'payrolls.novelty',
+            'payroll_adjustments.adjustment_type'
+        )->whereBetween('payrolls.date', [$this->startDate, $this->endDateQ])
+            ->get()
+            ->groupBy('employee_id');
+
+        $dayOffDiscounts = PayrollDayOffDiscount::whereBetween('date', [$this->startDateQ, $this->endDateQ])
+            ->get()
+            ->groupBy('employee_id');
+
+        $employees = $this->getEmployees();
+
+        if (count($filterEmployees)) {
+            $employees = $employees->whereIn('national_id', $filterEmployees);
+        }
+
+        $this->payrollSummaries = collect();
+
+        if($this->endDateQ >= date("Y-m-d") || $this->endDate == date("Y-m-d")){
+            $time = date("H:i:s");
+            $daysBefore = $time >= '08:20:00' ?1:2;
+            $this->endDateQ = date("Y-m-d", strtotime("-$daysBefore days"));        
+        }
+
+        $calendar = $this->calendar->whereBetween('date', [$this->startDate, $this->endDateQ])->values();
+
+        $employees->each(function ($employee) use ($payrollActivities, $payrolls, $dayOffDiscounts, $calendar) {
+            $employee->payrolls = $payrolls->get($employee->id, collect())->groupBy('date');
+            $employee->payrollActivities = $payrollActivities->get($employee->id, collect())->groupBy('payroll_id');
+            $employee->dayOffDiscounts = $dayOffDiscounts->get($employee->id, collect())->groupBy('date');
+
+            $calendar->each(function ($date) use ($employee) {
+                $payroll = $employee->payrolls->get($date->date, collect())->first();
+                $dayOffDiscount = $employee->dayOffDiscounts->get($date->date, collect())->first();
+
+                if ($dayOffDiscount) {
+                    $this->payrollSummaries->push([
+                        'date' => $date->date,
+                        'employee_id' => $employee->id,
+                        'national_id' => $employee->national_id,
+                        'novelty' => 'DOMINGO DESCONTADO',
+                        'novelty_id' => null,
+                        'start_date' => null,
+                        'end_date' => null,
+                        'total_time_in_seconds' => null,
+                    ]);
+                }
+                if ($payroll) {
+                    if ($payroll->novelty && $date->date >= $this->startDateQ) {
+                        $time = null;
+                        $novelty_id = null;
+                        if ($payroll->adjustment_type) {
+                            $time = 28800;
+                            if($payroll->novelty['novelty']){
+                                $payroll->adjustment_type = $payroll->novelty['type'];
+                            }
+                        }
+                        if ($payroll->novelty['novelty']) {
+                            $novelty_id = $payroll->novelty['novelty']['novelty_id'];
+                        }
+                        $this->payrollSummaries->push([
+                            'date' => $date->date,
+                            'employee_id' => $employee->id,
+                            'national_id' => $employee->national_id,
+                            'novelty' => $this->novelties[$payroll->adjustment_type  ?? $payroll->novelty['type']],
+                            'novelty_id' => $novelty_id,
+                            'start_date' => null,
+                            'end_date' => null,
+                            'total_time_in_seconds' => $time,
+                        ]);
+                    }
+
+                    $payroll->activities = $employee->payrollActivities->get($payroll->id, collect());
+                    $payroll->activities->each(function ($activity) use ($employee, $payroll) {
+
+                        if ($activity->surcharge == "Festivo" && $payroll->adjustment_type == "Festivo Compensado") {
+                            $activity->surcharge = "Festivo Compensado";
+                        }
+
+                        $activity->activity_type = $this->novelties[$activity->adjustment_type ?? $activity->activity_type];
+                        $activity->total_time_in_seconds = $activity->approved_time ??  $activity->total_time_in_seconds;
+
+                        $novelty = null;
+                        if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Diurno') {
+                            $novelty = 'TIEMPO LABORADO';
+                        } else if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Festivo Compensado') {
+                            $novelty = 'HORA FESTIVO COMPENSADO';
+                        } else if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Festivo') {
+                            $novelty = 'HORA FESTIVO SIN COMPENSAR';
+                        } else if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Nocturno') {
+                            $novelty = 'HORA RECARGO NOCTURNO';
+                        } else if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Nocturno Festivo') {
+                            $novelty = 'HORA RECARGO NOCTURNO FESTIVO';
+                        } else if ($activity->activity_type == 'HORA EXTRA' && $activity->surcharge == 'Diurno') {
+                            $novelty = 'HORA EXTRA DIURNA';
+                        } else if ($activity->activity_type == 'HORA EXTRA' && $activity->surcharge == 'Nocturno') {
+                            $novelty = 'HORA EXTRA NOCTURNA';
+                        } else if ($activity->activity_type == 'HORA EXTRA' && in_array($activity->surcharge, ['Festivo Compensado', 'Festivo'])) {
+                            $novelty = 'HORA EXTRA DIURNA FESTIVA';
+                        } else if ($activity->activity_type == 'HORA EXTRA' && $activity->surcharge == 'Nocturno Festivo') {
+                            $novelty = 'HORA EXTRA NOCTURNA FESTIVA';
+                        } else if ($activity->activity_type == 'INASISTENCIA HORAS') {
+                            $novelty = 'INASISTENCIA HORAS';
+                        } else if ($activity->activity_type == 'HORA PERMISO REMUNERADO') {
+                            $novelty = 'HORA PERMISO REMUNERADO';
+                        } else if ($activity->activity_type == 'HORA PERMISO NO REMUNERADO') {
+                            $novelty = 'HORA PERMISO NO REMUNERADO';
+                        }
+
+                        if($novelty!='TIEMPO LABORADO'){
+                            $this->payrollSummaries->push([
+                                'date' => $activity->activity_date,
+                                'employee_id' => $employee->id,
+                                'national_id' => $employee->national_id,
+                                'novelty' => $novelty,
+                                'novelty_id' => null,
+                                'start_date' => $activity->start_date,
+                                'end_date' => $activity->end_date,
+                                'total_time_in_seconds' => $activity->total_time_in_seconds,
+                            ]);
+                        }                        
+                    });
+                }
+            });
+        });
+
+        echo date('H:i:s') . " Insert data to PayrollSummary\n";
+
+        $this->payrollSummaries->chunk(260)->each(function ($payrollSummaries) {
+            PayrollSummary::insert($payrollSummaries->toArray());
+        });
+
+        echo date('H:i:s') . " End generate summary\n";
+
+        return 'Successfully generated payroll summary';
+    }
+
+    public function makePrenomina($filterEmployees = []){
+        $employees = $this->getEmployees();
+
+        $payrollSummaries = PayrollSummary::whereBetween('date',[$this->startDateQ,$this->endDateQ]);
+
+        if (count($filterEmployees)) {
+            $employees = $employees->whereIn('national_id', $filterEmployees)->values();
+            $payrollSummaries->whereIn('national_id', $filterEmployees);
+        }
+
+        $payrollSummaries = $payrollSummaries->get()->groupBy('employee_id');
+
+        $novelties = collect([
+            (object) [ 'novelty' => 'INCAPACIDAD', 'group' => 'DIAS NOVEDADES' ],
+            (object) [ 'novelty' => 'LICENCIA MATERNIDAD/PATERNIDAD', 'group' => 'DIAS NOVEDADES' ],
+            (object) [ 'novelty' => 'VACACIONES', 'group' => 'DIAS NOVEDADES' ],
+            (object) [ 'novelty' => 'HORA FESTIVO COMPENSADO', 'group' => 'HORAS EXTRA / RECARGOS' ],
+            (object) [ 'novelty' => 'HORA EXTRA DIURNA', 'group' => 'HORAS EXTRA / RECARGOS' ],
+            (object) [ 'novelty' => 'HORA EXTRA NOCTURNA', 'group' => 'HORAS EXTRA / RECARGOS' ],
+            (object) [ 'novelty' => 'HORA EXTRA DIURNA FESTIVA', 'group' => 'HORAS EXTRA / RECARGOS' ],
+            (object) [ 'novelty' => 'HORA EXTRA NOCTURNA FESTIVA', 'group' => 'HORAS EXTRA / RECARGOS' ],
+            (object) [ 'novelty' => 'HORA FESTIVO SIN COMPENSAR', 'group' => 'HORAS EXTRA / RECARGOS' ],
+            (object) [ 'novelty' => 'HORA RECARGO NOCTURNO', 'group' => 'HORAS EXTRA / RECARGOS' ],
+            (object) [ 'novelty' => 'HORA RECARGO NOCTURNO FESTIVO', 'group' => 'HORAS EXTRA / RECARGOS' ],
+            (object) [ 'novelty' => 'LICENCIA DE LUTO', 'group' => 'DIAS REMUNERADOS' ],
+            (object) [ 'novelty' => 'LICENCIA REMUNERADA', 'group' => 'DIAS REMUNERADOS' ],
+            (object) [ 'novelty' => 'HORA PERMISO REMUNERADO', 'group' => 'HORAS REMUNERADAS' ],
+            (object) [ 'novelty' => 'INASISTENCIA DIA', 'group' => 'DIAS NO REMUNERADOS' ],
+            (object) [ 'novelty' => 'DOMINGO DESCONTADO', 'group' => 'DIAS NO REMUNERADOS' ],
+            (object) [ 'novelty' => 'LICENCIA NO REMUNERADA', 'group' => 'DIAS NO REMUNERADOS' ],
+            (object) [ 'novelty' => 'HORA PERMISO NO REMUNERADO', 'group' => 'HORAS NO REMUNERADAS' ],
+            (object) [ 'novelty' => 'INASISTENCIA HORAS', 'group' => 'HORAS NO REMUNERADAS' ],
+            (object) [ 'novelty' => 'SUSPENSION', 'group' => 'DIAS NO REMUNERADOS' ],
+        ]);
+
+        $startDateQ = Carbon::parse($this->startDateQ);
+        $endDateQ = Carbon::parse($this->endDateQ);
+
+        $employees = $employees->map(function($employee)use($payrollSummaries, $novelties, $startDateQ, $endDateQ){
+            
+            $date_of_hire = Carbon::parse($employee->date_of_hire);
+            $termination_date = Carbon::make($employee->termination_date);
+
+            $startDateDiff = $date_of_hire > $startDateQ ? $date_of_hire->diffInDays($startDateQ) : 0;
+
+            if($termination_date && $termination_date < $endDateQ){
+                $employee->diasLaborables = ($startDateQ->diffInDays($termination_date) +1) - $startDateDiff;
+            }else{
+                $employee->diasLaborables = 15 - $startDateDiff;
+            }
+
+            $employee->payrollSupport = $payrollSummaries->get($employee->id, collect());
+
+            $groups  = $employee->payrollSupport->groupBy('novelty')->map(function($row){
+                $sum = $row->sum('total_time_in_seconds') / 3600;
+                return  $sum > 0.00 ? $sum : $row->count();
+            });
+            
+            $employee->prenomina = $novelties->mapWithKeys(function($novelty)use($groups){
+                $novelty->val = $groups[$novelty->novelty] ?? 0 ;
+                return [ $novelty->novelty =>$novelty];
+            });
+            
+            $prenominaTotales = $employee->prenomina->groupBy('group')->map(function($row){
+                return $row->sum('val');
+            });
+
+            $employee->prenomina = $employee->prenomina->map(function($novelty){
+                return $novelty->val;
+            });
+
+            $employee->prenomina =  collect([
+                'DIAS LABORADOS' => $employee->diasLaborables - $prenominaTotales['DIAS NOVEDADES'] - $prenominaTotales['DIAS REMUNERADOS'] - $prenominaTotales['DIAS NO REMUNERADOS']
+            ])
+            ->merge($prenominaTotales)
+            ->merge($employee->prenomina);
+            
+            return $employee;
+        });
+
+        return $employees;
+        
+    }
+
+    public function sendPrenomina($employees){
+        $employeesByManager = $employees->groupBy('payroll_manager');
+
+        $mailsManagers = MasterFile::whereIn('full_name',$employeesByManager->keys())
+            ->whereNull('termination_date')
+            ->select('full_name','corp_email')->get()->pluck('corp_email','full_name');
+
+        $employeesByManager->each(function($employees, $manager)use($mailsManagers){
+            $mail = $mailsManagers[$manager] ?? null;
+            
+            if($mail){
+                $filepath = 'Prenomina\Prenomina '.$manager . '.xlsx';
+                Excel::store(new PrenominaReportExport($employees),$filepath);
+                $filepath = storage_path('app\\'.$filepath);
+                Mail::queue(new \App\Mail\PayrollReportMail($manager, $mail, $filepath));
+            }
         });
     }
 }
