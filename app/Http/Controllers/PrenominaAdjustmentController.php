@@ -18,7 +18,7 @@ class PrenominaAdjustmentController extends Controller
 {
     function __construct()
     {
-        $this->middleware('can:payroll')->only(['show','create','store','offsetHoliday','justifyAbsense']);
+        $this->middleware('can:payroll')->only(['show','create','store','offsetHoliday','justifyAbsence']);
         $this->middleware('can:payroll.adjustments')->only(['index','pending','exception']);
         $this->middleware('can:payroll.om')->only(['approveAll']);
     }
@@ -347,7 +347,7 @@ class PrenominaAdjustmentController extends Controller
         abort(401);        
     }
 
-    public function justifyAbsense(Request $request){
+    public function justifyAbsence(Request $request){
 
         $payroll = Payroll::findOrFail($request->id);
         $user = auth()->user();

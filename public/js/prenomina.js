@@ -434,12 +434,12 @@ $(function() {
                     if(payroll.availableJustifyAbsence){
                     
                         $(
-                            `<button class="btn btn-info"><i class="fas fa-calendar-check fa-lg mr-2"></i> Justify Absense </button>`
+                            `<button class="btn btn-info"><i class="fas fa-calendar-check fa-lg mr-2"></i> Justify Absence </button>`
                         )
                             .on({
                                 click: function() {
                                     swal.fire({
-                                        title: "Justify Absense",
+                                        title: "Justify Absence",
                                         // icon: "info",
                                         showCancelButton: true,
                                         confirmButtonColor: "#3085d6",
@@ -447,25 +447,25 @@ $(function() {
                                         confirmButtonText: "Send",
                                         focusConfirm: false,
                                         html: `
-                                        <select class="form-control form-control-lg" id="justifyAbsenseType">
+                                        <select class="form-control form-control-lg" id="justifyAbsenceType">
                                             <option value="" selected disabled>Justification</option>
                                             <option>Cambio de Horario Extemporaneo</option>
                                             <option>Agente olvidó Loguearse</option>
                                             <option>Usuario no creado (Agente en Entrenamiento)</option>
                                         </select>
-                                        <input type="text" id="justifyAbsenseObservations" class="swal2-input" placeholder="Observations">
+                                        <input type="text" id="justifyAbsenceObservations" class="swal2-input" placeholder="Observations">
                                         `,
                                         preConfirm: () => {
                                             const observations = swal
                                                 .getPopup()
                                                 .querySelector(
-                                                    "#justifyAbsenseObservations"
+                                                    "#justifyAbsenceObservations"
                                                 )
                                                 .value.trim();
                                             const justification = swal
                                                 .getPopup()
                                                 .querySelector(
-                                                    "#justifyAbsenseType"
+                                                    "#justifyAbsenceType"
                                                 )
                                                 .value.trim();
                                             if (!justification){
@@ -487,7 +487,7 @@ $(function() {
 
                                             axios
                                                 .post(
-                                                    "/prenomina/adjustments/justifyabsense",
+                                                    "/prenomina/adjustments/justifyabsence",
                                                     {
                                                         'id':payroll.id,
                                                         justification,
