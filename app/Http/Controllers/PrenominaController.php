@@ -55,7 +55,7 @@ class PrenominaController extends Controller
 
         if($prenomina->endDateQ >= date("Y-m-d") || $prenomina->endDate == date("Y-m-d")){
             $time = date("H:i:s");
-            $daysBefore = $time >= '07:45:00' ?1:2;
+            $daysBefore = $time >= '08:20:00' ?1:2;
             $prenomina->endDateQ = date("Y-m-d", strtotime("-$daysBefore days"));
         }
 
