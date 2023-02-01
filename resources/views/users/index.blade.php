@@ -11,6 +11,11 @@
 @section('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables/css/dataTables.bootstrap4.min.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css') }}" />
+<style>
+    #tableUsers thead th{
+        white-space: nowrap;
+    }
+</style>
 @endsection
 @section('content')
 @can('users.upload')
@@ -35,7 +40,7 @@
             @foreach(session('validation') as $validation)
                 <li class="list-group-item list-group-item-danger">
                     <div class="row">
-                    <div class="col-1"><strong>{{$validation['national_id']}}</strong></div>
+                    <div class="col-2"><strong>{{$validation['national_id']}}</strong></div>
                     <div class="col">
                         @foreach($validation['validation'] as $error)
                             <span class="badge badge-danger">{{$error}}</span>
@@ -56,6 +61,7 @@
                 <tr>
                     <th width="5px"></th>
                     <th width="10px">ID</th>
+                    <th width="10px">National ID</th>
                     <th width="10px">Status</th>
                     <th>Username</th>
                     <th>Name</th>
@@ -115,11 +121,13 @@
                         "data": null,
                         "defaultContent": ''
                     },
+                    {"data":"id"},
                     {"data":"national_id"},
                     {"data":""},
                     {"data":"username"},
                     {"data":""},
-                    {"data":""}
+                    {"data":""},
+                    {"data":"created_at"}
                 ],
                 columnDefs:[
                     {
@@ -129,34 +137,40 @@
                         "targets":0
                     },
                     {
+                        "render": function(data, type, row){
+                            return `#${data}`
+                        },
+                        "targets": 1
+                    },
+                    {
                         "render":function(data,type,row){
                             return (row.nid ? `<span class="badge badge-${(row.status=='Active'?'success':'danger')}">${row.status}</span>` : '');
                         },
-                        "targets": 2
+                        "targets": 3
                     },
                     {
                         "render":function(data,type,row){
                             return (row.nid ? row.full_name : row.name);
                         },
-                        "targets": 4
+                        "targets": 5
                     },
                     {
                         "render":function(data,type,row){
                             return (row.roles.length ? row.roles.map(rol=>{return '<span class="badge badge-secondary mx-1">' + rol.name  + '</span>'}).join('') : '');
                         },
-                        "targets": 5
+                        "targets": 6
                     },
                     {
                         "render":function(data,type,row){
-                            return (row.created_at);
+                            return `<span title="${data}">${data.substring(0,10)}</span>`;
                         },
-                        "targets": 6
+                        "targets": 7
                     },
                     {
                         "render":function(data,type,row){
                             return `<a class="btn btn-info btn-sm" href="/users/${row.id}/edit"><i class="fas fa-pencil-alt"></i></a>`
                         },
-                        "targets": 7
+                        "targets": 8
                     },
                 ],
                 order:[[3,"asc"]]
