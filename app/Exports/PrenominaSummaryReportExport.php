@@ -7,11 +7,13 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class PrenominaSummaryReportExport implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize, WithColumnFormatting
+class PrenominaSummaryReportExport implements FromCollection, WithTitle, WithHeadings, ShouldAutoSize, WithColumnFormatting, WithMapping, WithStrictNullComparison
 {
 
     private $employees;
@@ -29,6 +31,20 @@ class PrenominaSummaryReportExport implements FromCollection, WithTitle, WithHea
         return $this->employees;
     }
 
+    public function map($row): array
+    {
+        $data = collect([
+            $row->campaign,
+            $row->supervisor,
+            $row->national_id,
+            $row->full_name,
+            $row->position,
+            $row->date_of_hire,
+            $row->termination_date,
+        ])->merge($row->prenomina->except('HORAS REMUNERADAS')->values());
+        return $data->toArray();
+    }
+
     public function title(): string
     {
         return 'Prenomina';
@@ -37,19 +53,18 @@ class PrenominaSummaryReportExport implements FromCollection, WithTitle, WithHea
     public function headings(): array
     {
         return [
+            "CAMPAÑA",
+            "SUPERVISOR",
             "IDENTIFICACION",
             "NOMBRE",
-            "CAMPAÑA",
             "CARGO",
-            "SUPERVISOR",
             "JOIN DATE",
             "TERMINATION DATE",
-            "DIAS LABORADOS",
-            "DIAS NOVEDADES",
-            "HORAS EXTRA / RECARGOS",
-            "DIAS REMUNERADOS",
-            "HORAS REMUNERADAS",
-            "DIAS NO REMUNERADOS",
+            "DÍAS LABORADOS",
+            "DÍAS NOVEDADES",
+            "HORAS EXTRA /RECARGOS",
+            "REMUNERADO",
+            "DÍAS NO REMUNERADOS",
             "HORAS NO REMUNERADAS",
             "INCAPACIDAD",
             "LICENCIA MATERNIDAD/PATERNIDAD",
@@ -103,7 +118,6 @@ class PrenominaSummaryReportExport implements FromCollection, WithTitle, WithHea
             'AE' => NumberFormat::FORMAT_NUMBER_00,
             'AF' => NumberFormat::FORMAT_NUMBER_00,
             'AG' => NumberFormat::FORMAT_NUMBER_00,
-            'AH' => NumberFormat::FORMAT_NUMBER_00,
         ];
     }
 }

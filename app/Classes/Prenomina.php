@@ -604,9 +604,9 @@ class Prenomina
         });
     }
 
-    public function generatePrenomina(){
-        $this->generateSummary();
-        $employees = $this->makePrenomina();
+    public function generatePrenomina($filterEmployees = []){
+        $this->generateSummary($filterEmployees);
+        $employees = $this->makePrenomina($filterEmployees);
         $this->sendPrenomina($employees);
     }
     
