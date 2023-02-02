@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             KaizenListsTableSeeder::class,
             // EnercareCalltrackerReasonsNotPitchAndSalesTableSeeder::class,
             // EnercareCallTrackerNotPitchSalesTableSeeder::class
+            EnercareTrackerSupportFacilitatorSeeder::class,
         ]);
     }
 }

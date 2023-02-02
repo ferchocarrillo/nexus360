@@ -276,7 +276,28 @@ return [
                     'url' => 'enercare/botracker',
                     'can' => 'enercare.botracker'
                 ],
-
+                [
+                    'text' => 'Support Facilitator',
+                    'icon' => 'nav-icon fas fa-concierge-bell',
+                    'can' => 'enercare.supportfacilitator',
+                    'submenu' => [
+                        [
+                            'text' => 'Create New',
+                            'url' => 'enercare/supportfacilitator/create',
+                            'can' => 'enercare.supportfacilitator.create'
+                        ],
+                        [
+                            'text' => 'List',
+                            'url' => 'enercare/supportfacilitator',
+                            'can' => 'enercare.supportfacilitator'
+                        ],
+                        [
+                            'text' => 'Report',
+                            'url' => 'enercare/supportfacilitator/reports/general',
+                            'can' => 'enercare.supportfacilitator.reports.general'
+                        ],
+                    ]
+                ],
                 [
                     'text' => 'Uploads',
                     'icon' => 'nav-icon fa fa-upload',
