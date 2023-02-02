@@ -49,7 +49,7 @@ class EnercareTrackerSupportFacilitatorController extends Controller
      */
     public function create()
     {
-        $agent = DB::table('enercare.tbrostercontactpoint')
+        $agent = DB::table('enercare.dbo.tbrostercontactpoint')
         ->get()
         ->pluck('FullName','DOK-USER-CITRIX ID');
         $lists = EnercareTrackerSupportFacilitatorList::pluck('list', 'name');
