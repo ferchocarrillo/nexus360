@@ -287,7 +287,7 @@ return [
                             'can' => 'enercare.supportfacilitator.create'
                         ],
                         [
-                            'text' => 'list',
+                            'text' => 'List',
                             'url' => 'enercare/supportfacilitator',
                             'can' => 'enercare.supportfacilitator'
                         ],

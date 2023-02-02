@@ -49,7 +49,8 @@
                                 </div>
                                 <div class="form-group col-md-6 col-lg-4" id="div_specific" name="div_specific"
                                     style="display: none">
-                                    {{ Form::label('process_specific', 'Specific Process') }}<span class="span_label">*</span>
+                                    {{ Form::label('process_specific', 'Specific Process') }}<span
+                                        class="span_label">*</span>
                                     <select name="process_specific" id="specifics" class="custom-select" required>
                                         <option value selected disabled>Select Specific Process</option>
                                     </select>
@@ -68,23 +69,23 @@
                                 <div class="form-group col-md-6 col-lg-3" id="div_behavior">
                                     {{ Form::label('behavior_identified', 'Behavior Identified') }}<span
                                         class="span_label">*</span>
-                                    {{ Form::select('behavior_identified', $behavior, null, ['placeholder' => 'Select Behavior Identified', 'class' => 'custom-select  ' . ($errors->has('behavior_identified') ? 'is-invalid' : ''), 'id' => 'behavior_identified']) }}
+                                    {{ Form::select('behavior_identified', $behavior, null, ['placeholder' => 'Select Behavior Identified', 'class' => 'custom-select  ' . ($errors->has('behavior_identified') ? 'is-invalid' : ''), 'id' => 'behavior_identified',  'required']) }}
                                     @include('errors.errors', ['field' => 'behavior_identified'])
                                 </div>
                                 <div class="form-group col-md-6 col-lg-5" id="div_recomendations">
                                     {{ Form::label('recomendations', 'Recommendations to Supervisor/Team Lead Dropdowns') }}<span
                                         class="span_label">*</span>
-                                    {{ Form::select('recomendations', $recomendations, null, ['placeholder' => 'Select recomendations', 'class' => 'custom-select  ' . ($errors->has('recomendations') ? 'is-invalid' : ''), 'id' => 'recomendations']) }}
+                                    {{ Form::select('recomendations', $recomendations, null, ['placeholder' => 'Select recomendations', 'class' => 'custom-select  ' . ($errors->has('recomendations') ? 'is-invalid' : ''), 'id' => 'recomendations',  'required']) }}
                                     @include('errors.errors', ['field' => 'recomendations'])
                                 </div>
                                 <div class="form-group col-md-6 col-lg-2">
                                     {{ Form::label('repeated_interaction', 'Repeated Interaction') }}
                                     <select id="repeated_interaction" name="repeated_interaction" class="custom-select">
-                                    <option value="1" selected>Select a option</option>
-                                    @foreach ($interaction as $int)
-                                        <option value="{{$int }}">{{ $int }}</option>
-                                    @endforeach
-                                </select>
+                                        <option value="1" selected>Select a option</option>
+                                        @foreach ($interaction as $int)
+                                            <option value="{{ $int }}">{{ $int }}</option>
+                                        @endforeach
+                                    </select>
                                     @include('errors.errors', ['field' => 'repeated_interaction'])
                                 </div>
                                 <div class="form-group col-md-6 col-lg-5">
@@ -92,18 +93,17 @@
                                     <textarea class="form-control" placeholder="Observations" id="observations" name="observations" cols="30"
                                         rows="3" maxlength="150" minlength="10" required></textarea>
                                     <span class="badge bg-primary float-right" id="characterCount">0/150</span>
-                                @include('errors.errors', ['field' => 'repeated_interaction'])
+                                    @include('errors.errors', ['field' => 'repeated_interaction'])
                                 </div>
-
                                 <div class="form-group col-md-6 col-lg-5">
                                     {!! Form::label('supervisor_assistence', 'Supervisor Assistance?') !!}
-                                    <input type="checkbox" name="supervisor_assistence" id="supervisor_assistence" value="1">
+                                    <input type="checkbox" name="supervisor_assistence" id="supervisor_assistence"
+                                        value="1">
                                 </div>
-
-                                <input type="hidden" name="conference_in" id="conference_in" value="0" >
+                                <input type="hidden" name="conference_in" id="conference_in" value="0">
                                 <input type="hidden" id="excepcion" name="excepcion">
                             </div>
-                            {{ Form::submit('Save', ['class' => 'btn btn-sm btn-primary' ,'id'=> 'boton']) }}
+                            {{ Form::submit('Save', ['class' => 'btn btn-sm btn-primary', 'id' => 'boton']) }}
                             {!! Form::close() !!}
                         </div>
                     </div>
@@ -119,75 +119,123 @@
         'use strict'
         const processes = @json($Process);
         const oldValues = @json(old());
-        $('#process').change(function(e) {
-            var process = $('#process').val()
-            var options = ["<option value selected disabled>Select a Specifics</option>"]
-            if (process) {
-                var specifics = Object.keys(processes[process]).map(r => {
-                    return `<option value="${r}">${r}</option>`
-                })
-                options = options = options.concat(specifics).join('')
+        @if (isset($trkEdit))
+            const trackerData = @json($trkEdit);
+        @else
+            const trackerData = null;
+        @endif
+        function validateOldValues(old) {
+            if (!old) return;
+            if (old.process) {
+                $('#process').val(old.process).change()
+                if (old.process_specific) {
+                    $('#process_specific').val(old.process_specific).change()
+                    if (old.additional_details) {
+                        $('#additional_details').val(old.additional_details)
+                    }
+                }
             }
-            $('#div_specific').show();
-            $('#specifics').html(options).val('');
-        })
-        $('#specifics').change(function(e) {
-            var process = $('#process').val()
-            var specific = $('#specifics').val()
-            var options = ["<option value selected disabled>Select Additional Detail</option>"]
-            if (process && specific) {
-                var additional_details = processes[process][specific].map(e => {
-                    return `<option value="${e}">${e}</option>`
-                })
-                options = options.concat(additional_details).join('')
+            if (old.supervisor_assistence) {
+                $('input[name="supervisor_assistence"]').change()
+                if (behavior_identified) {
+                    $('#behavior_identified').val(old.behavior_identified)
+                }
+                if (old.recomendations) {
+                    $('#recomendations').val(old.recomendations)
+                }
+                if (old.repeated_interaction) {
+                    $('#repeated_interaction').val(old.repeated_interaction)
+                }
             }
-            if ($('#specifics').val() ==
-                "Tool Navigation (be specific to DEBE, Clarify, Doculink, NS, SalesForce)") {
-                $('#excepcion').val("1");
-                $('#div_additional').show();
-                $('#additional_details').html(options).val('');
-            } else if ($('#specifics').val() == "Charges on Bill") {
-                $('#excepcion').val("1");
-                $('#div_additional').show();
-                $('#additional_details').html(options).val('');
-            } else if ($('#specifics').val() == "Unsuitable Appointments") {
-                $('#excepcion').val("1");
-                $('#div_additional').show();
-                $('#additional_details').html(options).val('');
-            } else if ($('#specifics').val() == "Moves") {
-                $('#excepcion').val("1");
-                $('#div_additional').show();
-                $('#additional_details').html(options).val('');
+            if (Object.keys(oldValues).length == 0) {
+                validateOldValues(trackerData)
             } else {
-                $('#div_additional').hide();
-                $('#excepcion').val("0");
+                validateOldValues(oldValues)
             }
-        });
+        }
+            $('#process').change(function(e) {
+                var process = $('#process').val()
+                var options = ["<option value selected disabled>Select a Specifics</option>"]
+                if (process) {
+                    var specifics = Object.keys(processes[process]).map(r => {
+                        return `<option value="${r}">${r}</option>`
+                    })
+                    options = options = options.concat(specifics).join('')
+                }
+                $('#div_specific').show();
+                $('#specifics').html(options).val('');
+            })
+            $('#specifics').change(function(e) {
+                var process = $('#process').val()
+                var specific = $('#specifics').val()
+                var options = ["<option value selected disabled>Select Additional Detail</option>"]
+                if (process && specific) {
+                    var additional_details = processes[process][specific].map(e => {
+                        return `<option value="${e}">${e}</option>`
+                    })
+                    options = options.concat(additional_details).join('')
+                }
+                if ($('#specifics').val() ==
+                    "Tool Navigation (be specific to DEBE, Clarify, Doculink, NS, SalesForce)") {
+                    $('#excepcion').val("1");
+                    $('#div_additional').show();
+                    $('#additional_details').html(options).val('');
+                } else if ($('#specifics').val() == "Charges on Bill") {
+                    $('#excepcion').val("1");
+                    $('#div_additional').show();
+                    $('#additional_details').html(options).val('');
+                } else if ($('#specifics').val() == "Unsuitable Appointments") {
+                    $('#excepcion').val("1");
+                    $('#div_additional').show();
+                    $('#additional_details').html(options).val('');
+                } else if ($('#specifics').val() == "Moves") {
+                    $('#excepcion').val("1");
+                    $('#div_additional').show();
+                    $('#additional_details').html(options).val('');
+                } else {
+                    $('#div_additional').hide();
+                    $('#excepcion').val("0");
+                }
+            })
 
-        $('#repeated_interaction').change(function (){
-            var interaction = $('#repeated_interaction').val()
+            $('#repeated_interaction').change(function() {
+                var interaction = $('#repeated_interaction').val()
+                if (interaction != "3") {
+                    $('#conference_in').val("0");
+                } else {
+                    $('#conference_in').val("1");
+                }
+            })
 
-            if( interaction != "3"){
-                $('#conference_in').val("0");
-            } else {
-                $('#conference_in').val("1");
-            }
-        });
+            $('#repeated_interaction').change(function() {
+                var interaction = $('#repeated_interaction').val()
+                if (interaction == "2") {
+                    $("select[name=recomendations] option[value='Refresher, Training Required']").hide();
+                } else if (interaction == "3") {
+                    $("select[name=recomendations] option[value='Refresher, Training Required']").hide();
+                } else {
+                    $("#recomendations option").show();
+                }
+            })
 
-        var checkbox = document.getElementById('supervisor_assistence');
-        checkbox.addEventListener( 'change', function() {
-            if(this.checked) {
-            $('#behavior_identified').val("");
-            $('#div_behavior').hide().removeAttr('required');
-            $('#recomendations').val("");
-            $('#div_recomendations').hide().removeAttr('required');
-            } else {
-            $('#div_behavior').show().prop('required',true);
-            $('#div_recomendations').show().prop('required',true);
-            }
-        });
+            var checkbox = document.getElementById('supervisor_assistence');
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    $('#behavior_identified').val("");
+                    $('#div_behavior').hide().removeAttr('required');
+                    $('#recomendations').val("");
+                    $('#div_recomendations').hide().removeAttr('required');
+                    $('#recomendations').removeAttr('required');
+                    $('#behavior_identified').removeAttr('required');
+                } else {
+                    $('#recomendations').prop('required', true);
+                    $('#behavior_identified').prop('required', true);
+                    $('#div_behavior').show().prop('required', true);
+                    $('#div_recomendations').show().prop('required', true);
+                }
+            })
             $('textarea').keyup(function() {
-            $('#characterCount').text($(this).val().length + "/150")
-        });
+                $('#characterCount').text($(this).val().length + "/150")
+            })
     </script>
 @endpush

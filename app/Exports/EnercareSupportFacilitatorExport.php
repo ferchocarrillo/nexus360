@@ -21,11 +21,18 @@ class EnercareSupportFacilitatorExport implements FromCollection, WithHeadings
     public function collection()
     {
         return EnercareTrackerSupportFacilitator::whereDate('enercare_tracker_support_facilitators.created_at','>=',$this->start_date)
+        ->leftJoin("enercare.tbrostercontactpoint", "tbrostercontactpoint.DOK-USER-CITRIX ID", "=", "enercare_tracker_support_facilitators.agent")
         ->whereDate('enercare_tracker_support_facilitators.created_at','<=',$this->end_date)
         ->leftJoin("users", "users.id", "=", "enercare_tracker_support_facilitators.created_by")
         ->selectraw("
             enercare_tracker_support_facilitators.id,
             enercare_tracker_support_facilitators.agent,
+            enercare.tbrostercontactpoint.FullName,
+            enercare.tbrostercontactpoint.lob,
+            enercare.tbrostercontactpoint.TeamLeader,
+            enercare.tbrostercontactpoint.OM,
+            enercare.tbrostercontactpoint.Campaign,
+            enercare.tbrostercontactpoint.Position,
             enercare_tracker_support_facilitators.process,
             enercare_tracker_support_facilitators.process_specific,
             enercare_tracker_support_facilitators.additional_details,
@@ -47,6 +54,12 @@ class EnercareSupportFacilitatorExport implements FromCollection, WithHeadings
         return [
         'id',
         'agent',
+        'FullName',
+        'lob',
+        'TeamLeader',
+        'OM',
+        'Campaign',
+        'Position',
         'process',
         'process_specific',
         'additional_details',

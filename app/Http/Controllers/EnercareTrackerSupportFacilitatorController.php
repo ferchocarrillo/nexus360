@@ -6,6 +6,7 @@ use App\EnercareTrackerSupportFacilitator;
 use App\EnercareTrackerSupportFacilitatorList;
 use App\Exports\EnercareSupportFacilitatorExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 use App\MasterFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +49,9 @@ class EnercareTrackerSupportFacilitatorController extends Controller
      */
     public function create()
     {
-        $agent = MasterFile::select('full_name')->where('campaign', 'Enercare')->where('position', 'Agent')->where('status', 'Active')->get()->pluck('full_name');
+        $agent = DB::table('enercare.tbrostercontactpoint')
+        ->get()
+        ->pluck('FullName','DOK-USER-CITRIX ID');
         $lists = EnercareTrackerSupportFacilitatorList::pluck('list', 'name');
         foreach ($lists as $key => $list) {
             if ($key != 'Process') {

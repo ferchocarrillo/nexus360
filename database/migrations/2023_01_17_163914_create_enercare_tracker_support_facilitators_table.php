@@ -15,7 +15,7 @@ class CreateEnercareTrackerSupportFacilitatorsTable extends Migration
     {
         Schema::create('enercare_tracker_support_facilitators', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('agent', 150);
+            $table->string('agent', 50);
             $table->string('process', 30);
             $table->string('process_specific', 100);
             $table->string('additional_details', 70)->nullable();
