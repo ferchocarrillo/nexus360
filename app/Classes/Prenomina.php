@@ -732,6 +732,7 @@ class Prenomina
                         }
                         if ($payroll->novelty['novelty']) {
                             $novelty_id = $payroll->novelty['novelty']['novelty_id'];
+                            $time = null;
                         }
                         $this->payrollSummaries->push([
                             'date' => $date->date,
