@@ -5,7 +5,7 @@ namespace App\Exports;
 use App\EnercareTrackerSupportFacilitator;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-
+use Illuminate\Support\Facades\DB;
 class EnercareSupportFacilitatorExport implements FromCollection, WithHeadings
 {
     protected $start_date;
@@ -21,7 +21,10 @@ class EnercareSupportFacilitatorExport implements FromCollection, WithHeadings
     public function collection()
     {
         return EnercareTrackerSupportFacilitator::whereDate('enercare_tracker_support_facilitators.created_at','>=',$this->start_date)
-        ->leftJoin("enercare.dbo.tbrostercontactpoint", "tbrostercontactpoint.DOK-USER-CITRIX ID", "=", "enercare_tracker_support_facilitators.agent")
+        ->leftJoin("enercare.dbo.tbrostercontactpoint", function($join){
+            $join->on("tbrostercontactpoint.DOK-USER-CITRIX ID", "=", "enercare_tracker_support_facilitators.agent");
+            $join->on("Start DateR", "=", DB::raw('CAST(enercare_tracker_support_facilitators.created_at as date)'));
+        })
         ->whereDate('enercare_tracker_support_facilitators.created_at','<=',$this->end_date)
         ->leftJoin("users", "users.id", "=", "enercare_tracker_support_facilitators.created_by")
         ->selectraw("
