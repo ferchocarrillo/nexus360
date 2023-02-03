@@ -50,11 +50,13 @@ class EnercareTrackerSupportFacilitatorController extends Controller
     public function create()
     {
         $agent = DB::table('enercare.dbo.tbrostercontactpoint')
+
         ->select
         ('DOK-USER-CITRIX ID', 'FullName')
         ->where ('Campaign' , 'Enercare')
         ->where ('Position' , 'Agent')
         ->where('Start DateR', date('Y-m-d') )
+        ->orderBy('DOK-USER-CITRIX ID', 'asc')
         ->get()
         ->pluck('FullName','DOK-USER-CITRIX ID');
         $lists = EnercareTrackerSupportFacilitatorList::pluck('list', 'name');

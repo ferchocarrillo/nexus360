@@ -32,7 +32,7 @@
                             <div class="row">
                                 <div class="form-group col-md-6 col-lg-4">
                                     {{ Form::label('agent', 'Agent') }}<span class="span_label">*</span>
-                                    {{ Form::select('agent', $agent, null, ['placeholder' => 'Select a Agent', 'class' => 'custom-select ', 'id' => 'agent', 'required']) }}
+                                    {{ Form::select('agent', $agent, null, [ 'class' => 'js-example-basic-single form-control', 'id' => 'agent', 'required']) }}
                                     @include('errors.errors', ['field' => 'agent'])
                                 </div>
                             </div>
@@ -116,6 +116,16 @@
 @stop
 @push('js')
     <script>
+    const agent = @json($agent);
+    $(document).ready(() => {
+        $('.js-example-basic-single').select2({
+            placeholder: "Select one or more options",
+            allowClear: true,
+            theme: "classic"
+        });
+    })
+    $("#agent").val([0]);
+    $('#agent').change();
         'use strict'
         const processes = @json($Process);
         const oldValues = @json(old());
