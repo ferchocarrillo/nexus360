@@ -50,6 +50,11 @@ class EnercareTrackerSupportFacilitatorController extends Controller
     public function create()
     {
         $agent = DB::table('enercare.dbo.tbrostercontactpoint')
+        ->select
+        ('DOK-USER-CITRIX ID', 'FullName')
+        ->where ('Campaign' , 'Enercare')
+        ->where ('Position' , 'Agent')
+        ->where('Start DateR', date('Y-m-d') )
         ->get()
         ->pluck('FullName','DOK-USER-CITRIX ID');
         $lists = EnercareTrackerSupportFacilitatorList::pluck('list', 'name');
@@ -138,4 +143,3 @@ class EnercareTrackerSupportFacilitatorController extends Controller
         return Excel::download(new EnercareSupportFacilitatorExport($start_date, $end_date), "EnercareSupportFacilitatorReportGeneral" . $start_date . "-" . $end_date . ".xlsx");
     }
 }
-
