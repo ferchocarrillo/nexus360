@@ -517,6 +517,11 @@ class PermissionsTableSeeder extends Seeder
             'slug'          => "enercare.supportfacilitator.reports.general",
             'description'   => "Enercare Support facilitator Reports",
         ]);
+        Permission::firstOrCreate([
+            'name'          => 'Enercare Support facilitator Leader',
+            'slug'          => 'enercare.supportfacilitator.leader',
+            'description'   => 'Enercare Support facilitator Leader'
+        ]);
 
 
 

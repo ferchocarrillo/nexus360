@@ -7,7 +7,6 @@ use App\EnercareTrackerSupportFacilitatorList;
 use App\Exports\EnercareSupportFacilitatorExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
-use App\MasterFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -18,6 +17,7 @@ class EnercareTrackerSupportFacilitatorController extends Controller
     public function __construct()
     {
         $this->middleware('can:enercare.supportfacilitator')->only(['create', 'store', 'index', 'show']);
+        $this->middleware('can:enercare.supportfacilitator.leader')->only(['create', 'store', 'index', 'show','general', 'generalDownload']);
         $this->middleware('can:enercare.supportfacilitator.reports.general')->only(['general', 'generalDownload']);
     }
 
@@ -34,7 +34,7 @@ class EnercareTrackerSupportFacilitatorController extends Controller
         $hoy = Carbon::now()->format('Y-m-d');
         if (auth()->user()->can('enercare.supportfacilitator.leader')) {
             $facilitators = EnercareTrackerSupportFacilitator::where('created_at', '>=', $hoy)->orderBy('created_at', 'desc')->get();
-        } elseif ((auth()->user()->can('enercare.supportfacilitator.botracker'))) {
+        } elseif ((auth()->user()->can('enercare.supportfacilitator'))) {
             $facilitators = EnercareTrackerSupportFacilitator::where('created_at', '>=', $hoy)->orderBy('created_at', 'desc')->where('created_by', auth()->user()->id)->get();
         } else {
             'you dont have a permission to view this page';
