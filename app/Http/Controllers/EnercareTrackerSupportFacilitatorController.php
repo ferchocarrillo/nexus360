@@ -17,7 +17,7 @@ class EnercareTrackerSupportFacilitatorController extends Controller
     public function __construct()
     {
         $this->middleware('can:enercare.supportfacilitator')->only(['create', 'store', 'index', 'show']);
-        $this->middleware('can:enercare.supportfacilitator.leader')->only(['create', 'store', 'index', 'show','general', 'generalDownload']);
+        //$this->middleware('can:enercare.supportfacilitator.leader')->only(['create', 'store', 'index', 'show','general', 'generalDownload']);
         $this->middleware('can:enercare.supportfacilitator.reports.general')->only(['general', 'generalDownload']);
     }
 
