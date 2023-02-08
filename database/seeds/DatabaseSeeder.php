@@ -12,21 +12,22 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            PermissionsTableSeeder::class,
-            ActivitiesTableSeeder::class,
-            UsersTableSeeder::class,
-            CgmAppointmentDispositionTableSeeder::class,
-            EnercareCalltrackerCategoriesTableSeeder::class,
-            EnercareCalltrackerPlansTableSeeder::class,
-            EnercareCallTrackerNotPitchAndSalesTableSeeder::class,
-            PayrollNoveltyCie10sTableSeeder::class,
-            PayrollNoveltyListsTableSeeder::class,
-            DailySessionListsTableSeeder::class,
-            PayrollAdminsTableSeeder::class,
-            KaizenListsTableSeeder::class,
-            // EnercareCalltrackerReasonsNotPitchAndSalesTableSeeder::class,
-            // EnercareCallTrackerNotPitchSalesTableSeeder::class
-            EnercareTrackerSupportFacilitatorSeeder::class,
+           PermissionsTableSeeder::class,
+           ActivitiesTableSeeder::class,
+           UsersTableSeeder::class,
+           CgmAppointmentDispositionTableSeeder::class,
+           EnercareCalltrackerCategoriesTableSeeder::class,
+           EnercareCalltrackerPlansTableSeeder::class,
+           EnercareCallTrackerNotPitchAndSalesTableSeeder::class,
+           PayrollNoveltyCie10sTableSeeder::class,
+           PayrollNoveltyListsTableSeeder::class,
+           DailySessionListsTableSeeder::class,
+           PayrollAdminsTableSeeder::class,
+           KaizenListsTableSeeder::class,
+           // EnercareCalltrackerReasonsNotPitchAndSalesTableSeeder::class,
+           // EnercareCallTrackerNotPitchSalesTableSeeder::class
+           EnercareTrackerSupportFacilitatorSeeder::class,
+            DearServiceListSeeder::class,
         ]);
     }
 }

@@ -1,0 +1,41 @@
+.logo {
+    width: 8%;
+}
+.title_h1 {
+    display: inline !important;
+    padding: 0 0 0 30%;
+    text-align: center;
+}
+.span_label {
+    color: red;
+}
+.card_first {
+    color: aliceblue;
+    background: linear-gradient(rgb(143,193,71), rgb(195,218,159));
+    padding-top: 1rem;
+}
+.span_label {
+    color: rgb(19,36,73);
+    font-size: medium;
+    text-align: right !important;
+}
+.form-group{
+    color: rgb(19,36,73);
+
+}
+th {
+    text-align: left;
+}
+
+td {
+    text-align: left;
+}
+.table-info {
+    background-color:#8fc147;
+    color: rgb(19,36,73) ;
+}
+
+.table-info:hover {
+    background-color: rgb(195,218,159) !important;
+    color: rgb(19,36,73) ;
+}

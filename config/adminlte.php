@@ -197,6 +197,34 @@ return [
             'icon' => 'nav-icon fab fa-wpforms',
             'can' => 'dailysessions'
         ],
+
+        [
+            'text' => 'Dear Service',
+            'icon' => 'fas fa-fw fad fa-horse-head',
+            'can' => 'dearservice.tracker',
+            'submenu' => [
+                [
+                    'text' => 'Create New',
+                    'url' => 'dearservice/tracker/create',
+                    'can' => 'dearservice.tracker'
+                ],
+                [
+                    'text' => 'List',
+                    'url' => 'dearservice/tracker',
+                    'can' => 'dearservice.tracker'
+                ],
+                [
+                    'text' => 'Report',
+                    'url' => 'dearservice/tracker/reports/general',
+                    'can' => 'dearservice.tracker.reports.general'
+                ],
+            ]
+        ],
+
+
+
+
+
         [
             'text' => 'CGM',
             'icon' => 'nav-icon fa fa-cubes',

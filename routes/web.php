@@ -222,6 +222,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('moduurn/calltracker/reports/general','ModuurnCalltrackerController@generalDownload')->name('moduurn.calltracker.reportsGeneralDownload');
     Route::resource('moduurn/calltracker', 'ModuurnCalltrackerController',['as'=>'moduurn']);
 
+
+    Route::get('dearservice/tracker/reports/general','DearServiceController@general')->name('dearservice.tracker.reportsGeneral');
+    Route::post('dearservice/tracker/reports/general','DearServiceController@generalDownload')->name('dearservice.tracker.reportsGeneralDownload');
+    Route::resource('dearservice/tracker', 'DearServiceController');
+
 });
 
 Auth::routes(['register' => false]);
