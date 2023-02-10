@@ -12,6 +12,7 @@ use App\PayrollDayOffDiscount;
 use App\PayrollSummary;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use stdClass;
@@ -48,6 +49,9 @@ class Prenomina
     public $endDate;
     
     protected $payrollSummaries;
+
+    public $payroll_activities;
+    public $absenceJustifications;
 
     function __construct($year = null, $month = null, $q = null)
     {
@@ -94,9 +98,9 @@ class Prenomina
 
     protected function refreshDatabases()
     {
-        \Log::info('Prenomina -> Refreshing databases');
+        Log::info('Prenomina -> Refreshing databases');
 
-        \Log::info('Prenomina -> Period: '. json_encode([
+        Log::info('Prenomina -> Period: '. json_encode([
             'year'=>$this->year,
             'month'=>$this->month,
             'q'=>$this->q,
@@ -126,7 +130,7 @@ class Prenomina
             ->whereNull('master_files.id')
             ->delete();
 
-            \Log::info('Prenomina -> Deleted employees: '.$deletedEmployees);
+            Log::info('Prenomina -> Deleted employees: '.$deletedEmployees);
 
             
             DB::connection('sqlsrvpayroll')->table('employees')
@@ -182,7 +186,7 @@ class Prenomina
 
             $insertedEmployees = DB::connection('sqlsrvpayroll')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
-            \Log::info('Prenomina -> Inserted employees: '.$insertedEmployees);
+            Log::info('Prenomina -> Inserted employees: '.$insertedEmployees);
 
             // SCHEDULES
 
@@ -193,7 +197,7 @@ class Prenomina
             ->where('q', $this->q)
             ->delete();
 
-            \Log::info('Prenomina -> Deleted schedules: '.$deletedSchedules);
+            Log::info('Prenomina -> Deleted schedules: '.$deletedSchedules);
 
             // Insert schedules
             DB::connection('sqlsrvpayroll')->insert("INSERT INTO schedules
@@ -229,7 +233,7 @@ class Prenomina
             
             $insertedSchedules = DB::connection('sqlsrvpayroll')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
-            \Log::info('Prenomina -> Inserted schedules: '.$insertedSchedules);
+            Log::info('Prenomina -> Inserted schedules: '.$insertedSchedules);
 
             // AGENT ACTIVITIES
         
@@ -240,7 +244,7 @@ class Prenomina
             ->where('q', $this->q)
             ->delete();
 
-            \Log::info('Prenomina -> Deleted agent_activities: '.$deletedActivities);
+            Log::info('Prenomina -> Deleted agent_activities: '.$deletedActivities);
 
 
             // Insert Agent Activities
@@ -266,7 +270,7 @@ class Prenomina
 
             $insertedActivities = DB::connection('sqlsrvpayroll')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
-            \Log::info('Prenomina -> Inserted agent_activities: '.$insertedActivities);
+            Log::info('Prenomina -> Inserted agent_activities: '.$insertedActivities);
 
         }
 
@@ -279,7 +283,7 @@ class Prenomina
         ->where('q', $this->q)
         ->delete();
 
-        \Log::info('Prenomina -> Deleted novelties: '.$deletedNovelties);
+        Log::info('Prenomina -> Deleted novelties: '.$deletedNovelties);
 
         // Insert Novelties
         DB::connection('sqlsrvpayroll')->insert("INSERT INTO novelties
@@ -304,7 +308,7 @@ class Prenomina
         
         $insertedNovelties = DB::connection('sqlsrvpayroll')->select('SELECT @@ROWCOUNT AS NumOfRows')[0]->NumOfRows;
 
-        \Log::info('Prenomina -> Inserted novelties: '.$insertedNovelties);        
+        Log::info('Prenomina -> Inserted novelties: '.$insertedNovelties);        
 
     }
 

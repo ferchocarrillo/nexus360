@@ -30,6 +30,12 @@ class PayrollDate
     
     protected $maxWorkingTimeForHolidays = 28800; // 8hrs 
 
+    public $activity_lunch_time;
+    public $activity_break_time;
+    public $activity_total_time;
+    public $i;
+    public $absenceJustification;
+
 
     public function __construct($parentClass,$employee)
     {
@@ -169,7 +175,11 @@ class PayrollDate
                             (($activity->activity == 'Logout' && $date['start_date'] < $this->schedule->out) ||
                                 ($activity->activity != 'Logout' && $date['end_date'] < $this->schedule->out))
                         ) {
-                            $this->addNovedadesNomina($activity->agent_activity_id, 'Inasistencia Hrs', $activity->activity, ($activity->activity == 'Logout' ?  $date['start_date'] :  $date['end_date']), $this->schedule->out);
+                            if($activity->activity == 'Logout'){
+                                $this->addNovedadesNomina($activity->agent_activity_id, 'Inasistencia Hrs', $activity->activity, $date['start_date'] , $date['end_date']);
+                            }else{
+                                $this->addNovedadesNomina($activity->agent_activity_id, 'Inasistencia Hrs', $activity->activity, $date['end_date'], $this->schedule->out);
+                            }
                         }
                     } else {
                         if ($activity->activity != 'Logout') {
@@ -219,6 +229,10 @@ class PayrollDate
         $end_date_timestamp = strtotime($end_date);
         $endDates = [];
 
+        if($this->schedule && $this->agentActivities->first() == $activity && $activity->activity == 'Logout' && $start_date < $this->schedule->in && $end_date > $this->schedule->out){
+            $this->date;
+            return [];
+        }
         if ($activity->activity != 'Logout' || 
             ($this->schedule && $activity->activity == 'Logout' && $start_date < $this->schedule->out && $end_date > $this->schedule->out)){
             if ($this->schedule) {
@@ -263,8 +277,6 @@ class PayrollDate
         usort($endDates, function ($a, $b) {
             return strtotime($a) - strtotime($b);
         });
-
-        $this->endDates = $endDates;
 
         return $endDates;
     }
