@@ -326,7 +326,7 @@ class PayrollDate
             $novedad = 'Lunch';
         }else if ($novedad == 'Tiempo laborado' && $actividad == 'Break' && ($this->schedule && $start_date >= $this->schedule->out)) {
             $novedad = 'Tiempo injustificado';
-        }else if ($novedad == 'Inasistencia Hrs' && ($this->schedule && $start_date >= $this->schedule->out || $is_holiday)) {
+        }else if ($novedad == 'Inasistencia Hrs' && ($this->schedule && ($start_date >= $this->schedule->out || $end_date <= $this->schedule->in ) || $is_holiday)) {
             $novedad = 'Tiempo injustificado';
         }else if(!$this->schedule && $novedad == 'Tiempo laborado') {
             $novedad = 'Tiempo pendiente aprobar';
