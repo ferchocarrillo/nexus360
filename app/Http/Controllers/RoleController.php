@@ -5,20 +5,18 @@ namespace App\Http\Controllers;
 use Caffeinated\Shinobi\Models\Role;
 use Caffeinated\Shinobi\Models\Permission;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('can:roles.create')->only(['create','store']);
-        $this->middleware('can:roles.index')->only('index');
-        $this->middleware('can:roles.edit')->only(['edit','update']);
-        $this->middleware('can:roles.show')->only('show');
-        $this->middleware('can:roles.destroy')->only('destroy');
-    }
+  public function __construct()
+  {
+      $this->middleware('can:roles.create')->only(['create','store']);
+      $this->middleware('can:roles.index')->only('index');
+      $this->middleware('can:roles.edit')->only(['edit','update']);
+      $this->middleware('can:roles.show')->only('show');
+      $this->middleware('can:roles.destroy')->only('destroy');
+  }
 
     /**
      * Display a listing of the resource.
@@ -39,7 +37,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::get();
+        $permissions = Permission::pluck('name','id');
         return view('roles.create', compact('permissions'));
     }
 
@@ -56,7 +54,6 @@ class RoleController extends Controller
 
         //update Permissions
         $role->permissions()->sync($request->get('permissions'));
-
         return redirect()->route('roles.edit', $role->id)
             ->with('info', 'Role created successfully');
     }
@@ -80,7 +77,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        $permissions = Permission::get();
+        $permissions = Permission::pluck('name','id');
         return view('roles.edit', compact('role', 'permissions'));
     }
 
@@ -93,14 +90,8 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        //update Role
         $role->update($request->all());
-
-        //update Permissions
         $role->permissions()->sync($request->get('permissions'));
-
-
-
         return redirect()->route('roles.edit', $role->id)
             ->with('info', 'Role saved successfully');
     }
