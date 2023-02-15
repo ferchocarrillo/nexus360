@@ -20,6 +20,7 @@ $(function() {
         "Tiempo injustificado": "table-secondary",
         "Hora Extra": "table-success",
         "Reposicion Hora": "table-success",
+        "Cumple Horas de Contrato": "table-success",
         "Permiso Remunerado": "table-warning",
         "Permiso No Remunerado": "table-warning",
         "Error del sistema": "table-warning"
@@ -295,7 +296,7 @@ $(function() {
                                         n.novelty == activity.activity_type &&
                                         (!n.surcharge || n.surcharge.includes(activity.surcharge))
                                 ).length > 0;
-                            if (noveltyEditable) {
+                            if (noveltyEditable || activity.adjustments.length) {
                                 // dropdown items
                                 if (
                                     (!activity.adjustments.length ||
@@ -426,15 +427,27 @@ $(function() {
                         .show();
 
                     if(payroll.adjustment && payroll.adjustment.status == 'Aprobado'){
-                        $(`<h4 class="mb-0"><span class="badge badge-success text-uppercase p-3 w-100">
-                                <i class="fas fa-calendar-check fa-lg mr-2"></i>  ${payroll.adjustment.justification}
-                            </span></h4>`).appendTo("#novelty");
+                        $(
+                            `<button type="button" class="mt-1 btn btn-sm btn-success" data-action="show" data-toggle="modal" data-target="#adjustmentModal" data-adjustment-id="${payroll.adjustment.id}">
+                                <span class="text-uppercase">
+                                    <i class="fas fa-calendar-check fa-lg mr-2"></i> ${payroll.adjustment.justification}
+                                </span>    
+                            </button`
+                        ).appendTo("#novelty");
+                    }else if(payroll.adjustment && payroll.adjustment.status != 'Aprobado'){
+                        $(
+                            `<button type="button" class="mt-1 btn btn-sm btn-${payroll.adjustment.status == 'Pendiente' ? 'info' : 'danger'}" data-action="show" data-toggle="modal" data-target="#adjustmentModal" data-adjustment-id="${payroll.adjustment.id}">
+                                <span class="text-uppercase">
+                                    <i class="fas fa-calendar-check fa-lg mr-2"></i> ${payroll.adjustment.status}
+                                </span>    
+                            </button`
+                        ).appendTo("#novelty");
                     }
                         
                     if(payroll.availableJustifyAbsence){
                     
                         $(
-                            `<button class="btn btn-info"><i class="fas fa-calendar-check fa-lg mr-2"></i> Justify Absence </button>`
+                            `<button class="mt-1 btn btn-sm btn-info"><i class="fas fa-calendar-check fa-lg mr-2"></i> Justify Absence </button>`
                         )
                             .on({
                                 click: function() {
@@ -505,6 +518,14 @@ $(function() {
                     }
                 }
 
+                if(payroll.dayOffDiscount){
+                    $("#novelty")
+                        .show()
+                        .append(
+                            `<span class="badge badge-danger text-uppercase p-2">Domingo descontado</span>`
+                        )
+                }
+
                 // hide modal logoLoading
                 setTimeout(() => {
                     $("#logoLoading").modal("hide");
@@ -563,7 +584,7 @@ $(function() {
                         </tr>
                         <tr>
                             <td><strong>Supervisor: </strong>${employee.supervisor}</td>
-                            <td><strong>Supervisor: </strong>${employee.payroll_manager}</td>
+                            <td><strong>Payroll Manager: </strong>${employee.payroll_manager}</td>
                         </tr>
                         <tr>
                             <td><strong>Day off: </strong>${employee.mandatory_rest_day}</td>
