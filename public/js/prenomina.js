@@ -427,15 +427,27 @@ $(function() {
                         .show();
 
                     if(payroll.adjustment && payroll.adjustment.status == 'Aprobado'){
-                        $(`<h4 class="mb-0"><span class="badge badge-success text-uppercase p-3 w-100">
-                                <i class="fas fa-calendar-check fa-lg mr-2"></i>  ${payroll.adjustment.justification}
-                            </span></h4>`).appendTo("#novelty");
+                        $(
+                            `<button type="button" class="mt-1 btn btn-sm btn-success" data-action="show" data-toggle="modal" data-target="#adjustmentModal" data-adjustment-id="${payroll.adjustment.id}">
+                                <span class="text-uppercase">
+                                    <i class="fas fa-calendar-check fa-lg mr-2"></i> ${payroll.adjustment.justification}
+                                </span>    
+                            </button`
+                        ).appendTo("#novelty");
+                    }else if(payroll.adjustment && payroll.adjustment.status != 'Aprobado'){
+                        $(
+                            `<button type="button" class="mt-1 btn btn-sm btn-${payroll.adjustment.status == 'Pendiente' ? 'info' : 'danger'}" data-action="show" data-toggle="modal" data-target="#adjustmentModal" data-adjustment-id="${payroll.adjustment.id}">
+                                <span class="text-uppercase">
+                                    <i class="fas fa-calendar-check fa-lg mr-2"></i> ${payroll.adjustment.status}
+                                </span>    
+                            </button`
+                        ).appendTo("#novelty");
                     }
                         
                     if(payroll.availableJustifyAbsence){
                     
                         $(
-                            `<button class="btn btn-info"><i class="fas fa-calendar-check fa-lg mr-2"></i> Justify Absence </button>`
+                            `<button class="mt-1 btn btn-sm btn-info"><i class="fas fa-calendar-check fa-lg mr-2"></i> Justify Absence </button>`
                         )
                             .on({
                                 click: function() {
