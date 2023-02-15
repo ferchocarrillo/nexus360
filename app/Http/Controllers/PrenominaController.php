@@ -7,6 +7,7 @@ use App\Classes\Prenomina;
 use App\Payroll;
 use App\PayrollAdjustment;
 use App\PayrollAdmin;
+use App\PayrollDayOffDiscount;
 
 class PrenominaController extends Controller
 {
@@ -84,6 +85,13 @@ class PrenominaController extends Controller
             ->get()->first();
 
         $payroll->adjustment = $adjustment;
+
+        $dayOffDiscount = PayrollDayOffDiscount::where("employee_id",$payroll->employee_id)
+            ->where('date',$payroll->date)
+            ->get()
+            ->first();
+        
+        $payroll->dayOffDiscount = $dayOffDiscount;
 
         $payroll->availableOffsetHoliday =  ($payroll->is_holiday && $payroll->schedule &&
             substr($payroll->schedule['in'],0,10) == substr($payroll->schedule['out'],0,10) &&

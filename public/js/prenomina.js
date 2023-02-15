@@ -518,6 +518,14 @@ $(function() {
                     }
                 }
 
+                if(payroll.dayOffDiscount){
+                    $("#novelty")
+                        .show()
+                        .append(
+                            `<span class="badge badge-danger text-uppercase p-2">Domingo descontado</span>`
+                        )
+                }
+
                 // hide modal logoLoading
                 setTimeout(() => {
                     $("#logoLoading").modal("hide");
