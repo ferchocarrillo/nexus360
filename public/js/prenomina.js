@@ -20,6 +20,7 @@ $(function() {
         "Tiempo injustificado": "table-secondary",
         "Hora Extra": "table-success",
         "Reposicion Hora": "table-success",
+        "Cumple Horas de Contrato": "table-success",
         "Permiso Remunerado": "table-warning",
         "Permiso No Remunerado": "table-warning",
         "Error del sistema": "table-warning"
@@ -295,7 +296,7 @@ $(function() {
                                         n.novelty == activity.activity_type &&
                                         (!n.surcharge || n.surcharge.includes(activity.surcharge))
                                 ).length > 0;
-                            if (noveltyEditable) {
+                            if (noveltyEditable || activity.adjustments.length) {
                                 // dropdown items
                                 if (
                                     (!activity.adjustments.length ||
@@ -563,7 +564,7 @@ $(function() {
                         </tr>
                         <tr>
                             <td><strong>Supervisor: </strong>${employee.supervisor}</td>
-                            <td><strong>Supervisor: </strong>${employee.payroll_manager}</td>
+                            <td><strong>Payroll Manager: </strong>${employee.payroll_manager}</td>
                         </tr>
                         <tr>
                             <td><strong>Day off: </strong>${employee.mandatory_rest_day}</td>
