@@ -613,6 +613,36 @@ class Prenomina
         $employees = $this->makePrenomina($filterEmployees);
         $this->sendPrenomina($employees);
     }
+
+    private function getNoveltyType($activity_type, $surcharge){
+        $novelty = null;
+        if ($activity_type == 'TIEMPO LABORADO' && $surcharge == 'Diurno') {
+            $novelty = 'TIEMPO LABORADO';
+        } else if ($activity_type == 'TIEMPO LABORADO' && $surcharge == 'Festivo Compensado') {
+            $novelty = 'HORA FESTIVO COMPENSADO';
+        } else if ($activity_type == 'TIEMPO LABORADO' && $surcharge == 'Festivo') {
+            $novelty = 'HORA FESTIVO SIN COMPENSAR';
+        } else if ($activity_type == 'TIEMPO LABORADO' && $surcharge == 'Nocturno') {
+            $novelty = 'HORA RECARGO NOCTURNO';
+        } else if ($activity_type == 'TIEMPO LABORADO' && $surcharge == 'Nocturno Festivo') {
+            $novelty = 'HORA RECARGO NOCTURNO FESTIVO';
+        } else if ($activity_type == 'HORA EXTRA' && $surcharge == 'Diurno') {
+            $novelty = 'HORA EXTRA DIURNA';
+        } else if ($activity_type == 'HORA EXTRA' && $surcharge == 'Nocturno') {
+            $novelty = 'HORA EXTRA NOCTURNA';
+        } else if ($activity_type == 'HORA EXTRA' && in_array($surcharge, ['Festivo Compensado', 'Festivo'])) {
+            $novelty = 'HORA EXTRA DIURNA FESTIVA';
+        } else if ($activity_type == 'HORA EXTRA' && $surcharge == 'Nocturno Festivo') {
+            $novelty = 'HORA EXTRA NOCTURNA FESTIVA';
+        } else if ($activity_type == 'INASISTENCIA HORAS') {
+            $novelty = 'INASISTENCIA HORAS';
+        } else if ($activity_type == 'HORA PERMISO REMUNERADO') {
+            $novelty = 'HORA PERMISO REMUNERADO';
+        } else if ($activity_type == 'HORA PERMISO NO REMUNERADO') {
+            $novelty = 'HORA PERMISO NO REMUNERADO';
+        }
+        return $novelty;
+    }
     
     public function generateSummary($filterEmployees = [])
     {
@@ -757,35 +787,28 @@ class Prenomina
                             $activity->surcharge = "Festivo Compensado";
                         }
 
+                        if (
+                            $activity->activity_type == "Inasistencia Hrs" && $activity->adjustment_type &&
+                            $activity->approved_time && $activity->approved_time < $activity->total_time_in_seconds
+                        ) {
+                            $diffTime = $activity->total_time_in_seconds - $activity->approved_time;
+                            $newEndDate = date('Y-m-d H:i:s', strtotime($activity->start_date) + $diffTime);
+                            $this->payrollSummaries->push([
+                                'date' => $activity->activity_date,
+                                'employee_id' => $employee->id,
+                                'national_id' => $employee->national_id,
+                                'novelty' =>  $this->novelties[$activity->activity_type],
+                                'novelty_id' => null,
+                                'start_date' => $activity->start_date,
+                                'end_date' => $newEndDate,
+                                'total_time_in_seconds' => $diffTime  ,
+                            ]);
+                            $activity->start_date = $newEndDate;
+                        }
                         $activity->activity_type = $this->novelties[$activity->adjustment_type ?? $activity->activity_type];
                         $activity->total_time_in_seconds = $activity->approved_time ??  $activity->total_time_in_seconds;
 
-                        $novelty = null;
-                        if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Diurno') {
-                            $novelty = 'TIEMPO LABORADO';
-                        } else if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Festivo Compensado') {
-                            $novelty = 'HORA FESTIVO COMPENSADO';
-                        } else if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Festivo') {
-                            $novelty = 'HORA FESTIVO SIN COMPENSAR';
-                        } else if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Nocturno') {
-                            $novelty = 'HORA RECARGO NOCTURNO';
-                        } else if ($activity->activity_type == 'TIEMPO LABORADO' && $activity->surcharge == 'Nocturno Festivo') {
-                            $novelty = 'HORA RECARGO NOCTURNO FESTIVO';
-                        } else if ($activity->activity_type == 'HORA EXTRA' && $activity->surcharge == 'Diurno') {
-                            $novelty = 'HORA EXTRA DIURNA';
-                        } else if ($activity->activity_type == 'HORA EXTRA' && $activity->surcharge == 'Nocturno') {
-                            $novelty = 'HORA EXTRA NOCTURNA';
-                        } else if ($activity->activity_type == 'HORA EXTRA' && in_array($activity->surcharge, ['Festivo Compensado', 'Festivo'])) {
-                            $novelty = 'HORA EXTRA DIURNA FESTIVA';
-                        } else if ($activity->activity_type == 'HORA EXTRA' && $activity->surcharge == 'Nocturno Festivo') {
-                            $novelty = 'HORA EXTRA NOCTURNA FESTIVA';
-                        } else if ($activity->activity_type == 'INASISTENCIA HORAS') {
-                            $novelty = 'INASISTENCIA HORAS';
-                        } else if ($activity->activity_type == 'HORA PERMISO REMUNERADO') {
-                            $novelty = 'HORA PERMISO REMUNERADO';
-                        } else if ($activity->activity_type == 'HORA PERMISO NO REMUNERADO') {
-                            $novelty = 'HORA PERMISO NO REMUNERADO';
-                        }
+                        $novelty = $this->getNoveltyType($activity->activity_type, $activity->surcharge);
 
                         if($novelty!='TIEMPO LABORADO'){
                             $this->payrollSummaries->push([
