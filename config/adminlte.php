@@ -354,6 +354,56 @@ return [
             ]
         ],
         [
+            'text' => 'Inventories',
+            'icon' => 'fas fa-truck-loading',
+            'can' => 'Inventories.proveedores',
+            'submenu' => [
+                [
+                    'text' => 'Proveedores',
+                    'icon' => 'fas fa-sitemap',
+                    'url' => 'inventories/proveedores',
+                    'can' => 'inventories/proveedores'
+                ],
+                [
+                    'text' => 'Ver Activos',
+                    'icon' => 'far fa-eye',
+                    'url'  => 'inventories/activos/articulos',
+                    'can'  => 'inventories/activos/articulos'
+                ],
+                [
+                    'text' => 'Compras',
+                    'icon' => 'fas fa-shopping-basket',
+                    'url'  => 'inventories/adquisicion/create',
+                    'can'  => 'inventories/adquisicion/create'
+                ],
+                [
+                    'text' => 'Asignación Activos',
+                    'icon' => 'fas fa-hands-helping',
+                    'url'  => 'inventories/asignacion',
+                    'can'  => 'inventories/asignacion'
+                ],
+                [
+                    'text' => 'Bajas de Stock',
+                    'icon' => 'fas fa-cart-arrow-down',
+                    'url'  => 'inventories/bajas',
+                    'can'  => 'inventories/bajas'
+                ],
+                [
+                    'text' => 'Traslado de Stock',
+                    'icon' => 'fas fa-random',
+                    'url'  => 'inventories/traslado',
+                    'can'  => 'inventories/traslado'
+                ],
+                [
+                    'text' => 'Consultar Activos',
+                    'icon' => 'fas fa-search',
+                    'url'  => 'inventories/consulta',
+                    'can'  => 'inventories/consulta'
+                ]
+            ]
+        ],
+
+        [
             'text' => 'Amerian Water',
             'icon' => 'nav-icon fa fa-cubes',
             'can' => 'americanwater',
