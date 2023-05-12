@@ -114,7 +114,7 @@ class ModuurnCalltrackerController extends Controller
     {
 
         $trkEdit = ModuurnTracker::findOrFail($id);
-        
+
         $user = auth()->user();
         if(!$user->can('moduurn.calltracker.leader') && $trkEdit->created_by != $user->id){
             abort(403);
